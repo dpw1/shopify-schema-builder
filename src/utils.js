@@ -1,0 +1,15 @@
+export const schema = [
+  { id: "color" },
+  { id: "font-picker" },
+  { id: "collection" },
+  { id: "product" },
+  { id: "blog" },
+  { id: "page" },
+  { id: "link_list" },
+  { id: "url" },
+  { id: "video-url" },
+  { id: "richtext" },
+  { id: "html" },
+  { id: "article" },
+  { id: "image-picker" },
+];
