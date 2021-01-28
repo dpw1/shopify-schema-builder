@@ -1,0 +1,13 @@
+.react-confirm-alert-overlay {
+  animation: react-confirm-alert-fadeIn 0.01s 0.01s forwards;
+  background-color: #8f8f8f1a;
+
+  h1 {
+    color: var(--background);
+  }
+
+  button {
+    background: var(--background);
+    font-size: unset;
+  }
+}

@@ -2,10 +2,37 @@
   color: blue;
 
   .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     display: block;
     width: 100%;
+  }
+
+  &-wrapper {
+    display: flex;
+    > * {
+      &:nth-child(1) {
+        max-width: 35%;
+        width: 100%;
+        margin-right: 20px;
+      }
+
+      &:nth-child(2) {
+        max-width: 65%;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 767px) {
+      display: flex;
+      flex-direction: column;
+
+      > * {
+        max-width: 100% !important;
+        width: 100%;
+        margin: 0;
+      }
+    }
   }
 
   .shopify-component {
@@ -124,7 +151,6 @@ body {
     "Helvetica Neue", "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji",
     sans-serif;
   line-height: 1.4;
-  max-width: 800px;
   margin: 20px auto;
   padding: 0 10px;
   word-wrap: break-word;
@@ -1431,4 +1457,11 @@ body > footer {
   }
 }
 
+ul,
+li {
+  list-style-type: none;
+}
+* {
+  box-sizing: border-box;
+}
 /*# sourceMappingURL=water.css.map */

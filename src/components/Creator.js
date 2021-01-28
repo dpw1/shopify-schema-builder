@@ -6,8 +6,17 @@ import arrayMove from "array-move";
 import { useForm } from "react-hook-form";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
+
+import "./Creator.scss";
+import {
+  schema,
+  updateJSONTextarea,
+  generateJSONSchema,
+  sleep,
+} from "./../utils";
+
+import ConfirmDialog from "./ConfirmDialog";
 import Item from "./Item";
-import { schema } from "./../utils";
 
 const SortableItem = sortableElement(({ value }) => (
   <React.Fragment>{value}</React.Fragment>
@@ -20,28 +29,49 @@ const SortableContainer = sortableContainer(({ children }) => {
 export default function Creator() {
   const { register, handleSubmit, watch, errors } = useForm();
 
+  const [jsonResult, setJsonResult] = useStickyState("@jsonResult");
   const [items, setItems] = useStickyState("@items", [
     {
       id: short.generate(),
-      type: "link_list",
-      content: [],
-    },
-    {
-      id: short.generate(),
-      type: "link_list",
-      content: [],
+      type: "header",
+      data: undefined,
     },
   ]);
+
+  const handleUpdateTextarea = async () => {
+    sleep(50);
+    const json = generateJSONSchema();
+    updateJSONTextarea(json);
+    setJsonResult(json);
+  };
 
   const handleAddItem = () => {
     setItems([
       ...items,
       {
         id: short.generate(),
-        type: "link_list",
-        content: [],
+        type: "header",
+        data: {},
       },
     ]);
+
+    handleUpdateTextarea();
+  };
+
+  const handleDeleteItem = (id) => {
+    ConfirmDialog({
+      title: "Delete?",
+      confirm: () => {
+        const updated = [...items].filter((e) => e.id !== id);
+
+        setItems(updated);
+
+        return handleUpdateTextarea();
+      },
+      deny: () => {
+        return;
+      },
+    });
   };
 
   const handleOnChange = (e) => {
@@ -60,39 +90,45 @@ export default function Creator() {
     ];
 
     setItems(updated);
+
+    handleUpdateTextarea();
   };
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
     setItems(arrayMove(items, oldIndex, newIndex));
+
+    handleUpdateTextarea();
   };
 
   return (
-    <div>
-      <ul>
-        <SortableContainer onSortEnd={onSortEnd}>
-          {items.map((props, i) => {
-            return (
-              <SortableItem
-                key={`item-${short.generate()}`}
-                index={i}
-                value={
-                  <Item
-                    register={register}
-                    schema={schema}
-                    handleOnChange={handleOnChange}
-                    id={props.id}
-                    defaultValue={props.type}
-                    name={`name-${i}`}></Item>
-                }
-              />
-            );
-          })}
-        </SortableContainer>
+    <div className="Creator">
+      <SortableContainer onSortEnd={onSortEnd}>
+        {items.map((props, i) => {
+          return (
+            <SortableItem
+              key={`item-${short.generate()}`}
+              index={i}
+              value={
+                <Item
+                  Content={props.content}
+                  register={register}
+                  schema={schema}
+                  handleOnChange={handleOnChange}
+                  id={props.id}
+                  type={props.type}
+                  handleDeleteItem={handleDeleteItem}
+                  defaultValue={props.type}
+                  name={`name-${i}`}></Item>
+              }
+            />
+          );
+        })}
+      </SortableContainer>
 
-        <fieldset>
-          <button onClick={() => handleAddItem()}>Add</button>
-        </fieldset>
-      </ul>
+      <fieldset>
+        <button onClick={() => handleAddItem()}>Add</button>
+        <button onClick={() => handleUpdateTextarea()}>Generate JSON</button>
+      </fieldset>
     </div>
   );
 }
