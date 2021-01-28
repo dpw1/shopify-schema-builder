@@ -39,7 +39,7 @@ export default function Creator() {
   ]);
 
   const handleUpdateTextarea = async () => {
-    sleep(50);
+    await sleep(50);
     const json = generateJSONSchema();
     updateJSONTextarea(json);
     setJsonResult(json);
