@@ -230,8 +230,6 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemId={itemId}
         />
       );
-    case "article":
-      return <p>"article"</p>;
     case "image_picker":
       return (
         <FormItem
