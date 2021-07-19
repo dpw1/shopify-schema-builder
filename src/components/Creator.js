@@ -12,7 +12,7 @@ import {
   schema,
   updateJSONTextarea,
   generateJSONSchema,
-  putFocusOnLastInputItem,
+  focusDropdown,
   sleep,
   convertToLiquidVariables,
 } from "./../utils";
@@ -62,7 +62,7 @@ export default function Creator() {
     ]);
 
     handleUpdateTextarea();
-    putFocusOnLastInputItem();
+    focusDropdown();
   };
 
   const handleDeleteItem = (id) => {

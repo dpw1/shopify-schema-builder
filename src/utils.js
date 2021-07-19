@@ -74,10 +74,10 @@ export const updateJSONTextarea = (json) => {
   }
 };
 
-export const putFocusOnLastInputItem = (delay = 50) => {
+export const focusDropdown = (delay = 50) => {
   setTimeout(() => {
     const $lastItem = document.querySelector(
-      `.Creator .item:last-of-type .FormItem-attr:nth-child(1) input`,
+      `.Creator .item:last-of-type .item-wrapper:nth-child(1) select`,
     );
 
     if (!$lastItem) {
@@ -85,6 +85,7 @@ export const putFocusOnLastInputItem = (delay = 50) => {
     }
 
     $lastItem.focus();
+    new Event("keydown", { keyCode: 32, which: 32 });
   }, delay);
 };
 
