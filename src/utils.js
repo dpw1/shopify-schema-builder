@@ -69,6 +69,15 @@ export const updateJSONTextarea = (json) => {
   }
 };
 
+export const putFocusOnLastInputItem = (delay = 50) => {
+  setTimeout(() => {
+    const $lastItem = document.querySelector(
+      `.Creator .item:last-of-type .FormItem-attr:nth-child(1) input`,
+    );
+    $lastItem.focus();
+  }, delay);
+};
+
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
   let finalJSON = [];
@@ -92,6 +101,10 @@ export const generateJSONSchema = () => {
 
       const value = attr.querySelector(`input`).value;
 
+      /* If there is no property 'info', ignore */
+      if (name === "info" && (value === "" || !value)) {
+        continue;
+      }
       _json[name] = value;
     }
 

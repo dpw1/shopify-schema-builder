@@ -8,20 +8,27 @@ import "./Item.scss";
 import Text from "./Text";
 import FormItem from "./FormItem";
 
-const renderElement = (type, itemId, handleOnFormChange) => {
+const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
   switch (type) {
     case "header":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["content"]}
           handleOnFormChange={handleOnFormChange}
+          type={"header"}
           itemId={itemId}
+          defaultOptions={{
+            content: "Options",
+          }}
         />
       );
     case "paragraph":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["content"]}
+          type={"paragraph"}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -29,7 +36,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "text":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "default", "info"]}
+          type="text"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -37,7 +46,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "color":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "default", "info"]}
+          type="color"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
           defaultOptions={{
@@ -48,7 +59,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "font_picker":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "default", "info"]}
+          type="font_picker"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -56,7 +69,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "collection":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info"]}
+          type="collection"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -64,7 +79,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "product":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info"]}
+          type="product"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -72,7 +89,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "blog":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info"]}
+          type="blog"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -80,7 +99,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "page":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info"]}
+          type="page"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -88,7 +109,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "link_list":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info"]}
+          type="link_list"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -96,7 +119,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "url":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info"]}
+          type="url"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -104,7 +129,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "video_url":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "default", "accept", "placeholder", "info"]}
+          type="video_url"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -112,7 +139,9 @@ const renderElement = (type, itemId, handleOnFormChange) => {
     case "richtext":
       return (
         <FormItem
+          itemCount={itemCount}
           options={["id", "label", "info", "default"]}
+          type="richtext"
           defaultOptions={{
             default: "<p></p>",
           }}
@@ -143,13 +172,12 @@ export default function Item({
   handleOnChange,
   register,
   handleDeleteItem,
+  itemCount,
   Content,
   handleDelete,
 }) {
-  const [items, setItems] = useStickyState("@items");
-
   return (
-    <li className="item">
+    <li data-item-count={itemCount} className={`item`}>
       <div className="item-wrapper">
         <select
           onChange={(e) => handleOnChange(e)}
@@ -170,7 +198,7 @@ export default function Item({
         </button>
       </div>
       <div className="item-content">
-        {renderElement(type, id, handleOnFormChange)}
+        {renderElement(type, id, handleOnFormChange, itemCount)}
       </div>
       <br />
     </li>

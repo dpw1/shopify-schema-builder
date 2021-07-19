@@ -12,7 +12,9 @@ import {
   schema,
   updateJSONTextarea,
   generateJSONSchema,
+  putFocusOnLastInputItem,
   sleep,
+  convertToLiquidVariables,
 } from "./../utils";
 
 import ConfirmDialog from "./ConfirmDialog";
@@ -28,6 +30,11 @@ const SortableContainer = sortableContainer(({ children }) => {
 
 export default function Creator() {
   const { register, handleSubmit, watch, errors } = useForm();
+
+  const [variablesResult, setVariablesResult] = useStickyState(
+    "@variablesResult",
+    null,
+  );
 
   const [jsonResult, setJsonResult] = useStickyState("@jsonResult");
   const [items, setItems] = useStickyState("@items", [
@@ -50,22 +57,24 @@ export default function Creator() {
       ...items,
       {
         id: short.generate(),
-        type: "header",
-        data: {},
+        type: "text",
       },
     ]);
 
     handleUpdateTextarea();
+    putFocusOnLastInputItem();
   };
 
   const handleDeleteItem = (id) => {
+    const updated = [...items].filter((e) => e.id !== id);
+    setItems(updated);
+    return handleUpdateTextarea();
+
     ConfirmDialog({
       title: "Delete?",
       confirm: () => {
         const updated = [...items].filter((e) => e.id !== id);
-
         setItems(updated);
-
         return handleUpdateTextarea();
       },
       deny: () => {
@@ -92,6 +101,20 @@ export default function Creator() {
     setItems(updated);
 
     handleUpdateTextarea();
+
+    const num = e.target.closest(`.item`).getAttribute("data-item-count");
+    focusFirstInput(num);
+  };
+
+  const focusFirstInput = (num) => {
+    setTimeout(() => {
+      const $el = document.querySelector(
+        `[data-item-count*='${num}'] .FormItem-attr:nth-child(1) input`,
+      );
+
+      console.log("xx", $el);
+      $el.focus();
+    }, 50);
   };
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
@@ -117,6 +140,7 @@ export default function Creator() {
                   id={props.id}
                   type={props.type}
                   handleDeleteItem={handleDeleteItem}
+                  itemCount={`${i + 1}`}
                   defaultValue={props.type}
                   name={`name-${i}`}></Item>
               }
@@ -127,7 +151,15 @@ export default function Creator() {
 
       <fieldset>
         <button onClick={() => handleAddItem()}>Add</button>
-        <button onClick={() => handleUpdateTextarea()}>Generate JSON</button>
+        <button
+          onClick={() => {
+            const variables = convertToLiquidVariables(jsonResult);
+            setVariablesResult(variables);
+
+            handleUpdateTextarea();
+          }}>
+          Generate JSON
+        </button>
       </fieldset>
     </div>
   );

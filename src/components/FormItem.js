@@ -6,9 +6,11 @@ import "./FormItem.scss";
 import { generateJSONSchema, updateJSONTextarea } from "../utils";
 
 export default function FormItem(props) {
-  let { itemId, type, options, defaultOptions } = props;
+  let { itemId, type, options, defaultOptions, itemCount } = props;
 
-  if (!defaultOptions) {
+  console.log("look: ", defaultOptions);
+  if (!defaultOptions || defaultOptions.length <= 0) {
+    console.log("removing!");
     defaultOptions = "";
   }
 
@@ -35,9 +37,21 @@ export default function FormItem(props) {
     });
   };
 
+  const setDefaultValue = (labelName) => {
+    if (defaultOptions[labelName]) {
+      if (typeof defaultOptions[labelName] !== "function") {
+        return defaultOptions[labelName];
+      } else {
+        return defaultOptions[labelName]();
+      }
+    }
+
+    return "";
+  };
+
   return (
     <fieldset className="FormItem">
-      {options.map((e) => {
+      {options.map((e, i) => {
         return (
           <div className="FormItem-attr">
             <label data-label-name={e}>{e}:</label>
@@ -46,7 +60,7 @@ export default function FormItem(props) {
               onChange={handleInputChange}
               name={`${itemId}_${e}`}
               label={e}
-              defaultValue={defaultOptions[e] ? defaultOptions[e] : ""}
+              defaultValue={setDefaultValue(e)}
               placeholder={e}
               autoComplete={"off"}
             />
