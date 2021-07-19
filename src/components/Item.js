@@ -270,13 +270,15 @@ export default function Item({
           name={name}
           id={id}
           ref={register}>
-          {schema.map(({ id: _id }) => {
-            return (
-              <option key={_id} value={_id}>
-                {_id}
-              </option>
-            );
-          })}
+          {schema
+            .sort((a, b) => a.id.localeCompare(b.id))
+            .map(({ id: _id }) => {
+              return (
+                <option key={_id} value={_id}>
+                  {_id}
+                </option>
+              );
+            })}
         </select>
         <button
           tabindex="-1"

@@ -129,6 +129,10 @@ export default function Creator() {
     console.log($parent);
   };
 
+  useEffect(() => {
+    console.log("xxx", items);
+  }, [items]);
+
   return (
     <div className="Creator">
       <SortableContainer onSortEnd={onSortEnd}>
