@@ -15,7 +15,6 @@ export const schema = [
   { id: "url" },
   { id: "video_url" },
   { id: "richtext" },
-  { id: "html" },
 
   { id: "image_picker" },
   { id: "checkbox" },
