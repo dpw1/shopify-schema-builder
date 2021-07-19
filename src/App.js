@@ -9,14 +9,27 @@ function App() {
     <div className="App">
       <div className="container">
         <h1 style={{ textAlign: "center", marginBottom: 40 }}>
-          Shopify Section Creator
+          EZFY Shopify Section Creator
         </h1>
         <h2 style={{ textAlign: "center", marginTop: -30, marginBottom: 40 }}>
           Coded by{" "}
           <a target="_blank" href="https://ezfycode.com">
-            ezfycode.com
+            ezfycode.com.
           </a>
         </h2>
+        <h3
+          style={{
+            textAlign: "center",
+            fontWeight: "normal",
+            marginTop: -30,
+            marginBottom: 40,
+          }}>
+          Copy & paste pre-made sections{" "}
+          <a target="_blank" href="https://ezfycode.com/shop">
+            available here
+          </a>
+          .
+        </h3>
         <div className="App-wrapper">
           <Creator />
           <CodeTable></CodeTable>
