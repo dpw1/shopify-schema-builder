@@ -129,9 +129,15 @@ export const generateJSONSchema = () => {
         continue;
       }
 
+      if (type === "textarea" && name === "default" && value !== "") {
+        value = value.replace(/\\n/g, `\n`);
+      }
+
       /* type is "checkbox" and there is a "default", convert it to boolean */
       if (type === "checkbox" && name === "default" && value !== "") {
-        value = value.toLowerCase() === "true" ? true : false;
+        value = String.raw(value);
+
+        console.log("look at me", value);
       }
 
       /* type is "range", convert values to integer */
