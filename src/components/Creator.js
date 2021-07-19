@@ -125,6 +125,13 @@ export default function Creator() {
     handleUpdateTextarea();
   };
 
+  const handleToggle = (e) => {
+    const $parent = e.target.closest(".item");
+
+    $parent.classList.toggle("item--toggle");
+    console.log($parent);
+  };
+
   return (
     <div className="Creator">
       <SortableContainer onSortEnd={onSortEnd}>
@@ -141,6 +148,7 @@ export default function Creator() {
                   handleOnChange={handleOnChange}
                   id={props.id}
                   type={props.type}
+                  handleToggle={handleToggle}
                   handleDeleteItem={handleDeleteItem}
                   itemCount={`${i + 1}`}
                   defaultValue={props.type}

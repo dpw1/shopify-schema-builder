@@ -22,6 +22,7 @@ export const schema = [
   { id: "textarea" },
   { id: "number" },
   { id: "select" },
+  { id: "radio" },
 ];
 
 export function convertToLiquidVariables(json) {
@@ -111,9 +112,7 @@ export const generateJSONSchema = () => {
         .querySelector(`[data-label-name]`)
         .getAttribute(`data-label-name`);
 
-      const value = attribute.querySelector(`input`).value;
-
-      console.log("look at my type", type);
+      let value = attribute.querySelector(`input`).value;
 
       /* If there is no property 'info', ignore */
       if (name === "info" && (value === "" || !value)) {
@@ -123,6 +122,16 @@ export const generateJSONSchema = () => {
       /* If there is no property 'default', ignore */
       if (name === "default" && (value === "" || !value)) {
         continue;
+      }
+
+      /* If the type is "checkbox" and there is a "default", convert it to boolean */
+      if (type === "checkbox" && name === "default" && value !== "") {
+        value = value.toLowerCase() === "true" ? true : false;
+      }
+
+      /* If the type is "range" and there is a "default", convert it to integer */
+      if (type === "range" && name === "default" && value !== "") {
+        value = parseInt(value);
       }
 
       _json[name] = value;
