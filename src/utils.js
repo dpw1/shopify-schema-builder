@@ -129,8 +129,15 @@ export const generateJSONSchema = () => {
         value = value.toLowerCase() === "true" ? true : false;
       }
 
-      /* If the type is "range" and there is a "default", convert it to integer */
-      if (type === "range" && name === "default" && value !== "") {
+      /* If the type is "range", convert values to integer */
+      if (
+        type === "range" &&
+        value !== "" &&
+        (name === "default" ||
+          name === "min" ||
+          name === "max" ||
+          name === "step")
+      ) {
         value = parseInt(value);
       }
 
