@@ -11,6 +11,12 @@ function App() {
         <h1 style={{ textAlign: "center", marginBottom: 40 }}>
           Shopify Section Creator
         </h1>
+        <h2 style={{ textAlign: "center", marginTop: -30, marginBottom: 40 }}>
+          Coded by{" "}
+          <a target="_blank" href="https://ezfycode.com">
+            ezfycode.com
+          </a>
+        </h2>
         <div className="App-wrapper">
           <Creator />
           <CodeTable></CodeTable>

@@ -150,14 +150,86 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
         />
       );
 
+    case "checkbox":
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info", "default"]}
+          type="checkbox"
+          defaultOptions={{
+            default: "true",
+          }}
+          handleOnFormChange={handleOnFormChange}
+          itemId={itemId}
+        />
+      );
+
     case "range":
-      return <p>"range"</p>;
-    case "html":
-      return <p>"html"</p>;
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={[
+            "id",
+            "label",
+            "min",
+            "max",
+            "step",
+            "unit",
+            "info",
+            "default",
+          ]}
+          type="richtext"
+          defaultOptions={{
+            unit: "px",
+          }}
+          handleOnFormChange={handleOnFormChange}
+          itemId={itemId}
+        />
+      );
+    case "textarea":
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info", "placeholder", "default"]}
+          type="textarea"
+          handleOnFormChange={handleOnFormChange}
+          itemId={itemId}
+        />
+      );
+    case "number":
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info", "default"]}
+          type="number"
+          handleOnFormChange={handleOnFormChange}
+          itemId={itemId}
+        />
+      );
+    case "select":
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info", "default"]}
+          subOptions={["value", "label"]}
+          totalSubOptions={5}
+          type="select"
+          handleOnFormChange={handleOnFormChange}
+          itemId={itemId}
+        />
+      );
     case "article":
       return <p>"article"</p>;
     case "image_picker":
-      return <p>"image_picker"</p>;
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info"]}
+          type="image_picker"
+          handleOnFormChange={handleOnFormChange}
+          itemId={itemId}
+        />
+      );
     default:
       return "none";
   }
@@ -193,7 +265,10 @@ export default function Item({
             );
           })}
         </select>
-        <button onClick={() => handleDeleteItem(id)} className="item-delete">
+        <button
+          tabindex="-1"
+          onClick={() => handleDeleteItem(id)}
+          className="item-delete">
           Delete
         </button>
       </div>

@@ -6,7 +6,15 @@ import "./FormItem.scss";
 import { generateJSONSchema, updateJSONTextarea } from "../utils";
 
 export default function FormItem(props) {
-  let { itemId, type, options, defaultOptions, itemCount } = props;
+  let {
+    itemId,
+    type,
+    options,
+    defaultOptions,
+    subOptions,
+    totalSubOptions,
+    itemCount,
+  } = props;
 
   console.log("look: ", defaultOptions);
   if (!defaultOptions || defaultOptions.length <= 0) {
@@ -67,6 +75,52 @@ export default function FormItem(props) {
           </div>
         );
       })}
+
+      {subOptions && (
+        <div className={`FormItem-suboptions`}>
+          {[...Array(totalSubOptions)].map((_, i) => {
+            var itemIdSuboption = `${itemId}_sub_${i}`;
+
+            /* Grouping every 3 items into a <div> */
+            return subOptions
+              .map((each, index) => {
+                return (
+                  <React.Fragment>
+                    <div className="FormItem-suboption-item">
+                      <label data-label-name={each}>
+                        {each} {i + 1}:
+                      </label>
+
+                      <input
+                        value={values[`${itemIdSuboption}_${each}`]}
+                        onChange={handleInputChange}
+                        name={`${itemIdSuboption}_${each}`}
+                        label={each}
+                        defaultValue={setDefaultValue(each)}
+                        placeholder={each}
+                        autoComplete={"off"}
+                      />
+                    </div>
+
+                    {(index % subOptions.length) - 1 === 0 && (
+                      <div className="FormItem-suboption-item FormItem-suboption-item--button">
+                        <button>+</button>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })
+              .reduce(function (r, element, _index) {
+                _index % 3 === 0 && r.push([]);
+                r[r.length - 1].push(element);
+                return r;
+              }, [])
+              .map(function (rowContent) {
+                return <div className="FormItem-suboption">{rowContent}</div>;
+              });
+          })}
+        </div>
+      )}
     </fieldset>
   );
 }

@@ -18,6 +18,10 @@ export const schema = [
   { id: "html" },
   { id: "article" },
   { id: "image_picker" },
+  { id: "checkbox" },
+  { id: "textarea" },
+  { id: "number" },
+  { id: "select" },
 ];
 
 export function convertToLiquidVariables(json) {
@@ -74,6 +78,11 @@ export const putFocusOnLastInputItem = (delay = 50) => {
     const $lastItem = document.querySelector(
       `.Creator .item:last-of-type .FormItem-attr:nth-child(1) input`,
     );
+
+    if (!$lastItem) {
+      return;
+    }
+
     $lastItem.focus();
   }, delay);
 };
@@ -81,31 +90,77 @@ export const putFocusOnLastInputItem = (delay = 50) => {
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
   let finalJSON = [];
+
   if (!$items) {
     return;
   }
 
   let _json = {};
+
   for (const each of $items) {
     const type = each.querySelector("select").value;
     const $attributes = each.querySelectorAll(`.FormItem-attr`);
+    const $suboptions = each.querySelectorAll(`.FormItem-suboption`);
 
     _json = {
       type,
     };
 
-    for (const attr of $attributes) {
-      const name = attr
+    for (const attribute of $attributes) {
+      const name = attribute
         .querySelector(`[data-label-name]`)
         .getAttribute(`data-label-name`);
 
-      const value = attr.querySelector(`input`).value;
+      const value = attribute.querySelector(`input`).value;
+
+      console.log("look at my type", type);
 
       /* If there is no property 'info', ignore */
       if (name === "info" && (value === "" || !value)) {
         continue;
       }
+
+      /* If there is no property 'default', ignore */
+      if (name === "default" && (value === "" || !value)) {
+        continue;
+      }
+
       _json[name] = value;
+    }
+
+    /* If is of type 'select' or 'radio' it contains an array of objects. */
+    if (
+      (type === "select" || type === "radio") &&
+      $suboptions &&
+      $suboptions.length >= 1
+    ) {
+      let _suboptions = [];
+
+      for (const suboption of $suboptions) {
+        let _suboptionsJSON = {};
+
+        const $inputs = suboption.querySelectorAll(`input`);
+
+        [...$inputs].map(($input) => {
+          const labelName = $input.getAttribute("label");
+          const value = $input.value;
+
+          console.log(`{ ${labelName}: ${value} }`);
+
+          if (value === "") {
+            _suboptionsJSON = delete _suboptionsJSON[labelName];
+            return null;
+          }
+
+          _suboptionsJSON[labelName] = value;
+        });
+
+        if (typeof _suboptionsJSON !== "boolean") {
+          _suboptions.push(_suboptionsJSON);
+        }
+      }
+
+      _json["options"] = _suboptions;
     }
 
     finalJSON.push(_json);

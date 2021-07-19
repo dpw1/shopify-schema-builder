@@ -103,16 +103,18 @@ export default function Creator() {
     handleUpdateTextarea();
 
     const num = e.target.closest(`.item`).getAttribute("data-item-count");
-    focusFirstInput(num);
+    focusFirstInputWhenDropdownChanges(num);
   };
 
-  const focusFirstInput = (num) => {
+  const focusFirstInputWhenDropdownChanges = (num) => {
     setTimeout(() => {
       const $el = document.querySelector(
         `[data-item-count*='${num}'] .FormItem-attr:nth-child(1) input`,
       );
 
-      console.log("xx", $el);
+      if (!$el) {
+        return;
+      }
       $el.focus();
     }, 50);
   };
