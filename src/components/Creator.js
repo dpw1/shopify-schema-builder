@@ -42,6 +42,7 @@ export default function Creator() {
       id: short.generate(),
       type: "header",
       data: undefined,
+      isToggled: false,
     },
   ]);
 
@@ -63,6 +64,7 @@ export default function Creator() {
 
     handleUpdateTextarea();
     focusDropdown();
+    setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50);
   };
 
   const handleDeleteItem = (id) => {
@@ -112,6 +114,7 @@ export default function Creator() {
       if (!$el) {
         return;
       }
+
       $el.focus();
     }, 50);
   };
@@ -122,11 +125,23 @@ export default function Creator() {
     handleUpdateTextarea();
   };
 
-  const handleToggle = (e) => {
-    const $parent = e.target.closest(".item");
+  const handleToggle = (e, id) => {
+    console.log(id);
+    // const $parent = e.target.closest(".item");
 
-    $parent.classList.toggle("item--toggle");
-    console.log($parent);
+    // $parent.classList.toggle("item--toggle");
+
+    let updated = [
+      ...items.map((e) => {
+        if (e.id === id) {
+          e.isToggled = !e.isToggled;
+        }
+
+        return e;
+      }),
+    ];
+
+    setItems(updated);
   };
 
   useEffect(() => {
@@ -143,6 +158,7 @@ export default function Creator() {
               index={i}
               value={
                 <Item
+                  isToggled={props.isToggled}
                   Content={props.content}
                   register={register}
                   schema={schema}
@@ -163,10 +179,10 @@ export default function Creator() {
       <fieldset>
         <button onClick={() => handleAddItem()}>Add</button>
         <button
+          id="generateJSON"
           onClick={() => {
             const variables = convertToLiquidVariables(jsonResult);
             setVariablesResult(variables);
-
             handleUpdateTextarea();
           }}>
           Generate JSON

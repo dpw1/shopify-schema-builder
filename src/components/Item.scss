@@ -7,6 +7,11 @@
   max-height: unset;
   height: auto;
   padding-bottom: 0;
+
+  svg {
+    pointer-events: none;
+  }
+
   &-wrapper {
     display: flex;
     flex-direction: row;

@@ -15,7 +15,6 @@ export const schema = [
   { id: "url" },
   { id: "video_url" },
   { id: "richtext" },
-
   { id: "image_picker" },
   { id: "checkbox" },
   { id: "textarea" },
@@ -84,7 +83,6 @@ export const focusDropdown = (delay = 50) => {
     }
 
     $lastItem.focus();
-    new Event("keydown", { keyCode: 32, which: 32 });
   }, delay);
 };
 

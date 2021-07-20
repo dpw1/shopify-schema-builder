@@ -64,10 +64,13 @@ export default function CodeTable() {
 
         <button
           onClick={() => {
-            const variables = convertToLiquidVariables(jsonResult);
-            setVariablesResult(variables);
+            const $generator = window.document.getElementById("generateJSON");
+
+            if ($generator) {
+              $generator.click();
+            }
           }}>
-          Generate Variables
+          Generate JSON
         </button>
       </div>
     </div>
