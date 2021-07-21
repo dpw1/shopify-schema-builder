@@ -68,18 +68,22 @@ export default function Creator() {
   };
 
   const handleDeleteItem = (id) => {
-    ConfirmDialog({
-      title: "Delete",
-      message: "Are you sure you'd like to delete this?",
-      confirm: () => {
-        const updated = [...items].filter((e) => e.id !== id);
-        setItems(updated);
-        return handleUpdateTextarea();
-      },
-      deny: () => {
-        return;
-      },
-    });
+    const updated = [...items].filter((e) => e.id !== id);
+    setItems(updated);
+    return handleUpdateTextarea();
+
+    // ConfirmDialog({
+    //   title: "Delete",
+    //   message: "Are you sure you'd like to delete this?",
+    //   confirm: () => {
+    //     const updated = [...items].filter((e) => e.id !== id);
+    //     setItems(updated);
+    //     return handleUpdateTextarea();
+    //   },
+    //   deny: () => {
+    //     return;
+    //   },
+    // });
   };
 
   const handleOnChange = (e) => {

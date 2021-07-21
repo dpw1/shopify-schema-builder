@@ -133,9 +133,7 @@ export const generateJSONSchema = () => {
 
       /* type is "checkbox" and there is a "default", convert it to boolean */
       if (type === "checkbox" && name === "default" && value !== "") {
-        value = String.raw(value);
-
-        console.log("look at me", value);
+        value = value.toLowerCase() === "true" ? true : false;
       }
 
       /* type is "range", convert values to integer */
