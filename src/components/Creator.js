@@ -30,7 +30,7 @@ const SortableContainer = sortableContainer(({ children }) => {
 });
 
 export default function Creator() {
-  const { register, handleSubmit, watch, errors } = useForm();
+  const { register, setValue, handleSubmit, watch, errors } = useForm();
 
   const [variablesResult, setVariablesResult] = useStickyState(
     "@variablesResult",
@@ -38,14 +38,7 @@ export default function Creator() {
   );
 
   const [jsonResult, setJsonResult] = useStickyState("@jsonResult");
-  const [items, setItems] = useStickyState("@items", [
-    {
-      id: short.generate(),
-      type: "header",
-      data: undefined,
-      isToggled: false,
-    },
-  ]);
+  const [items, setItems] = useStickyState("@items", []);
 
   const handleUpdateTextarea = async () => {
     await sleep(10);
@@ -64,9 +57,10 @@ export default function Creator() {
     ]);
 
     await sleep(50);
-    generateJSONAndVariables();
+
     focusDropdown();
     setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50);
+    generateJSONAndVariables();
   };
 
   const handleDeleteItem = (id) => {
@@ -97,6 +91,7 @@ export default function Creator() {
 
     const num = e.target.closest(`.item`).getAttribute("data-item-count");
     focusFirstInputWhenDropdownChanges(num);
+    generateJSONAndVariables();
   };
 
   const focusFirstInputWhenDropdownChanges = (num) => {
@@ -111,12 +106,15 @@ export default function Creator() {
 
       $el.focus();
     }, 50);
+
+    generateJSONAndVariables();
   };
 
   const onSortEnd = ({ oldIndex, newIndex }) => {
     setItems(arrayMove(items, oldIndex, newIndex));
 
     handleUpdateTextarea();
+    generateJSONAndVariables();
   };
 
   const handleToggle = (e, id) => {
@@ -138,23 +136,35 @@ export default function Creator() {
     setItems(updated);
   };
 
+  /* This function is responsible for generating the JSON and Liquid. 
+  Its only purpose is to make the function "generateJSONAndVariables" from utils.js to work. */
+  const generateJSON = async () => {
+    handleUpdateTextarea();
+    const variables = convertToLiquidVariables(jsonResult);
+    await sleep(50);
+    setVariablesResult(variables);
+  };
+
   useEffect(() => {
-    console.log("xxx", items);
+    console.log("added items:", items);
   }, [items]);
 
   return (
     <div className="Creator">
       <SortableContainer onSortEnd={onSortEnd}>
         {items.map((props, i) => {
+          console.log("item props: ", props);
           return (
             <SortableItem
               key={`item-${short.generate()}`}
               index={i}
               value={
                 <Item
+                  duplicatedOptions={props.duplicatedOptions}
                   isToggled={props.isToggled}
                   Content={props.content}
                   register={register}
+                  setValue={setValue}
                   schema={schema}
                   handleOnChange={handleOnChange}
                   id={props.id}
@@ -175,10 +185,7 @@ export default function Creator() {
         <button
           id="generateJSON"
           onClick={async () => {
-            handleUpdateTextarea();
-            const variables = convertToLiquidVariables(jsonResult);
-            await sleep(50);
-            setVariablesResult(variables);
+            generateJSON();
           }}>
           Generate JSON
         </button>

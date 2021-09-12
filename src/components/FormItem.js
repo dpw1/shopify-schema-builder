@@ -14,19 +14,24 @@ export default function FormItem(props) {
     itemId,
     type,
     options,
+    duplicatedOptions,
     defaultOptions,
     subOptions,
     totalSubOptions,
     itemCount,
   } = props;
 
-  console.log("Typing.");
-
   // generateJSONAndVariables();
 
   if (!defaultOptions || defaultOptions.length <= 0) {
     defaultOptions = "";
   }
+
+  if (duplicatedOptions) {
+    defaultOptions = duplicatedOptions;
+  }
+  console.log("Our default options.", defaultOptions);
+  console.log("Our duplicated options.", duplicatedOptions);
 
   const initialValues = () => {
     let data = {};

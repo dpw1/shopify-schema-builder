@@ -86,107 +86,113 @@ export const focusDropdown = (delay = 50) => {
   }, delay);
 };
 
+/* This function retrievers a JSON from a DOM (<select>) node containing labels/inputs. */
+export const transformDOMIntoJSON = (each) => {
+  let _json;
+  const type = each.querySelector("select").value;
+  const $attributes = each.querySelectorAll(`.FormItem-attr`);
+  const $suboptions = each.querySelectorAll(`.FormItem-suboption`);
+
+  _json = {
+    type,
+  };
+
+  for (const attribute of $attributes) {
+    const name = attribute
+      .querySelector(`[data-label-name]`)
+      .getAttribute(`data-label-name`);
+
+    let value = attribute.querySelector(`input`).value;
+
+    /* If there is no property 'info', ignore */
+    if (name === "info" && (value === "" || !value)) {
+      continue;
+    }
+
+    /* If there is no property 'default', ignore */
+    if (name === "default" && (value === "" || !value)) {
+      continue;
+    }
+
+    /* If there is no property 'default', ignore */
+    if (name === "placeholder" && (value === "" || !value)) {
+      continue;
+    }
+
+    if (type === "textarea" && name === "default" && value !== "") {
+      value = value.replace(/\\n/g, `\n`);
+    }
+
+    /* type is "checkbox" and there is a "default", convert it to boolean */
+    if (type === "checkbox" && name === "default" && value !== "") {
+      value = value.toLowerCase() === "true" ? true : false;
+    }
+
+    /* type is "range", convert values to integer */
+    if (
+      type === "range" &&
+      value !== "" &&
+      (name === "default" ||
+        name === "min" ||
+        name === "max" ||
+        name === "step")
+    ) {
+      value = parseInt(value);
+    }
+
+    _json[name] = value;
+  }
+
+  /* If is of type 'select' or 'radio' it contains an array of objects. */
+  if (
+    (type === "select" || type === "radio") &&
+    $suboptions &&
+    $suboptions.length >= 1
+  ) {
+    let _suboptions = [];
+
+    for (const suboption of $suboptions) {
+      let _suboptionsJSON = {};
+
+      const $inputs = suboption.querySelectorAll(`input`);
+
+      [...$inputs].map(($input) => {
+        const labelName = $input.getAttribute("label");
+        const value = $input.value;
+
+        console.log(`{ ${labelName}: ${value} }`);
+
+        if (value === "") {
+          _suboptionsJSON = delete _suboptionsJSON[labelName];
+          return null;
+        }
+
+        _suboptionsJSON[labelName] = value;
+      });
+
+      if (typeof _suboptionsJSON !== "boolean") {
+        _suboptions.push(_suboptionsJSON);
+      }
+    }
+
+    _json["options"] = _suboptions;
+  }
+
+  return _json;
+};
+
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
+
   let finalJSON = [];
 
   if (!$items) {
     return;
   }
 
-  let _json = {};
-
   for (const each of $items) {
-    const type = each.querySelector("select").value;
-    const $attributes = each.querySelectorAll(`.FormItem-attr`);
-    const $suboptions = each.querySelectorAll(`.FormItem-suboption`);
-
-    _json = {
-      type,
-    };
-
-    for (const attribute of $attributes) {
-      const name = attribute
-        .querySelector(`[data-label-name]`)
-        .getAttribute(`data-label-name`);
-
-      let value = attribute.querySelector(`input`).value;
-
-      /* If there is no property 'info', ignore */
-      if (name === "info" && (value === "" || !value)) {
-        continue;
-      }
-
-      /* If there is no property 'default', ignore */
-      if (name === "default" && (value === "" || !value)) {
-        continue;
-      }
-
-      /* If there is no property 'default', ignore */
-      if (name === "placeholder" && (value === "" || !value)) {
-        continue;
-      }
-
-      if (type === "textarea" && name === "default" && value !== "") {
-        value = value.replace(/\\n/g, `\n`);
-      }
-
-      /* type is "checkbox" and there is a "default", convert it to boolean */
-      if (type === "checkbox" && name === "default" && value !== "") {
-        value = value.toLowerCase() === "true" ? true : false;
-      }
-
-      /* type is "range", convert values to integer */
-      if (
-        type === "range" &&
-        value !== "" &&
-        (name === "default" ||
-          name === "min" ||
-          name === "max" ||
-          name === "step")
-      ) {
-        value = parseInt(value);
-      }
-
-      _json[name] = value;
-    }
-
-    /* If is of type 'select' or 'radio' it contains an array of objects. */
-    if (
-      (type === "select" || type === "radio") &&
-      $suboptions &&
-      $suboptions.length >= 1
-    ) {
-      let _suboptions = [];
-
-      for (const suboption of $suboptions) {
-        let _suboptionsJSON = {};
-
-        const $inputs = suboption.querySelectorAll(`input`);
-
-        [...$inputs].map(($input) => {
-          const labelName = $input.getAttribute("label");
-          const value = $input.value;
-
-          console.log(`{ ${labelName}: ${value} }`);
-
-          if (value === "") {
-            _suboptionsJSON = delete _suboptionsJSON[labelName];
-            return null;
-          }
-
-          _suboptionsJSON[labelName] = value;
-        });
-
-        if (typeof _suboptionsJSON !== "boolean") {
-          _suboptions.push(_suboptionsJSON);
-        }
-      }
-
-      _json["options"] = _suboptions;
-    }
-
-    finalJSON.push(_json);
+    const JSON = transformDOMIntoJSON(each);
+    finalJSON.push(JSON);
   }
 
   const result = JSON.stringify(finalJSON, null, 2);
@@ -196,6 +202,10 @@ export const generateJSONSchema = () => {
 
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function addToIndex(arr, index, newItem) {
+  return [...arr.slice(0, index), newItem, ...arr.slice(index)];
 }
 
 export async function generateJSONAndVariables() {

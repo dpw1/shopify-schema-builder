@@ -1,14 +1,22 @@
-import React, { useState } from "react";
-import { schema } from "./../utils";
+import React, { useState, useEffect, useRef } from "react";
+import { addToIndex, schema, sleep, transformDOMIntoJSON } from "./../utils";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import Collapsible from "react-collapsible";
+import short from "short-uuid";
 import "./Item.scss";
 
 import Text from "./Text";
 import FormItem from "./FormItem";
 
-const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
+const renderElement = (
+  type,
+  itemId,
+  handleOnFormChange,
+  itemCount,
+  duplicatedOptions,
+  defaultOptions,
+) => {
   switch (type) {
     case "header":
       return (
@@ -18,6 +26,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           handleOnFormChange={handleOnFormChange}
           type={"header"}
           itemId={itemId}
+          duplicatedOptions={duplicatedOptions}
           defaultOptions={{
             content: "Options",
           }}
@@ -29,6 +38,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["content"]}
           type={"paragraph"}
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -39,6 +49,8 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "default"]}
           type="text"
+          duplicatedOptions={duplicatedOptions}
+          defaultOptions={defaultOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -49,6 +61,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "default"]}
           type="color"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
           defaultOptions={{
@@ -62,6 +75,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "default"]}
           type="font_picker"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -72,6 +86,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="collection"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -82,6 +97,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="product"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -92,6 +108,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="blog"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -102,6 +119,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="page"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -112,6 +130,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="link_list"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -122,6 +141,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="url"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -132,6 +152,8 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "accept", "placeholder", "info", "default"]}
           type="video_url"
+          duplicatedOptions={duplicatedOptions}
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -142,6 +164,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "default"]}
           type="richtext"
+          duplicatedOptions={duplicatedOptions}
           defaultOptions={{
             default: "<p></p>",
           }}
@@ -156,6 +179,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "default"]}
           type="checkbox"
+          duplicatedOptions={duplicatedOptions}
           defaultOptions={{
             default: "true",
           }}
@@ -179,6 +203,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
             "default",
           ]}
           type="richtext"
+          duplicatedOptions={duplicatedOptions}
           defaultOptions={{
             unit: "px",
           }}
@@ -192,6 +217,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "placeholder", "default"]}
           type="textarea"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -202,6 +228,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info", "default"]}
           type="number"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -214,6 +241,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           subOptions={["value", "label"]}
           totalSubOptions={5}
           type="select"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -226,6 +254,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           subOptions={["value", "label"]}
           totalSubOptions={5}
           type="radio"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -236,6 +265,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="image_picker"
+          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -245,21 +275,50 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
   }
 };
 
-export default function Item({
-  defaultValue,
-  name,
-  type,
-  id,
-  handleOnFormChange,
-  handleOnChange,
-  register,
-  handleDeleteItem,
-  itemCount,
-  isToggled,
-  handleToggle,
-  Content,
-  handleDelete,
-}) {
+export default function Item(props) {
+  let {
+    defaultValue,
+    name,
+    type,
+    id,
+    handleOnFormChange,
+    handleOnChange,
+    register,
+    setValue,
+    handleDeleteItem,
+    defaultOptions,
+    itemCount,
+    isToggled,
+    handleToggle,
+    handleDelete,
+    duplicatedOptions,
+  } = props;
+
+  const [items, setItems] = useStickyState("@items");
+
+  /* TODO 
+  "duplicatedItemOptions' sohuld receive the _json data. */
+
+  const handleDuplicate = async () => {
+    /* "$this" is modified once "setItems" is updated. */
+    let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
+
+    let _json = transformDOMIntoJSON($this);
+    delete _json.type;
+
+    /* ====== */
+    const index = parseInt(itemCount) - 1;
+
+    const _item = {
+      id: short.generate(),
+      type,
+      duplicatedOptions: _json,
+    };
+
+    const updatedItems = addToIndex(items, index, _item);
+    setItems(updatedItems);
+  };
+
   return (
     <li
       data-item-count={itemCount}
@@ -284,8 +343,15 @@ export default function Item({
         <button
           tabindex="-1"
           onClick={() => handleDeleteItem(id)}
-          className="item-delete">
+          className="item-delete item-button">
           Delete
+        </button>
+        <button
+          onClick={() => {
+            handleDuplicate();
+          }}
+          className="item-button">
+          Dup
         </button>
         <button onClick={(e) => handleToggle(e, id)}>
           {
@@ -302,22 +368,15 @@ export default function Item({
             </svg>
           }
         </button>
-        {/* <button onClick={(e) => handleToggle(e)}>
-          <svg
-            width={16}
-            height={16}
-            fill="currentColor"
-            className="bi bi-chevron-down"
-            viewBox="0 0 16 16">
-            <path
-              fillRule="evenodd"
-              d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-            />
-          </svg>
-        </button> */}
       </div>
       <div className="item-content">
-        {renderElement(type, id, handleOnFormChange, itemCount)}
+        {renderElement(
+          type,
+          id,
+          handleOnFormChange,
+          itemCount,
+          duplicatedOptions,
+        )}
       </div>
       <br />
     </li>
