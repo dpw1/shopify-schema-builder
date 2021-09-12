@@ -72,18 +72,24 @@ export default function FormItem(props) {
     <fieldset className="FormItem">
       {options.map((e, i) => {
         return (
-          <div className="FormItem-attr">
-            <label data-label-name={e}>{e}:</label>
-            <input
-              value={values[`${itemId}_${e}`]}
-              onChange={handleInputChange}
-              name={`${itemId}_${e}`}
-              label={e}
-              defaultValue={setDefaultValue(e)}
-              placeholder={e}
-              autoComplete={"off"}
-            />
-          </div>
+          <React.Fragment>
+            {i === 0 && (
+              <div className="FormItem-title">{values[`${itemId}_${e}`]}</div>
+            )}
+
+            <div className="FormItem-attr">
+              <label data-label-name={e}>{e}:</label>
+              <input
+                value={values[`${itemId}_${e}`]}
+                onChange={handleInputChange}
+                name={`${itemId}_${e}`}
+                label={e}
+                defaultValue={setDefaultValue(e)}
+                placeholder={e}
+                autoComplete={"off"}
+              />
+            </div>
+          </React.Fragment>
         );
       })}
 

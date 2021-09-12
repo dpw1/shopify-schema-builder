@@ -22,7 +22,7 @@ function App() {
             textAlign: "center",
             fontWeight: "normal",
             marginTop: -30,
-            marginBottom: 40,
+            marginBottom: 60,
           }}>
           Copy & paste pre-made sections{" "}
           <a target="_blank" href="https://ezfycode.com/shop">

@@ -1,6 +1,28 @@
 .FormItem {
   padding-bottom: 0;
   margin-bottom: 0;
+
+  &-title {
+    position: absolute;
+    top: -40px;
+    background: #add8e63d;
+    display: block;
+    width: 100%;
+    left: 0;
+    padding-left: 15px;
+    color: white;
+    border-top-right-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top-left-radius: 5px;
+    font-weight: 300;
+    font-size: 15px;
+
+    &:empty {
+      height: 40px;
+    }
+  }
+
   label {
     color: var(--text-main);
     text-transform: capitalize;

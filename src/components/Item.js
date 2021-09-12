@@ -353,7 +353,9 @@ export default function Item(props) {
           className="item-button">
           Dup
         </button>
-        <button onClick={(e) => handleToggle(e, id)}>
+        <button
+          className="item-button  item-button--toggle"
+          onClick={(e) => handleToggle(e, id)}>
           {
             <svg
               width={16}

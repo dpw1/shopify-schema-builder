@@ -7,6 +7,12 @@
   max-height: unset;
   height: auto;
   padding-bottom: 0;
+  position: relative;
+  margin-top: 60px;
+
+  &[data-item-count="1"] {
+    margin-top: 40px;
+  }
 
   svg {
     pointer-events: none;
@@ -21,9 +27,13 @@
 
   &-button {
     font-size: 10px;
-    max-width: 80px;
+    max-width: 50px;
     width: 100%;
     padding: 0;
+
+    &--toggle {
+      max-width: 30px;
+    }
   }
 
   &-delete {
@@ -44,9 +54,7 @@
   }
 
   &--toggle {
-    overflow: hidden;
-
-    & > .item-content {
+    .FormItem-attr {
       display: none;
     }
 
