@@ -1,8 +1,13 @@
 import React from "react";
 import { useStatePersist as useStickyState } from "use-state-persist";
-import { convertToLiquidVariables, copyToClipboard } from "../utils";
+import {
+  convertToLiquidVariables,
+  copyToClipboard,
+  generateJSONAndVariables,
+} from "../utils";
 
 import "./CodeTable.scss";
+import useStore from "./../store/store";
 
 export default function CodeTable() {
   const [items, setItems] = useStickyState("@items");
@@ -64,11 +69,7 @@ export default function CodeTable() {
 
         <button
           onClick={() => {
-            const $generator = window.document.getElementById("generateJSON");
-
-            if ($generator) {
-              $generator.click();
-            }
+            generateJSONAndVariables();
           }}>
           Generate JSON
         </button>

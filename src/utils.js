@@ -197,3 +197,13 @@ export const generateJSONSchema = () => {
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export async function generateJSONAndVariables() {
+  const $generator = window.document.getElementById("generateJSON");
+
+  if ($generator) {
+    $generator.click();
+    await sleep(50);
+    $generator.click();
+  }
+}

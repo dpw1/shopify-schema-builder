@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
 import "./FormItem.scss";
-import { generateJSONSchema, updateJSONTextarea } from "../utils";
+import {
+  generateJSONAndVariables,
+  generateJSONSchema,
+  updateJSONTextarea,
+} from "../utils";
 
 export default function FormItem(props) {
   let {
@@ -16,9 +20,11 @@ export default function FormItem(props) {
     itemCount,
   } = props;
 
-  console.log("look: ", defaultOptions);
+  console.log("Typing.");
+
+  // generateJSONAndVariables();
+
   if (!defaultOptions || defaultOptions.length <= 0) {
-    console.log("removing!");
     defaultOptions = "";
   }
 

@@ -15,6 +15,7 @@ import {
   focusDropdown,
   sleep,
   convertToLiquidVariables,
+  generateJSONAndVariables,
 } from "./../utils";
 
 import ConfirmDialog from "./ConfirmDialog";
@@ -47,13 +48,13 @@ export default function Creator() {
   ]);
 
   const handleUpdateTextarea = async () => {
-    await sleep(50);
+    await sleep(10);
     const json = generateJSONSchema();
     updateJSONTextarea(json);
     setJsonResult(json);
   };
 
-  const handleAddItem = () => {
+  const handleAddItem = async () => {
     setItems([
       ...items,
       {
@@ -62,7 +63,8 @@ export default function Creator() {
       },
     ]);
 
-    handleUpdateTextarea();
+    await sleep(50);
+    generateJSONAndVariables();
     focusDropdown();
     setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50);
   };
@@ -70,20 +72,8 @@ export default function Creator() {
   const handleDeleteItem = (id) => {
     const updated = [...items].filter((e) => e.id !== id);
     setItems(updated);
-    return handleUpdateTextarea();
-
-    // ConfirmDialog({
-    //   title: "Delete",
-    //   message: "Are you sure you'd like to delete this?",
-    //   confirm: () => {
-    //     const updated = [...items].filter((e) => e.id !== id);
-    //     setItems(updated);
-    //     return handleUpdateTextarea();
-    //   },
-    //   deny: () => {
-    //     return;
-    //   },
-    // });
+    handleUpdateTextarea();
+    generateJSONAndVariables();
   };
 
   const handleOnChange = (e) => {
@@ -184,10 +174,11 @@ export default function Creator() {
         <button onClick={() => handleAddItem()}>Add</button>
         <button
           id="generateJSON"
-          onClick={() => {
-            const variables = convertToLiquidVariables(jsonResult);
-            setVariablesResult(variables);
+          onClick={async () => {
             handleUpdateTextarea();
+            const variables = convertToLiquidVariables(jsonResult);
+            await sleep(50);
+            setVariablesResult(variables);
           }}>
           Generate JSON
         </button>

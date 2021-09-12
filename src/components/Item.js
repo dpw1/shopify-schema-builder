@@ -37,7 +37,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
       return (
         <FormItem
           itemCount={itemCount}
-          options={["id", "label", "default", "info"]}
+          options={["id", "label", "info", "default"]}
           type="text"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
@@ -47,7 +47,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
       return (
         <FormItem
           itemCount={itemCount}
-          options={["id", "label", "default", "info"]}
+          options={["id", "label", "info", "default"]}
           type="color"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
@@ -60,7 +60,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
       return (
         <FormItem
           itemCount={itemCount}
-          options={["id", "label", "default", "info"]}
+          options={["id", "label", "info", "default"]}
           type="font_picker"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
@@ -130,7 +130,7 @@ const renderElement = (type, itemId, handleOnFormChange, itemCount) => {
       return (
         <FormItem
           itemCount={itemCount}
-          options={["id", "label", "default", "accept", "placeholder", "info"]}
+          options={["id", "label", "accept", "placeholder", "info", "default"]}
           type="video_url"
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
