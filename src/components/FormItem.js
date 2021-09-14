@@ -10,6 +10,8 @@ import {
 } from "../utils";
 
 export default function FormItem(props) {
+  const [modified, setModified] = useState(false);
+
   let {
     itemId,
     type,
@@ -21,6 +23,8 @@ export default function FormItem(props) {
     itemCount,
   } = props;
 
+  let defaultTitle = "";
+
   // generateJSONAndVariables();
 
   if (!defaultOptions || defaultOptions.length <= 0) {
@@ -30,11 +34,19 @@ export default function FormItem(props) {
   if (duplicatedOptions) {
     defaultOptions = duplicatedOptions;
   }
+
+  console.log("xxx", defaultOptions);
+
+  if (defaultOptions["id"] !== "") {
+    defaultTitle = defaultOptions["id"];
+  }
+
   console.log("Our default options.", defaultOptions);
   console.log("Our duplicated options.", duplicatedOptions);
 
   const initialValues = () => {
     let data = {};
+
     options.map((e) => {
       const str = `${itemId}_${e}`;
 
@@ -54,6 +66,8 @@ export default function FormItem(props) {
       ...values,
       [name]: value,
     });
+
+    setModified(true);
   };
 
   const setDefaultValue = (labelName) => {
@@ -74,7 +88,9 @@ export default function FormItem(props) {
         return (
           <React.Fragment>
             {i === 0 && (
-              <div className="FormItem-title">{values[`${itemId}_${e}`]}</div>
+              <div className="FormItem-title">
+                {modified ? values[`${itemId}_${e}`] : defaultTitle}
+              </div>
             )}
 
             <div className="FormItem-attr">

@@ -9,11 +9,36 @@
     }
   }
 
+  &-tables {
+    display: flex;
+
+    & > *:nth-child(2) {
+      max-width: 20%;
+
+      margin-left: 10px;
+    }
+  }
+
+  &-convert {
+    position: absolute;
+    bottom: 5px;
+    right: 0px;
+    border: 1px solid gray;
+    font-size: 15px;
+  }
+
+  &-tables-wrapper {
+    position: relative;
+
+    button {
+    }
+  }
+
   textarea {
     display: block;
     max-width: 100%;
     width: 100%;
-
+    position: relative;
     resize: none;
     height: 400px;
 

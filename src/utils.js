@@ -213,7 +213,7 @@ export async function generateJSONAndVariables() {
 
   if ($generator) {
     $generator.click();
-    await sleep(50);
+    await sleep(25);
     $generator.click();
   }
 }

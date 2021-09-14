@@ -54,7 +54,8 @@
   }
 
   &--toggle {
-    .FormItem-attr {
+    .FormItem-attr,
+    .FormItem-suboptions {
       display: none;
     }
 

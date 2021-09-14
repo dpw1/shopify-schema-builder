@@ -54,14 +54,26 @@ export default function CodeTable() {
           cols="10"
           rows="10"></textarea>
 
-        <textarea
-          defaultValue={jsonResult ? jsonResult : ""}
-          value={jsonResult}
-          readOnly={true}
-          name=""
-          id="CodeTable-result"
-          cols="30"
-          rows="10"></textarea>
+        <div className="CodeTable-tables">
+          <textarea
+            defaultValue={jsonResult ? jsonResult : ""}
+            value={jsonResult}
+            readOnly={false}
+            name=""
+            id="CodeTable-result"
+            cols="30"
+            rows="10"></textarea>
+          <div className="CodeTable-tables-wrapper">
+            <textarea
+              placeholder="Paste section code here"
+              defaultValue=""
+              name=""
+              id="CodeTable-premade"
+              cols="30"
+              rows="10"></textarea>
+            <button className="CodeTable-convert">Go</button>
+          </div>
+        </div>
 
         <button onClick={() => copyToClipboard(jsonResult)}>
           Copy to clipboard

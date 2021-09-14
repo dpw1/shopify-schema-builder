@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { addToIndex, schema, sleep, transformDOMIntoJSON } from "./../utils";
+import {
+  addToIndex,
+  schema,
+  sleep,
+  transformDOMIntoJSON,
+  generateJSONAndVariables,
+} from "./../utils";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import Collapsible from "react-collapsible";
@@ -317,6 +323,8 @@ export default function Item(props) {
 
     const updatedItems = addToIndex(items, index, _item);
     setItems(updatedItems);
+
+    generateJSONAndVariables();
   };
 
   return (
