@@ -35,15 +35,6 @@ export default function FormItem(props) {
     defaultOptions = duplicatedOptions;
   }
 
-  console.log("xxx", defaultOptions);
-
-  if (defaultOptions["id"] !== "") {
-    defaultTitle = defaultOptions["id"];
-  }
-
-  console.log("Our default options.", defaultOptions);
-  console.log("Our duplicated options.", duplicatedOptions);
-
   const initialValues = () => {
     let data = {};
 
@@ -57,6 +48,12 @@ export default function FormItem(props) {
   };
 
   const [values, setValues] = useStickyState("@values", initialValues());
+
+  console.log("xxx", defaultOptions["id"]);
+
+  defaultTitle = defaultOptions["id"];
+  if (defaultOptions["id"] !== "") {
+  }
 
   const handleInputChange = (e) => {
     const name = e.target.name;
@@ -82,15 +79,26 @@ export default function FormItem(props) {
     return "";
   };
 
+  const setDefaultTitle = () => {
+    const characters = values[`${itemId}_id`] && values[`${itemId}_id`].length;
+
+    if (!characters || characters <= 0) {
+      if (modified) {
+        return "";
+      }
+
+      return setDefaultValue("id");
+    }
+    return values[`${itemId}_id`] || setDefaultValue("id");
+  };
+
   return (
     <fieldset className="FormItem">
       {options.map((e, i) => {
         return (
           <React.Fragment>
             {i === 0 && (
-              <div className="FormItem-title">
-                {modified ? values[`${itemId}_${e}`] : defaultTitle}
-              </div>
+              <div className="FormItem-title">{setDefaultTitle()}</div>
             )}
 
             <div className="FormItem-attr">

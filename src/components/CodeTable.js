@@ -4,6 +4,7 @@ import {
   convertToLiquidVariables,
   copyToClipboard,
   generateJSONAndVariables,
+  _extractTextBetween,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -43,6 +44,16 @@ export default function CodeTable() {
     return updated;
   };
 
+  const convertSectionToJson = () => {
+    const $code = window.document.querySelector(`#sectionCode`);
+
+    const _code = $code.value;
+    const code = _extractTextBetween(_code, `{% schema %}`, `{% endschema %}`);
+    const schema = JSON.parse(code).settings;
+
+    console.log(schema);
+  };
+
   return (
     <div className="CodeTable">
       <div className="CodeTable-wrapper">
@@ -68,10 +79,15 @@ export default function CodeTable() {
               placeholder="Paste section code here"
               defaultValue=""
               name=""
-              id="CodeTable-premade"
+              id="sectionCode"
               cols="30"
               rows="10"></textarea>
-            <button className="CodeTable-convert">Go</button>
+            <button
+              onClick={() => convertSectionToJson()}
+              id="convertToJson"
+              className="CodeTable-convert">
+              Go
+            </button>
           </div>
         </div>
 

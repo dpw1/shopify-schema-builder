@@ -157,17 +157,19 @@ export const transformDOMIntoJSON = (each) => {
       const $inputs = suboption.querySelectorAll(`input`);
 
       [...$inputs].map(($input) => {
-        const labelName = $input.getAttribute("label");
-        const value = $input.value;
+        try {
+          const labelName = $input.getAttribute("label");
+          const value = $input.value;
 
-        console.log(`{ ${labelName}: ${value} }`);
+          console.log(`{ ${labelName}: ${value} }`);
 
-        if (value === "") {
-          _suboptionsJSON = delete _suboptionsJSON[labelName];
-          return null;
-        }
+          if (value === "") {
+            _suboptionsJSON = delete _suboptionsJSON[labelName];
+            return null;
+          }
 
-        _suboptionsJSON[labelName] = value;
+          _suboptionsJSON[labelName] = value;
+        } catch (err) {}
       });
 
       if (typeof _suboptionsJSON !== "boolean") {
@@ -216,4 +218,12 @@ export async function generateJSONAndVariables() {
     await sleep(25);
     $generator.click();
   }
+}
+
+export function _extractTextBetween(text, start, end) {
+  if (!start || !end) {
+    throw new Error(`Please add a "start" and "end" parameter`);
+  }
+
+  return text.split(start)[1].split(end)[0];
 }

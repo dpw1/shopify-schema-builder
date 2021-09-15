@@ -38,6 +38,7 @@ export default function Creator() {
   );
 
   const [jsonResult, setJsonResult] = useStickyState("@jsonResult");
+
   const [items, setItems] = useStickyState("@items", []);
 
   const handleUpdateTextarea = async () => {
@@ -48,6 +49,7 @@ export default function Creator() {
   };
 
   const handleAddItem = async () => {
+    /* All available parameters can be found as the props for FormItem.js */
     setItems([
       ...items,
       {
@@ -61,6 +63,20 @@ export default function Creator() {
     focusDropdown();
     setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 50);
     generateJSONAndVariables();
+  };
+
+  const addCustomItem = () => {
+    setItems([
+      {
+        id: short.generate(),
+        type: "checkbox",
+        duplicatedOptions: {
+          id: "parallax",
+          label: "Parallax",
+          default: true,
+        },
+      },
+    ]);
   };
 
   const handleDeleteItem = (id) => {
