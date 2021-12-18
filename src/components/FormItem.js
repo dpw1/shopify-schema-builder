@@ -17,15 +17,18 @@ export default function FormItem(props) {
     type,
     options,
     duplicatedOptions,
+    duplicatedSubOptions,
     defaultOptions,
     subOptions,
     totalSubOptions,
     itemCount,
   } = props;
 
-  let defaultTitle = "";
-
   // generateJSONAndVariables();
+
+  if (duplicatedSubOptions && duplicatedSubOptions.length > 5) {
+    totalSubOptions = duplicatedSubOptions.length;
+  }
 
   if (!defaultOptions || defaultOptions.length <= 0) {
     defaultOptions = "";
@@ -38,6 +41,8 @@ export default function FormItem(props) {
   const initialValues = () => {
     let data = {};
 
+    console.log("mmm", duplicatedSubOptions);
+
     options.map((e) => {
       const str = `${itemId}_${e}`;
 
@@ -48,12 +53,6 @@ export default function FormItem(props) {
   };
 
   const [values, setValues] = useStickyState("@values", initialValues());
-
-  console.log("xxx", defaultOptions["id"]);
-
-  defaultTitle = defaultOptions["id"];
-  if (defaultOptions["id"] !== "") {
-  }
 
   const handleInputChange = (e) => {
     const name = e.target.name;
@@ -92,6 +91,10 @@ export default function FormItem(props) {
     return values[`${itemId}_id`] || setDefaultValue("id");
   };
 
+  useEffect(() => {
+    console.log("mmm", duplicatedSubOptions);
+  }, []);
+
   return (
     <fieldset className="FormItem">
       {options.map((e, i) => {
@@ -122,7 +125,8 @@ export default function FormItem(props) {
           {[...Array(totalSubOptions)].map((_, i) => {
             var itemIdSuboption = `${itemId}_sub_${i}`;
 
-            /* Grouping every 3 items into a <div> */
+            /* Grouping every 3 items into a <div>.
+            This is where the "select" and "radio" are rendered. */
             return subOptions
               .map((each, index) => {
                 return (
@@ -137,7 +141,7 @@ export default function FormItem(props) {
                         onChange={handleInputChange}
                         name={`${itemIdSuboption}_${each}`}
                         label={each}
-                        defaultValue={setDefaultValue(each)}
+                        defaultValue={duplicatedSubOptions[i][each]}
                         placeholder={each}
                         autoComplete={"off"}
                       />

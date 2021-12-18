@@ -47,11 +47,19 @@ export default function CodeTable() {
   const convertSectionToJson = () => {
     const $code = window.document.querySelector(`#sectionCode`);
 
-    const _code = $code.value;
-    const code = _extractTextBetween(_code, `{% schema %}`, `{% endschema %}`);
-    const schema = JSON.parse(code).settings;
+    try {
+      const _code = $code.value;
+      const code = _extractTextBetween(
+        _code,
+        `{% schema %}`,
+        `{% endschema %}`,
+      );
+      const schema = JSON.parse(code).settings;
 
-    console.log(schema);
+      console.log("my shcema", schema);
+    } catch (err) {
+      console.log("error in schema: ", err);
+    }
   };
 
   return (

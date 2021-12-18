@@ -21,6 +21,7 @@ const renderElement = (
   handleOnFormChange,
   itemCount,
   duplicatedOptions,
+  duplicatedSubOptions,
   defaultOptions,
 ) => {
   switch (type) {
@@ -248,6 +249,7 @@ const renderElement = (
           totalSubOptions={5}
           type="select"
           duplicatedOptions={duplicatedOptions}
+          duplicatedSubOptions={duplicatedSubOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -298,19 +300,23 @@ export default function Item(props) {
     handleToggle,
     handleDelete,
     duplicatedOptions,
+    duplicatedSubOptions,
   } = props;
 
   const [items, setItems] = useStickyState("@items");
 
   /* TODO 
-  "duplicatedItemOptions' sohuld receive the _json data. */
+  "duplicatedItemOptions' should receive the _json data. */
 
+  /** Responsible to duplicate items. */
   const handleDuplicate = async () => {
     /* "$this" is modified once "setItems" is updated. */
     let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
 
     let _json = transformDOMIntoJSON($this);
     delete _json.type;
+
+    console.log("my josn", _json);
 
     /* ====== */
     const index = parseInt(itemCount) - 1;
@@ -386,6 +392,7 @@ export default function Item(props) {
           handleOnFormChange,
           itemCount,
           duplicatedOptions,
+          duplicatedSubOptions,
         )}
       </div>
       <br />

@@ -86,7 +86,7 @@ export const focusDropdown = (delay = 50) => {
   }, delay);
 };
 
-/* This function retrievers a JSON from a DOM (<select>) node containing labels/inputs. */
+/* This function retrieves a JSON from a DOM (<select>) node containing labels/inputs. */
 export const transformDOMIntoJSON = (each) => {
   let _json;
   const type = each.querySelector("select").value;
@@ -119,6 +119,7 @@ export const transformDOMIntoJSON = (each) => {
       continue;
     }
 
+    /* If this is a 'textarea', replace all line breaks for liquid-friendly line breaks */
     if (type === "textarea" && name === "default" && value !== "") {
       value = value.replace(/\\n/g, `\n`);
     }
@@ -154,6 +155,7 @@ export const transformDOMIntoJSON = (each) => {
     for (const suboption of $suboptions) {
       let _suboptionsJSON = {};
 
+      /* Getting all the sub options available. */
       const $inputs = suboption.querySelectorAll(`input`);
 
       [...$inputs].map(($input) => {

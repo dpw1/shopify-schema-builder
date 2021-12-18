@@ -66,17 +66,59 @@ export default function Creator() {
   };
 
   const addCustomItem = () => {
-    setItems([
+    var test = [
       {
-        id: short.generate(),
-        type: "checkbox",
-        duplicatedOptions: {
-          id: "parallax",
-          label: "Parallax",
-          default: true,
-        },
+        type: "select",
+        id: "section_height",
+        label: "Desktop height",
+        default: "650px",
+        options: [
+          {
+            label: "Auto",
+            value: "natural",
+          },
+          {
+            label: "450px",
+            value: "450px",
+          },
+          {
+            label: "550px",
+            value: "550px",
+          },
+          {
+            label: "650px",
+            value: "650px",
+          },
+          {
+            label: "750px",
+            value: "750px",
+          },
+          {
+            label: "Full screen",
+            value: "100vh",
+          },
+        ],
       },
-    ]);
+    ];
+
+    var op = test.map((e) => {
+      var object = { ...e };
+
+      delete object.type;
+      delete object.options;
+
+      return {
+        id: short.generate(),
+        type: e.type,
+        duplicatedOptions: {
+          ...object,
+        },
+        duplicatedSubOptions: e.options,
+      };
+    });
+
+    console.log("mmm updated: ", op);
+    setItems(op);
   };
 
   const handleDeleteItem = (id) => {
@@ -177,6 +219,7 @@ export default function Creator() {
               value={
                 <Item
                   duplicatedOptions={props.duplicatedOptions}
+                  duplicatedSubOptions={props.duplicatedSubOptions}
                   isToggled={props.isToggled}
                   Content={props.content}
                   register={register}
@@ -197,7 +240,12 @@ export default function Creator() {
       </SortableContainer>
 
       <fieldset>
-        <button onClick={() => handleAddItem()}>Add</button>
+        <button class="Creator-add" onClick={() => handleAddItem()}>
+          Add
+        </button>
+        <button class="Creator-test" onClick={() => addCustomItem()}>
+          Test
+        </button>
         <button
           id="generateJSON"
           onClick={async () => {
