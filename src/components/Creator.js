@@ -65,8 +65,12 @@ export default function Creator() {
     generateJSONAndVariables();
   };
 
-  const addCustomItem = () => {
+  const addCustomItem = async () => {
     var test = [
+      {
+        type: "header",
+        content: "ok",
+      },
       {
         type: "select",
         id: "section_height",
@@ -105,11 +109,12 @@ export default function Creator() {
       var object = { ...e };
 
       delete object.type;
-      delete object.options;
+      // delete object.options;
 
       return {
         id: short.generate(),
         type: e.type,
+
         duplicatedOptions: {
           ...object,
         },
@@ -176,7 +181,7 @@ export default function Creator() {
   };
 
   const handleToggle = (e, id) => {
-    console.log(id);
+    console.log("showing id", id);
     // const $parent = e.target.closest(".item");
 
     // $parent.classList.toggle("item--toggle");
@@ -243,7 +248,13 @@ export default function Creator() {
         <button class="Creator-add" onClick={() => handleAddItem()}>
           Add
         </button>
-        <button class="Creator-test" onClick={() => addCustomItem()}>
+        <button
+          class="Creator-test"
+          onClick={async () => {
+            addCustomItem();
+            await sleep(100);
+            addCustomItem();
+          }}>
           Test
         </button>
         <button

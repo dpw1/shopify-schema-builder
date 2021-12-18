@@ -6,6 +6,7 @@ import "./FormItem.scss";
 import {
   generateJSONAndVariables,
   generateJSONSchema,
+  sleep,
   updateJSONTextarea,
 } from "../utils";
 
@@ -63,6 +64,8 @@ export default function FormItem(props) {
       [name]: value,
     });
 
+    console.log("input change");
+
     setModified(true);
   };
 
@@ -91,9 +94,31 @@ export default function FormItem(props) {
     return values[`${itemId}_id`] || setDefaultValue("id");
   };
 
+  const forceInputInitiation = async () => {
+    console.log("look at me", values);
+
+    await sleep(50);
+
+    const $elements = document.querySelectorAll(`.FormItem input`);
+
+    for (var each of $elements) {
+      const name = each.name;
+      const value = each.value;
+
+      setValues({
+        ...values,
+        [name]: value,
+      });
+    }
+  };
+
   useEffect(() => {
-    console.log("mmm", duplicatedSubOptions);
+    forceInputInitiation();
   }, []);
+
+  useEffect(() => {
+    console.log("look at me values", values);
+  }, [values]);
 
   return (
     <fieldset className="FormItem">
@@ -126,7 +151,7 @@ export default function FormItem(props) {
             var itemIdSuboption = `${itemId}_sub_${i}`;
 
             /* Grouping every 3 items into a <div>.
-            This is where the "select" and "radio" are rendered. */
+            This is where the "select" and "radio" items are rendered. */
             return subOptions
               .map((each, index) => {
                 return (
@@ -141,7 +166,11 @@ export default function FormItem(props) {
                         onChange={handleInputChange}
                         name={`${itemIdSuboption}_${each}`}
                         label={each}
-                        defaultValue={duplicatedSubOptions[i][each]}
+                        defaultValue={
+                          duplicatedSubOptions.length >= 1
+                            ? duplicatedSubOptions[i][each]
+                            : ""
+                        }
                         placeholder={each}
                         autoComplete={"off"}
                       />

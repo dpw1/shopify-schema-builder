@@ -163,8 +163,6 @@ export const transformDOMIntoJSON = (each) => {
           const labelName = $input.getAttribute("label");
           const value = $input.value;
 
-          console.log(`{ ${labelName}: ${value} }`);
-
           if (value === "") {
             _suboptionsJSON = delete _suboptionsJSON[labelName];
             return null;
