@@ -14,6 +14,7 @@ import {
   sleep,
   convertToLiquidVariables,
   generateJSONAndVariables,
+  updateJSONAndVariables,
 } from "./../utils";
 
 import ConfirmDialog from "./ConfirmDialog";
@@ -266,11 +267,13 @@ export default function Creator() {
     generateJSONAndVariables();
   };
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
-    updateItems(arrayMove(items, oldIndex, newIndex));
+  const onSortEnd = async ({ oldIndex, newIndex }) => {
+    const ordered = arrayMove(items, oldIndex, newIndex);
 
-    handleUpdateTextarea();
-    generateJSONAndVariables();
+    updateItems(ordered);
+    console.log("uppp", ordered);
+
+    updateJSONAndVariables();
   };
 
   const handleToggle = (e, id) => {
@@ -286,21 +289,6 @@ export default function Creator() {
 
     updateItems(updated);
   };
-
-  // useEffect(() => {
-  //   localStorage.clear();
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("ec", items);
-  // }, [items]);
-
-  // useEffect(() => {
-  //   console.log("look at me values", values);
-  //   const json = generateJSONSchema();
-
-  //   console.log("xd json", json);
-  // }, [values]);
 
   /* This function is responsible for generating the JSON and Liquid. 
   Its only purpose is to make the function "generateJSONAndVariables" from utils.js to work. */

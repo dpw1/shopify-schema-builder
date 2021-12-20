@@ -213,6 +213,14 @@ export const generateJSONSchema = () => {
   return result;
 };
 
+export const updateJSONAndVariables = () => {
+  const json = generateJSONSchema();
+  const variables = convertToLiquidVariables(json);
+
+  updateJSONDOM(json);
+  updateLiquidVariablesDOM(variables);
+};
+
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

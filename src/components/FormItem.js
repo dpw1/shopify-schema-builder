@@ -7,6 +7,7 @@ import {
   convertToLiquidVariables,
   generateJSONAndVariables,
   sleep,
+  updateJSONAndVariables,
   updateJSONDOM,
   updateLiquidVariablesDOM,
 } from "../utils";
@@ -101,37 +102,8 @@ export default function FormItem(props) {
     return values[`${itemId}_id`] || setDefaultValue("id");
   };
 
-  const forceInputInitiation = async () => {
-    await sleep(50);
-
-    const $elements = document.querySelectorAll(`.FormItem input`);
-
-    for (var each of $elements) {
-      const name = each.name;
-      const value = each.value;
-
-      console.log(`ec, [${name}]: ${value}`);
-      addValues({
-        [name]: value,
-      });
-    }
-  };
-
-  const updateJSONAndVariables = () => {
+  useEffect(() => {
     console.log("look at me values", values);
-
-    const json = generateJSONSchema();
-    const variables = convertToLiquidVariables(json);
-
-    updateJSONDOM(json);
-    updateLiquidVariablesDOM(variables);
-  };
-
-  useEffect(() => {
-    forceInputInitiation();
-  }, []);
-
-  useEffect(() => {
     updateJSONAndVariables();
   }, [values]);
 
