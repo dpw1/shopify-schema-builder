@@ -36,7 +36,18 @@ export function convertToLiquidVariables(json) {
       variables.push(variable);
     }
   }
+
   return variables.join("\n");
+}
+
+export function updateLiquidVariablesDOM(variables) {
+  const $textarea = document.querySelector(`#CodeTable-variables`);
+
+  if (!$textarea) {
+    return;
+  }
+
+  $textarea.value = variables;
 }
 
 export function copyToClipboard(text) {
@@ -63,7 +74,7 @@ export function copyToClipboard(text) {
   }
 }
 
-export const updateJSONTextarea = (json) => {
+export const updateJSONDOM = (json) => {
   try {
     const $textarea = window.document.getElementById(`CodeTable-result`);
     $textarea.value = json;
@@ -211,12 +222,13 @@ export function addToIndex(arr, index, newItem) {
 }
 
 export async function generateJSONAndVariables() {
+  return;
   const $generator = window.document.getElementById("generateJSON");
 
   if ($generator) {
     $generator.click();
-    await sleep(25);
-    $generator.click();
+    // await sleep(25);
+    // $generator.click();
   }
 }
 

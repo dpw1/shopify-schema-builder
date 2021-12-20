@@ -15,6 +15,8 @@ import "./Item.scss";
 import Text from "./Text";
 import FormItem from "./FormItem";
 
+import useStore from "../store/store";
+
 const renderElement = (
   type,
   itemId,
@@ -303,7 +305,8 @@ export default function Item(props) {
     duplicatedSubOptions,
   } = props;
 
-  const [items, setItems] = useStickyState("@items");
+  const items = useStore((state) => state.items);
+  const updateItems = useStore((state) => state.updateItems);
 
   /* TODO 
   "duplicatedItemOptions' should receive the _json data. */
@@ -328,7 +331,7 @@ export default function Item(props) {
     };
 
     const updatedItems = addToIndex(items, index, _item);
-    setItems(updatedItems);
+    updateItems(updatedItems);
 
     generateJSONAndVariables();
   };

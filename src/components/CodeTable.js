@@ -1,5 +1,5 @@
 import React from "react";
-import { useStatePersist as useStickyState } from "use-state-persist";
+
 import {
   convertToLiquidVariables,
   copyToClipboard,
@@ -11,38 +11,10 @@ import "./CodeTable.scss";
 import useStore from "./../store/store";
 
 export default function CodeTable() {
-  const [items, setItems] = useStickyState("@items");
-  const [jsonResult, setJsonResult] = useStickyState("@jsonResult", null);
-  const [variablesResult, setVariablesResult] = useStickyState(
-    "@variablesResult",
-    null,
-  );
-  const [values, setValues] = useStickyState("@values");
+  const items = useStore((state) => state.items);
+  const jsonResult = useStore((state) => state.jsonResult);
 
-  const format = () => {
-    if (!items || !values) {
-      return;
-    }
-    let updated = [];
-    items.map((item) => {
-      return [...Object.entries(values)].map((_value, i) => {
-        const key = _value[0];
-        const value = _value[1];
-
-        if (key.includes(item.id)) {
-          let obj = {};
-          obj["type"] = item.type;
-          obj[key.split("_")[1]] = value;
-
-          updated.push({
-            type: item.type,
-          });
-        }
-      });
-    });
-
-    return updated;
-  };
+  const variablesResult = useStore((state) => state.variablesResult);
 
   const convertSectionToJson = () => {
     const $code = window.document.querySelector(`#sectionCode`);
@@ -67,7 +39,7 @@ export default function CodeTable() {
       <div className="CodeTable-wrapper">
         <textarea
           defaultValue={variablesResult ? variablesResult : ""}
-          value={variablesResult}
+          value={variablesResult ? variablesResult : ""}
           readOnly={true}
           id="CodeTable-variables"
           cols="10"
@@ -76,7 +48,7 @@ export default function CodeTable() {
         <div className="CodeTable-tables">
           <textarea
             defaultValue={jsonResult ? jsonResult : ""}
-            value={jsonResult}
+            value={jsonResult ? jsonResult : ""}
             readOnly={false}
             name=""
             id="CodeTable-result"

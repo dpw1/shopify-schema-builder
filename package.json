@@ -22,7 +22,7 @@
     "short-uuid": "^4.1.0",
     "use-state-persist": "^0.2.3",
     "web-vitals": "^0.2.4",
-    "zustand": "^3.5.10"
+    "zustand": "^3.6.7"
   },
   "scripts": {
     "start": "react-scripts start",

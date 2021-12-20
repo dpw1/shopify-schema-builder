@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
 import "./FormItem.scss";
 import {
+  convertToLiquidVariables,
   generateJSONAndVariables,
-  generateJSONSchema,
   sleep,
-  updateJSONTextarea,
+  updateJSONDOM,
+  updateLiquidVariablesDOM,
 } from "../utils";
+import useStore from "../store/store";
+import { generateJSONSchema } from "./../utils";
 
 export default function FormItem(props) {
   const [modified, setModified] = useState(false);
+  const variables = useStore((state) => state.variables);
+
+  const values = useStore((state) => state.values);
+  const addValues = useStore((state) => state.addValues);
 
   let {
     itemId,
@@ -42,8 +49,6 @@ export default function FormItem(props) {
   const initialValues = () => {
     let data = {};
 
-    console.log("mmm", duplicatedSubOptions);
-
     options.map((e) => {
       const str = `${itemId}_${e}`;
 
@@ -53,13 +58,13 @@ export default function FormItem(props) {
     return data;
   };
 
-  const [values, setValues] = useStickyState("@values", initialValues());
+  // const [values, setValues] = useStickyState("@values", initialValues());
 
   const handleInputChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
 
-    setValues({
+    addValues({
       ...values,
       [name]: value,
     });
@@ -81,8 +86,10 @@ export default function FormItem(props) {
     return "";
   };
 
-  const setDefaultTitle = () => {
+  const setItemsTitle = () => {
     const characters = values[`${itemId}_id`] && values[`${itemId}_id`].length;
+
+    console.log("charac", characters);
 
     if (!characters || characters <= 0) {
       if (modified) {
@@ -95,8 +102,6 @@ export default function FormItem(props) {
   };
 
   const forceInputInitiation = async () => {
-    console.log("look at me", values);
-
     await sleep(50);
 
     const $elements = document.querySelectorAll(`.FormItem input`);
@@ -105,11 +110,21 @@ export default function FormItem(props) {
       const name = each.name;
       const value = each.value;
 
-      setValues({
-        ...values,
+      console.log(`ec, [${name}]: ${value}`);
+      addValues({
         [name]: value,
       });
     }
+  };
+
+  const updateJSONAndVariables = () => {
+    console.log("look at me values", values);
+
+    const json = generateJSONSchema();
+    const variables = convertToLiquidVariables(json);
+
+    updateJSONDOM(json);
+    updateLiquidVariablesDOM(variables);
   };
 
   useEffect(() => {
@@ -117,7 +132,7 @@ export default function FormItem(props) {
   }, []);
 
   useEffect(() => {
-    console.log("look at me values", values);
+    updateJSONAndVariables();
   }, [values]);
 
   return (
@@ -125,9 +140,7 @@ export default function FormItem(props) {
       {options.map((e, i) => {
         return (
           <React.Fragment>
-            {i === 0 && (
-              <div className="FormItem-title">{setDefaultTitle()}</div>
-            )}
+            {i === 0 && <div className="FormItem-title">{setItemsTitle()}</div>}
 
             <div className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
