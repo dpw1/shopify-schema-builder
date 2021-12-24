@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import short from "short-uuid";
 import { sortableContainer, sortableElement } from "react-sortable-hoc";
 import arrayMove from "array-move";
+import { useStatePersist as useStickyState } from "use-state-persist";
 
 import { useForm } from "react-hook-form";
 
@@ -15,6 +16,9 @@ import {
   convertToLiquidVariables,
   generateJSONAndVariables,
   updateJSONAndVariables,
+  convertSchemaJSONToItems,
+  getIdThatWasModified,
+  getJsonResult,
 } from "./../utils";
 
 import ConfirmDialog from "./ConfirmDialog";
@@ -31,25 +35,72 @@ const SortableContainer = sortableContainer(({ children }) => {
 
 export default function Creator() {
   const { register, setValue, handleSubmit, watch, errors } = useForm();
+  const [lastChangedInput, setLastChangedInput] = useStickyState(
+    "@lastChangedInput",
+    [],
+  );
 
   const items = useStore((state) => state.items);
+  // const values = useStore((state) => state.values);
+
   const addItems = useStore((state) => state.addItems);
   const addItem = useStore((state) => state.addItem);
   const updateItems = useStore((state) => state.updateItems);
 
   const jsonResult = useStore((state) => state.jsonResult);
-  const updateJsonResult = useStore((state) => state.updateJsonResult);
 
-  const variablesResult = useStore((state) => state.variablesResult);
   const updateVariablesResult = useStore(
     (state) => state.updateVariablesResult,
   );
+
+  const watchValues = async (state, prevState) => {
+    /* To be ablee to get the very first "previous state" of the form items, 
+    we need to check which item was modified.
+    
+    After that, we can look at the "values" state and find its ID
+    */
+    /* todo: get item being currently modified*/
+    // const firstChangeId = Object.keys(state)[0].split("_")[0];
+    // const getPreviousId = () => {
+    //   try {
+    //     const id = items.filter((e) => e.id === firstChangeId)[0]
+    //       .duplicatedOptions.id;
+    //     return id;
+    //   } catch (err) {
+    //     return null;
+    //   }
+    // };
+    // const previousId = getPreviousId();
+    // let ids = [];
+    // let prevIds = [];
+    // for (const [key, value] of Object.entries(state)) {
+    //   if (/_id/.test(key)) {
+    //     ids.push({
+    //       id: key,
+    //       value,
+    //     });
+    //   }
+    // }
+    // for (const [key, value] of Object.entries(prevState)) {
+    //   if (/_id/.test(key)) {
+    //     prevIds.push({
+    //       id: key,
+    //       value,
+    //     });
+    //   }
+    // }
+    // console.log("monkey state/prev", state, prevState, previousId);
+    // console.log("monkey last changed: ");
+  };
+
+  // useEffect(() => {
+  //   console.log("jsss", getJsonResult());
+  // }, [values]);
 
   const handleUpdateTextarea = async () => {
     await sleep(10);
     const json = generateJSONSchema();
     updateJSONDOM(json);
-    updateJsonResult(json);
   };
 
   const handleAddItem = async () => {
@@ -106,7 +157,6 @@ export default function Creator() {
         id: "section_height_mobile",
         label: "Mobile height",
         default: "auto",
-        info: 'For "bars" please ensure you have a maximum of 5 slides.',
         options: [
           {
             label: "Auto",
@@ -148,7 +198,6 @@ export default function Creator() {
         info: 'Images that won\'t cut off. This will overwrite the "Mobile height". Recommended size: 800 x 800px',
         default: false,
       },
-
       {
         type: "checkbox",
         id: "parallax",
@@ -156,66 +205,9 @@ export default function Creator() {
         info: 'Parallax may zoom in some images, making them look "cut off".',
         default: false,
       },
-      {
-        type: "checkbox",
-        id: "parallax_mobile",
-        label: "Enable parallax (mobile)",
-        info: 'Parallax may zoom in some images, making them look "cut off".',
-        default: false,
-      },
-      {
-        type: "select",
-        id: "section_height_mobile",
-        label: "Mobile height",
-        default: "auto",
-        info: 'For "bars" please ensure you have a maximum of 5 slides.',
-        options: [
-          {
-            label: "Auto",
-            value: "auto",
-          },
-          {
-            label: "250px",
-            value: "250px",
-          },
-          {
-            label: "300px",
-            value: "300px",
-          },
-          {
-            label: "400px",
-            value: "400px",
-          },
-          {
-            label: "500px",
-            value: "500px",
-          },
-          {
-            label: "Full screen",
-            value: "100vh",
-          },
-        ],
-      },
     ];
 
-    var op = test.map((e) => {
-      var object = { ...e };
-
-      delete object.type;
-      // delete object.options;
-
-      return {
-        id: short.generate(),
-        type: e.type,
-
-        duplicatedOptions: {
-          ...object,
-        },
-        duplicatedSubOptions: e.options,
-      };
-    });
-
-    console.log("mmm updated: ", op);
+    const op = convertSchemaJSONToItems(test);
     addItems(op);
   };
 
@@ -271,7 +263,6 @@ export default function Creator() {
     const ordered = arrayMove(items, oldIndex, newIndex);
 
     updateItems(ordered);
-    console.log("uppp", ordered);
 
     updateJSONAndVariables();
   };
@@ -305,7 +296,6 @@ export default function Creator() {
     <div className="Creator">
       <SortableContainer onSortEnd={onSortEnd}>
         {items.map((props, i) => {
-          console.log("item props: ", props);
           return (
             <SortableItem
               key={`item-${short.generate()}`}
@@ -338,7 +328,6 @@ export default function Creator() {
           Add
         </button>
         <button
-          disabled={true}
           className="Creator-test"
           onClick={async () => {
             addCustomItem();

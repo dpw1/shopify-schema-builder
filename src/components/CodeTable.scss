@@ -12,10 +12,19 @@
   &-tables {
     display: flex;
 
-    & > *:nth-child(2) {
-      max-width: 20%;
+    // & > *:nth-child(2) {
+    //   max-width: 20%;
 
+    //   margin-left: 10px;
+    // }
+    & > * {
+      max-width: 33.333%;
+      width: 100%;
       margin-left: 10px;
+
+      &:nth-child(1) {
+        margin-left: 0;
+      }
     }
   }
 

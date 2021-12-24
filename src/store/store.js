@@ -42,18 +42,18 @@ const useStore = create((set, get) => ({
       };
     });
   },
+  removeItems: () => {
+    set((_) => {
+      setLocalStorage("items", []);
+      return {
+        items: [],
+      };
+    });
+  },
 
   /* the JSON that is generated to use in the section's schema. 
   ======================================= */
   jsonResult: getLocalStorage("jsonResult") || [],
-  updateJsonResult: (_json) => {
-    set((_) => {
-      setLocalStorage("jsonResult", _json);
-      return {
-        jsonResult: _json,
-      };
-    });
-  },
 
   /* Variables that are generated from the JSON schema. 
   ======================================= */
@@ -80,6 +80,18 @@ const useStore = create((set, get) => ({
           ...values,
           ..._values,
         },
+      };
+    });
+  },
+
+  /* The section code that the user is going to edit.
+  ======================================= */
+  section: getLocalStorage("section") || "",
+  addSection: (_section) => {
+    set((_) => {
+      setLocalStorage("section", _section);
+      return {
+        section: _section,
       };
     });
   },

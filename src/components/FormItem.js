@@ -6,6 +6,8 @@ import "./FormItem.scss";
 import {
   convertToLiquidVariables,
   generateJSONAndVariables,
+  getJsonResult,
+  setJsonResult,
   sleep,
   updateJSONAndVariables,
   updateJSONDOM,
@@ -15,10 +17,16 @@ import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
 export default function FormItem(props) {
+  const [lastChangedInput, setLastChangedInput] = useStickyState(
+    "@lastChangedInput",
+    [],
+  );
   const [modified, setModified] = useState(false);
   const variables = useStore((state) => state.variables);
 
   const values = useStore((state) => state.values);
+  const items = useStore((state) => state.items);
+
   const addValues = useStore((state) => state.addValues);
 
   let {
@@ -26,14 +34,16 @@ export default function FormItem(props) {
     type,
     options,
     duplicatedOptions,
-    duplicatedSubOptions,
+    duplicatedSubOptions: _duplicatedSubOptions,
     defaultOptions,
     subOptions,
     totalSubOptions,
     itemCount,
   } = props;
 
-  // generateJSONAndVariables();
+  let duplicatedSubOptions = _duplicatedSubOptions
+    ? _duplicatedSubOptions
+    : null;
 
   if (duplicatedSubOptions && duplicatedSubOptions.length > 5) {
     totalSubOptions = duplicatedSubOptions.length;
@@ -47,20 +57,6 @@ export default function FormItem(props) {
     defaultOptions = duplicatedOptions;
   }
 
-  const initialValues = () => {
-    let data = {};
-
-    options.map((e) => {
-      const str = `${itemId}_${e}`;
-
-      return (data[str] = "");
-    });
-
-    return data;
-  };
-
-  // const [values, setValues] = useStickyState("@values", initialValues());
-
   const handleInputChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -70,9 +66,14 @@ export default function FormItem(props) {
       [name]: value,
     });
 
-    console.log("input change");
+    // console.log("updating: ", name, value);
+    const json = generateJSONSchema();
 
+    setJsonResult(json);
     setModified(true);
+
+    const prev = getJsonResult();
+    console.log("xxx", prev);
   };
 
   const setDefaultValue = (labelName) => {
@@ -87,10 +88,16 @@ export default function FormItem(props) {
     return "";
   };
 
+  const filterValue = (text) => {
+    if (!text) {
+      return "error";
+    }
+
+    return text;
+  };
+
   const setItemsTitle = () => {
     const characters = values[`${itemId}_id`] && values[`${itemId}_id`].length;
-
-    console.log("charac", characters);
 
     if (!characters || characters <= 0) {
       if (modified) {
@@ -103,9 +110,24 @@ export default function FormItem(props) {
   };
 
   useEffect(() => {
-    console.log("look at me values", values);
     updateJSONAndVariables();
+    console.log("look at me values", values);
   }, [values]);
+
+  // useEffect(() => {
+  //   console.log("last updated", lastChangedInput);
+  // }, [lastChangedInput]);
+
+  const useFocus = () => {
+    const htmlElRef = useRef(null);
+    const setFocus = () => {
+      htmlElRef.current && htmlElRef.current.focus();
+    };
+
+    return [htmlElRef, setFocus];
+  };
+
+  const [inputRef, setInputFocus] = useFocus();
 
   return (
     <fieldset className="FormItem">
@@ -117,8 +139,11 @@ export default function FormItem(props) {
             <div className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
               <input
+                ref={inputRef}
                 value={values[`${itemId}_${e}`]}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
                 name={`${itemId}_${e}`}
                 label={e}
                 defaultValue={setDefaultValue(e)}
@@ -146,13 +171,21 @@ export default function FormItem(props) {
                         {each} {i + 1}:
                       </label>
 
+                      <p>
+                        {console.log(
+                          "shit",
+                          duplicatedSubOptions[i]
+                            ? duplicatedSubOptions[i][each]
+                            : "",
+                        )}
+                      </p>
                       <input
                         value={values[`${itemIdSuboption}_${each}`]}
                         onChange={handleInputChange}
                         name={`${itemIdSuboption}_${each}`}
                         label={each}
                         defaultValue={
-                          duplicatedSubOptions.length >= 1
+                          duplicatedSubOptions[i]
                             ? duplicatedSubOptions[i][each]
                             : ""
                         }
