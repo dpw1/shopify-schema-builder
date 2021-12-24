@@ -75,8 +75,9 @@ export default function CodeTable() {
           <div className="CodeTable-tables-wrapper">
             <textarea
               placeholder="Paste section code here"
-              value={`<p> hello i start here {{ section.settings.margin-top }} </p>
-
+              value={`<p> margin top: {{ section.settings.margin-top }} </p>
+              <p> margin bottom: {{ section.settings.margin-bottom }} </p>
+              
               {% schema %}
               {
               "name": "Premium Navbar TESTING",

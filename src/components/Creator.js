@@ -17,7 +17,6 @@ import {
   generateJSONAndVariables,
   updateJSONAndVariables,
   convertSchemaJSONToItems,
-  getIdThatWasModified,
   getJsonResult,
 } from "./../utils";
 

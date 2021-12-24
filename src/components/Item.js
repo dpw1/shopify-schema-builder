@@ -5,6 +5,7 @@ import {
   sleep,
   transformDOMIntoJSON,
   generateJSONAndVariables,
+  resetJsonResult,
 } from "./../utils";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
@@ -359,7 +360,10 @@ export default function Item(props) {
         </select>
         <button
           tabindex="-1"
-          onClick={() => handleDeleteItem(id)}
+          onClick={() => {
+            resetJsonResult();
+            handleDeleteItem(id);
+          }}
           className="item-delete item-button">
           Delete
         </button>

@@ -66,14 +66,16 @@ export default function FormItem(props) {
       [name]: value,
     });
 
-    // console.log("updating: ", name, value);
     const json = generateJSONSchema();
 
     setJsonResult(json);
     setModified(true);
 
     const prev = getJsonResult();
-    console.log("xxx", prev);
+    console.log(
+      "xxx",
+      prev.previous.map((e) => e.id),
+    );
   };
 
   const setDefaultValue = (labelName) => {
@@ -174,7 +176,7 @@ export default function FormItem(props) {
                       <p>
                         {console.log(
                           "shit",
-                          duplicatedSubOptions[i]
+                          duplicatedSubOptions && duplicatedSubOptions[i]
                             ? duplicatedSubOptions[i][each]
                             : "",
                         )}
@@ -185,7 +187,7 @@ export default function FormItem(props) {
                         name={`${itemIdSuboption}_${each}`}
                         label={each}
                         defaultValue={
-                          duplicatedSubOptions[i]
+                          duplicatedSubOptions && duplicatedSubOptions[i]
                             ? duplicatedSubOptions[i][each]
                             : ""
                         }

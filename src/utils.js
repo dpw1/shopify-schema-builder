@@ -248,6 +248,7 @@ export const updateJSONAndVariables = async () => {
   updateSectionWithUpdatedSchema(json);
 };
 
+/* Sets the current JSON edited via the DOM items. */
 export const setJsonResult = (_json) => {
   let initialState = localStorage.getItem("json_initial_state");
 
@@ -272,6 +273,7 @@ export const setJsonResult = (_json) => {
   localStorage.setItem("json_results", result);
 };
 
+/* Gets the current JSON being edited via the DOM items. */
 export const getJsonResult = (_) => {
   const _json = localStorage.getItem("json_results");
 
@@ -289,6 +291,11 @@ export const getJsonResult = (_) => {
 
   console.log("getjs", result);
   return result;
+};
+
+export const resetJsonResult = (_) => {
+  localStorage.removeItem("json_initial_state");
+  localStorage.removeItem("json_results");
 };
 
 /* This takes the section the user added and update its JSON with the new schema edited in the app's UI */
@@ -321,12 +328,10 @@ export const updateSectionWithUpdatedSchema = async (json) => {
       result,
     );
 
-    // debugger;
-
     console.log("1xx", _updatedSection);
 
     const updatedSection = replaceIdThatWasUpdated(_updatedSection);
-    console.log("llama", updatedSection);
+
     $result.value = updatedSection;
   } catch (err) {
     console.log("xx error in schema: ", err);
@@ -335,11 +340,14 @@ export const updateSectionWithUpdatedSchema = async (json) => {
 };
 
 /*
+This is used to rename the section's ids.  This function does the following:
+
 1. Compares two states (previous and current)
 2. Check which ID of the items was lastly modified
 3. Returns both the old ID and the current ID. 
 
-This is used to rename the section's ids. Let's say you have "section.settings.ok" in your code, and you modify it to "ok2". 
+
+Let's say you have "section.settings.ok" in your code, and you modify it to "ok2". 
 This code will show up bth the "ok" and "ok2" so you can modify them in the section. */
 export const getIdThatWasModified = (
   state,
@@ -361,12 +369,19 @@ export const getIdThatWasModified = (
     return "";
   }
 
-  const previousId = onlyInState[0].id;
-  const id = onlyInPreviousState[0].id;
-  const result = {
-    previous: `${type}.settings.${previousId}`,
-    current: `${type}.settings.${id}`,
-  };
+  console.log("only in", onlyInState);
+
+  const previousIds = onlyInState.map((e) => e.id);
+  const ids = onlyInPreviousState.map((e) => e.id);
+
+  let result = [];
+
+  for (const [i, each] of ids.entries()) {
+    result.push({
+      previous: `${type}.settings.${previousIds[i]}`,
+      current: `${type}.settings.${ids[i]}`,
+    });
+  }
 
   return result;
 };
@@ -378,12 +393,15 @@ export const replaceIdThatWasUpdated = (section) => {
 
   console.log("cookie - must replace this: ", modifiedIds);
 
-  console.log("cookie", modifiedIds);
+  if (!modifiedIds) {
+    return section;
+  }
 
-  return section.replaceAll(
-    modifiedIds.previous || modifiedIds.current,
-    modifiedIds.current,
-  );
+  modifiedIds.map((e) => {
+    section = section.replaceAll(e.previous || e.current, e.current);
+  });
+
+  return section;
 };
 
 export const updateSectionSettingVariables = () => {};
