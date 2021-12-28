@@ -9,6 +9,7 @@ import {
   sleep,
   _extractTextBetween,
   setJsonResult,
+  clearResultsTextarea,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -18,6 +19,7 @@ export default function CodeTable() {
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
   const section = useStore((state) => state.section);
+
   const addSection = useStore((state) => state.addSection);
 
   const variablesResult = useStore((state) => state.variablesResult);
@@ -169,6 +171,7 @@ export default function CodeTable() {
                 await sleep(100);
                 const json = generateJSONSchema();
                 setJsonResult(json);
+                clearResultsTextarea();
               }}
               id="convertToJson"
               className="CodeTable-convert">

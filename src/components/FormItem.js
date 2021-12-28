@@ -3,29 +3,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
 import "./FormItem.scss";
-import {
-  convertToLiquidVariables,
-  generateJSONAndVariables,
-  getJsonResult,
-  setJsonResult,
-  sleep,
-  updateJSONAndVariables,
-  updateJSONDOM,
-  updateLiquidVariablesDOM,
-} from "../utils";
+import { getJsonResult, setJsonResult, updateJSONAndVariables } from "../utils";
 import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
 export default function FormItem(props) {
-  const [lastChangedInput, setLastChangedInput] = useStickyState(
-    "@lastChangedInput",
-    [],
-  );
   const [modified, setModified] = useState(false);
-  const variables = useStore((state) => state.variables);
 
   const values = useStore((state) => state.values);
-  const items = useStore((state) => state.items);
 
   const addValues = useStore((state) => state.addValues);
 
@@ -117,7 +102,7 @@ export default function FormItem(props) {
   }, [values]);
 
   // useEffect(() => {
-  //   console.log("last updated", lastChangedInput);
+  //   console.log("last updated", lastChanfgedInput);
   // }, [lastChangedInput]);
 
   const useFocus = () => {

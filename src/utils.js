@@ -100,7 +100,7 @@ export const focusDropdown = (delay = 50) => {
   }, delay);
 };
 
-/* This function retrieves a JSON from a DOM (<select>) node containing labels/inputs. */
+/* This function converts a DOM item containing to JSON.  */
 export const transformDOMIntoJSON = (each) => {
   let _json;
   const type = each.querySelector("select").value;
@@ -116,6 +116,12 @@ export const transformDOMIntoJSON = (each) => {
       .querySelector(`[data-label-name]`)
       .getAttribute(`data-label-name`);
 
+    const __id = attribute
+      .querySelector(`[data-label-name] + input`)
+      .getAttribute("name")
+      .split("_")[0];
+
+    _json.__id = __id;
     let value = attribute.querySelector(`input`).value;
 
     /* If there is no property 'info', ignore */
@@ -197,7 +203,7 @@ export const transformDOMIntoJSON = (each) => {
   return _json;
 };
 
-/* Converts all DOM items into JSON for the schema. */
+/* Converts all DOM items into JSON for the section's schema. */
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
 
@@ -248,6 +254,16 @@ export const updateJSONAndVariables = async () => {
   updateSectionWithUpdatedSchema(json);
 };
 
+export const clearResultsTextarea = (_) => {
+  const $section = document.querySelector(`#sectionResult`);
+
+  if (!$section) {
+    return;
+  }
+
+  $section.value = "";
+};
+
 /* Sets the current JSON edited via the DOM items. */
 export const setJsonResult = (_json) => {
   let initialState = localStorage.getItem("json_initial_state");
@@ -257,10 +273,29 @@ export const setJsonResult = (_json) => {
     localStorage.setItem("json_initial_state", initialState);
   }
 
+  console.log("SETTING INITIAL STATE", initialState);
+
   const _previous = localStorage.getItem("json_results");
   const previous = _previous ? JSON.parse(_previous).current : {};
 
-  console.log("xl", initialState);
+  const test = [
+    ...JSON.parse(localStorage.getItem("json_initial_state")),
+    ...JSON.parse(_json),
+  ];
+
+  // initialState = JSON.stringify(
+  //   test.filter((value, index) => {
+  //     const _value = JSON.stringify(value);
+  //     return (
+  //       index ===
+  //       test.findIndex((obj) => {
+  //         return JSON.stringify(obj) === _value;
+  //       })
+  //     );
+  //   }),
+  // );
+
+  // console.log("my init", initialState);
 
   const json = {
     initialState,
@@ -283,18 +318,20 @@ export const getJsonResult = (_) => {
 
   const json = JSON.parse(_json);
 
+  // debugger;
+
   const result = {
     initialState: JSON.parse(json.initialState),
     previous: JSON.parse(json.previous),
     current: JSON.parse(json.current),
   };
 
-  console.log("getjs", result);
+  // console.log("getjs", result);
   return result;
 };
 
 export const resetJsonResult = (_) => {
-  localStorage.removeItem("json_initial_state");
+  // localStorage.removeItem("json_initial_state");
   localStorage.removeItem("json_results");
 };
 
@@ -304,7 +341,11 @@ export const updateSectionWithUpdatedSchema = async (json) => {
   const $result = window.document.querySelector(`#sectionResult`);
 
   try {
+    const _result = $result.value.trim();
+    // const section = _result.length >= 1 ? _result : $section.value;
     const section = $section.value;
+
+    // debugger;
 
     if (!/{% schema %}/gim.test(section) || section.trim() === "") {
       return;
@@ -328,14 +369,11 @@ export const updateSectionWithUpdatedSchema = async (json) => {
       result,
     );
 
-    console.log("1xx", _updatedSection);
-
     const updatedSection = replaceIdThatWasUpdated(_updatedSection);
 
     $result.value = updatedSection;
   } catch (err) {
     console.log("xx error in schema: ", err);
-    // console.log("error in schema: ", schema);
   }
 };
 
@@ -365,11 +403,11 @@ export const getIdThatWasModified = (
   const onlyInState = onlyInLeft(state, previousState, isSameUser);
   const onlyInPreviousState = onlyInLeft(previousState, state, isSameUser);
 
+  console.log("modified ids", onlyInState);
+
   if (!onlyInPreviousState[0] || !onlyInState[0]) {
     return "";
   }
-
-  console.log("only in", onlyInState);
 
   const previousIds = onlyInState.map((e) => e.id);
   const ids = onlyInPreviousState.map((e) => e.id);
@@ -391,15 +429,25 @@ export const replaceIdThatWasUpdated = (section) => {
 
   const modifiedIds = getIdThatWasModified(_json.initialState, _json.current);
 
-  console.log("cookie - must replace this: ", modifiedIds);
-
+  // debugger;
   if (!modifiedIds) {
     return section;
   }
 
-  modifiedIds.map((e) => {
-    section = section.replaceAll(e.previous || e.current, e.current);
-  });
+  for (var each of modifiedIds) {
+    // const regex = new RegExp(`(${each.current})`, "g");
+    // const hasBeenChanged = section.match(regex);
+
+    // if (hasBeenChanged) {
+    //   return section;
+    // }
+
+    console.log(
+      `cookie | the item "${each.previous}" was renamed to "${each.current}".`,
+    );
+
+    section = section.replaceAll(each.previous, each.current).trim();
+  }
 
   return section;
 };
