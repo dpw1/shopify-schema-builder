@@ -3,7 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
 import "./FormItem.scss";
-import { getJsonResult, setJsonResult, updateJSONAndVariables } from "../utils";
+import {
+  getJsonResult,
+  setJsonResult,
+  updateJSONAndVariables,
+  updateSectionSettings,
+} from "../utils";
 import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
@@ -46,6 +51,9 @@ export default function FormItem(props) {
     const name = e.target.name;
     const value = e.target.value;
 
+    const __id = name.split("_")[0];
+    const settingsId = `[ezfyid_${__id}]`;
+
     addValues({
       ...values,
       [name]: value,
@@ -56,11 +64,12 @@ export default function FormItem(props) {
     setJsonResult(json);
     setModified(true);
 
-    const prev = getJsonResult();
-    console.log(
-      "xxx",
-      prev.previous.map((e) => e.id),
-    );
+    const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
+
+    if (modifiedItem.hasOwnProperty("id")) {
+      updateSectionSettings(__id, modifiedItem.id);
+      console.log(`xxx ${settingsId} must be modified to ${modifiedItem.id}`);
+    }
   };
 
   const setDefaultValue = (labelName) => {

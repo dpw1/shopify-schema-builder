@@ -278,25 +278,6 @@ export const setJsonResult = (_json) => {
   const _previous = localStorage.getItem("json_results");
   const previous = _previous ? JSON.parse(_previous).current : {};
 
-  const test = [
-    ...JSON.parse(localStorage.getItem("json_initial_state")),
-    ...JSON.parse(_json),
-  ];
-
-  // initialState = JSON.stringify(
-  //   test.filter((value, index) => {
-  //     const _value = JSON.stringify(value);
-  //     return (
-  //       index ===
-  //       test.findIndex((obj) => {
-  //         return JSON.stringify(obj) === _value;
-  //       })
-  //     );
-  //   }),
-  // );
-
-  // console.log("my init", initialState);
-
   const json = {
     initialState,
     previous,
@@ -342,8 +323,8 @@ export const updateSectionWithUpdatedSchema = async (json) => {
 
   try {
     const _result = $result.value.trim();
-    // const section = _result.length >= 1 ? _result : $section.value;
-    const section = $section.value;
+    const section = _result.length >= 1 ? _result : $section.value.trim();
+    // const section = $section.value;
 
     // debugger;
 
@@ -369,12 +350,55 @@ export const updateSectionWithUpdatedSchema = async (json) => {
       result,
     );
 
-    const updatedSection = replaceIdThatWasUpdated(_updatedSection);
+    console.log("i orc -- ", /\[ezfyid_/gim.test(_updatedSection));
 
-    $result.value = updatedSection;
+    const updatedSection = /\[ezfyid_/gim.test(_updatedSection)
+      ? _updatedSection
+      : replaceSectionSettingIdsOnFirstRender(_updatedSection);
+
+    $result.value = updatedSection.trim();
   } catch (err) {
     console.log("xx error in schema: ", err);
   }
+};
+
+/* */
+export const replaceSectionSettingIdsOnFirstRender = (section) => {
+  const _json = getJsonResult();
+
+  for (var each of _json.initialState) {
+    if (each.hasOwnProperty("id")) {
+      const __id = `${each.__id}`;
+
+      console.log("i orc", each.id);
+
+      section = section.replaceAll(
+        `section.settings.${each.id}`,
+        `[ezfyid_${__id}]section.settings.${each.id}[ezfyid_${__id}]`,
+      );
+    }
+  }
+
+  return section;
+};
+
+export const updateSectionSettings = (id, value) => {
+  const $result = window.document.querySelector(`#sectionResult`);
+
+  const result = $result.value.trim();
+
+  if (result === "") {
+    return;
+  }
+
+  const regex = new RegExp(`\\[ezfyid_${id}\\](.*)\\[ezfyid_${id}\\]`, "gmi");
+
+  const updated = result.replaceAll(
+    regex,
+    `[ezfyid_${id}]${value}[ezfyid_${id}]`,
+  );
+
+  $result.value = updated;
 };
 
 /*
@@ -417,7 +441,7 @@ export const getIdThatWasModified = (
   for (const [i, each] of ids.entries()) {
     result.push({
       previous: `${type}.settings.${previousIds[i]}`,
-      current: `${type}.settings.${ids[i]}`,
+      current: `${type}.settings.${ids[i]}xxx`,
     });
   }
 
@@ -427,32 +451,37 @@ export const getIdThatWasModified = (
 export const replaceIdThatWasUpdated = (section) => {
   const _json = getJsonResult();
 
-  const modifiedIds = getIdThatWasModified(_json.initialState, _json.current);
+  for (var each of _json.initialState) {
+    const id = `${each.__id}`;
 
-  // debugger;
-  if (!modifiedIds) {
-    return section;
+    section = section.replaceAll(``);
   }
+  debugger;
 
-  for (var each of modifiedIds) {
-    // const regex = new RegExp(`(${each.current})`, "g");
-    // const hasBeenChanged = section.match(regex);
+  // const modifiedIds = getIdThatWasModified(_json.initialState, _json.current);
 
-    // if (hasBeenChanged) {
-    //   return section;
-    // }
+  // // debugger;
+  // if (!modifiedIds) {
+  //   return section;
+  // }
 
-    console.log(
-      `cookie | the item "${each.previous}" was renamed to "${each.current}".`,
-    );
+  // for (var each of modifiedIds) {
+  //   // const regex = new RegExp(`(${each.current})`, "g");
+  //   // const hasBeenChanged = section.match(regex);
 
-    section = section.replaceAll(each.previous, each.current).trim();
-  }
+  //   // if (hasBeenChanged) {
+  //   //   return section;
+  //   // }
 
-  return section;
+  //   console.log(
+  //     `cookie | the item "${each.previous}" was renamed to "${each.current}".`,
+  //   );
+
+  //   section = section.replaceAll(each.previous, each.current).trim();
+  // }
+
+  // return section;
 };
-
-export const updateSectionSettingVariables = () => {};
 
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -486,11 +515,9 @@ export function replaceTextBetween(text, start, end, newText) {
     throw new Error(`Please add a "start" and "end" parameter`);
   }
 
-  const result = `${text.split(start)[0]}
-  ${start}
-  ${newText}  
-  ${end}
-  ${text.split(end)[1]}`;
+  const result = `${text.split(start)[0]}${start}${newText}${end}${
+    text.split(end)[1]
+  }`;
 
   return result;
 }

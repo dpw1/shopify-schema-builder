@@ -52,50 +52,6 @@ export default function Creator() {
     (state) => state.updateVariablesResult,
   );
 
-  const watchValues = async (state, prevState) => {
-    /* To be ablee to get the very first "previous state" of the form items, 
-    we need to check which item was modified.
-    
-    After that, we can look at the "values" state and find its ID
-    */
-    /* todo: get item being currently modified*/
-    // const firstChangeId = Object.keys(state)[0].split("_")[0];
-    // const getPreviousId = () => {
-    //   try {
-    //     const id = items.filter((e) => e.id === firstChangeId)[0]
-    //       .duplicatedOptions.id;
-    //     return id;
-    //   } catch (err) {
-    //     return null;
-    //   }
-    // };
-    // const previousId = getPreviousId();
-    // let ids = [];
-    // let prevIds = [];
-    // for (const [key, value] of Object.entries(state)) {
-    //   if (/_id/.test(key)) {
-    //     ids.push({
-    //       id: key,
-    //       value,
-    //     });
-    //   }
-    // }
-    // for (const [key, value] of Object.entries(prevState)) {
-    //   if (/_id/.test(key)) {
-    //     prevIds.push({
-    //       id: key,
-    //       value,
-    //     });
-    //   }
-    // }
-    // console.log("monkey state/prev", state, prevState, previousId);
-    // console.log("monkey last changed: ");
-  };
-
-  // useEffect(() => {
-  //   console.log("jsss", getJsonResult());
-  // }, [values]);
-
   const handleUpdateTextarea = async () => {
     await sleep(10);
     const json = generateJSONSchema();

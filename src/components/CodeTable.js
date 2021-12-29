@@ -78,6 +78,12 @@ export default function CodeTable() {
             <textarea
               placeholder="Paste section code here"
               value={`<p> margin top: {{ section.settings.margin-top }} </p>
+
+              <style>
+              *{
+                margin-top: {{section.settings.margin-top}} !important;
+              }
+              </style>
               <p> margin bottom: {{ section.settings.margin-bottom }} </p>
               
               {% schema %}
