@@ -455,11 +455,12 @@ export const getIdThatWasModified = (
   return result;
 };
 
-/* Removes all IDs from the modified so it can be used in production. 
+/* Removes all IDs from the modified section, so it can be used in production. 
 
 This function will:
 
 1- remove all the "ezfyid_" added to keep track of the "section.settings" variables. 
+
 2- clean the schema JSON to remove all of the __id. */
 export const cleanSectionCode = (section) => {
   /* Removes ezfyid instances */
@@ -476,23 +477,25 @@ export const cleanSectionCode = (section) => {
 
   let schema = JSON.parse(_schema);
 
-  var result = JSON.stringify(
-    schema.settings.map((e) => {
-      if (e.hasOwnProperty("__id")) {
-        delete e.__id;
-      }
-      return e;
-    }),
-    null,
-    2,
-  );
+  const _result = schema.settings.map((e) => {
+    if (e.hasOwnProperty("__id")) {
+      delete e.__id;
+    }
+    return e;
+  });
+
+  schema.settings = _result;
+
+  const result = schema;
 
   const updatedSection = replaceTextBetween(
     section,
     `{% schema %}`,
     `{% endschema %}`,
-    result,
+    JSON.stringify(result, null, 2),
   );
+
+  console.log("macaco", updatedSection);
 
   return updatedSection;
 };
