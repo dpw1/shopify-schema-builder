@@ -84,7 +84,7 @@ const useStore = create((set, get) => ({
     });
   },
 
-  /* The section code that the user wants to modify.
+  /* The raw section code that the user wants to modify.
   ======================================= */
   section: getLocalStorage("section") || "",
   addSection: (_section) => {

@@ -243,6 +243,7 @@ export const convertSchemaJSONToItems = (json) => {
   });
 };
 
+/* Responsible to update the textareas. */
 export const updateJSONAndVariables = async () => {
   const json = generateJSONSchema();
   const variables = convertToLiquidVariables(json);
@@ -289,7 +290,10 @@ export const setJsonResult = (_json) => {
   localStorage.setItem("json_results", result);
 };
 
-/* Gets the current JSON being edited via the DOM items. */
+/* Gets the current JSON being edited via the DOM items.
+It's all persisted via the local storage instead of using the local store.
+
+THe local store (store.js) was avoided because it was breaking the inputs. */
 export const getJsonResult = (_) => {
   const _json = localStorage.getItem("json_results");
 
@@ -362,7 +366,9 @@ export const updateSectionWithUpdatedSchema = async (json) => {
   }
 };
 
-/* */
+/* This will attach EZFY's unique ID to the section.settings in the code.
+
+So, if in the code it's section.settings.name, it will be [ezfyid_xx]section.settings.name[ezfyid_xx] */
 export const replaceSectionSettingIdsOnFirstRender = (section) => {
   const _json = getJsonResult();
 
@@ -370,11 +376,11 @@ export const replaceSectionSettingIdsOnFirstRender = (section) => {
     if (each.hasOwnProperty("id")) {
       const __id = `${each.__id}`;
 
-      console.log("i orc", each.id);
+      const regex = new RegExp(`(section.settings.${each.id}?([\\s|}]))`, "g");
 
       section = section.replaceAll(
-        `section.settings.${each.id}`,
-        `[ezfyid_${__id}]section.settings.${each.id}[ezfyid_${__id}]`,
+        regex,
+        `[ezfyid_${__id}]section.settings.${each.id}[ezfyid_${__id}]$2`,
       );
     }
   }
@@ -382,7 +388,8 @@ export const replaceSectionSettingIdsOnFirstRender = (section) => {
   return section;
 };
 
-export const updateSectionSettings = (id, value) => {
+/* This will remove the ID added via the "replaceSectionSettingIdsOnFirstRender" function.  */
+export const updateSectionSettings = (id, value, type = "section") => {
   const $result = window.document.querySelector(`#sectionResult`);
 
   const result = $result.value.trim();
@@ -391,11 +398,11 @@ export const updateSectionSettings = (id, value) => {
     return;
   }
 
-  const regex = new RegExp(`\\[ezfyid_${id}\\](.*)\\[ezfyid_${id}\\]`, "gmi");
+  const regex = new RegExp(`\\[ezfyid_${id}\\](.*)\\[ezfyid_${id}\\]`, "g");
 
   const updated = result.replaceAll(
     regex,
-    `[ezfyid_${id}]${value}[ezfyid_${id}]`,
+    `[ezfyid_${id}]${type}.settings.${value}[ezfyid_${id}]`,
   );
 
   $result.value = updated;
@@ -448,39 +455,46 @@ export const getIdThatWasModified = (
   return result;
 };
 
-export const replaceIdThatWasUpdated = (section) => {
-  const _json = getJsonResult();
+/* Removes all IDs from the modified so it can be used in production. 
 
-  for (var each of _json.initialState) {
-    const id = `${each.__id}`;
+This function will:
 
-    section = section.replaceAll(``);
-  }
-  debugger;
+1- remove all the "ezfyid_" added to keep track of the "section.settings" variables. 
+2- clean the schema JSON to remove all of the __id. */
+export const cleanSectionCode = (section) => {
+  /* Removes ezfyid instances */
+  const regex = new RegExp(`\\[ezfyid_.*?\\]`, "ug");
 
-  // const modifiedIds = getIdThatWasModified(_json.initialState, _json.current);
+  section = section.replaceAll(regex, "");
 
-  // // debugger;
-  // if (!modifiedIds) {
-  //   return section;
-  // }
+  /* Removes __id from JSON */
+  const _schema = _extractTextBetween(
+    section,
+    `{% schema %}`,
+    `{% endschema %}`,
+  );
 
-  // for (var each of modifiedIds) {
-  //   // const regex = new RegExp(`(${each.current})`, "g");
-  //   // const hasBeenChanged = section.match(regex);
+  let schema = JSON.parse(_schema);
 
-  //   // if (hasBeenChanged) {
-  //   //   return section;
-  //   // }
+  var result = JSON.stringify(
+    schema.settings.map((e) => {
+      if (e.hasOwnProperty("__id")) {
+        delete e.__id;
+      }
+      return e;
+    }),
+    null,
+    2,
+  );
 
-  //   console.log(
-  //     `cookie | the item "${each.previous}" was renamed to "${each.current}".`,
-  //   );
+  const updatedSection = replaceTextBetween(
+    section,
+    `{% schema %}`,
+    `{% endschema %}`,
+    result,
+  );
 
-  //   section = section.replaceAll(each.previous, each.current).trim();
-  // }
-
-  // return section;
+  return updatedSection;
 };
 
 export function sleep(ms) {

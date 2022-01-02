@@ -34,6 +34,7 @@ const SortableContainer = sortableContainer(({ children }) => {
 
 export default function Creator() {
   const { register, setValue, handleSubmit, watch, errors } = useForm();
+  const [isToggled, setIsToggled] = useStickyState(false);
   const [lastChangedInput, setLastChangedInput] = useStickyState(
     "@lastChangedInput",
     [],
@@ -236,6 +237,20 @@ export default function Creator() {
     updateItems(updated);
   };
 
+  const handleToggleAll = () => {
+    let updated = [
+      ...items.map((e) => {
+        e.isToggled = isToggled;
+
+        return e;
+      }),
+    ];
+
+    setIsToggled(!isToggled);
+
+    updateItems(updated);
+  };
+
   /* This function is responsible for generating the JSON and Liquid. 
   Its only purpose is to make the function "generateJSONAndVariables" from utils.js to work. */
   const generateJSON = async () => {
@@ -249,6 +264,12 @@ export default function Creator() {
 
   return (
     <div className="Creator">
+      <div className="Creator-controls">
+        <button id="toggleAll" onClick={handleToggleAll}>
+          Toggle all
+        </button>
+      </div>
+
       <SortableContainer onSortEnd={onSortEnd}>
         {items.map((props, i) => {
           return (
@@ -277,7 +298,6 @@ export default function Creator() {
           );
         })}
       </SortableContainer>
-
       <fieldset>
         <button className="Creator-add" onClick={() => handleAddItem()}>
           Add

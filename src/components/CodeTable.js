@@ -10,6 +10,7 @@ import {
   _extractTextBetween,
   setJsonResult,
   clearResultsTextarea,
+  cleanSectionCode,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -18,7 +19,6 @@ import useStore from "./../store/store";
 export default function CodeTable() {
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
-  const section = useStore((state) => state.section);
 
   const addSection = useStore((state) => state.addSection);
 
@@ -35,14 +35,14 @@ export default function CodeTable() {
         `{% endschema %}`,
       );
 
-      const schema = convertSchemaJSONToItems(JSON.parse(code).settings);
+      const settings = convertSchemaJSONToItems(JSON.parse(code).settings);
 
       removeItems();
-      addItems(schema);
+      addItems(settings);
 
-      console.log("my schema", schema);
+      console.log(`my schema's settings: `, settings);
     } catch (err) {
-      console.log("error in schema: ", err);
+      console.log("error in schema's settings: ", err);
     }
   };
 
@@ -77,94 +77,6 @@ export default function CodeTable() {
           <div className="CodeTable-tables-wrapper">
             <textarea
               placeholder="Paste section code here"
-              value={`<p> margin top: {{ section.settings.margin-top }} </p>
-
-              <style>
-              *{
-                margin-top: {{section.settings.margin-top}} !important;
-              }
-              </style>
-              <p> margin bottom: {{ section.settings.margin-bottom }} </p>
-              
-              {% schema %}
-              {
-              "name": "Premium Navbar TESTING",
-              "class": "premium-navbar-section",
-              "settings": [
-              {
-              "type": "paragraph",
-              "content": "All images should be 65 x 65px."
-              },
-                   {
-                        "type":      "range",
-                        "id":        "margin-top",
-                        "min":       -40,
-                        "max":        50,
-                        "step":       1,
-                        "unit":       "px",
-                        "label":     "Spacing Top",
-                    "info": "Default: 0",
-                        "default":   0
-                    },
-                   {
-                        "type":      "range",
-                        "id":        "margin-bottom",
-                        "min":       -40,
-                        "max":        50,
-                        "step":       1,
-                        "unit":       "px",
-                        "label":     "Spacing Bottom",
-                      "info": "Default: 0",
-                        "default":   0
-                    },
-                    {
-                      "type": "checkbox",
-                      "id": "display-collections-ok",
-                      "label": "Display all collections",
-                  "info": "Check this to display all of your collections automatically.",
-                  "default": true
-                    },
-                {
-                  "type": "richtext",
-                  "id": "hello",
-                  "label": "Richtext",
-                  "default": "<p>welcome</p>"
-                }
-              
-              ],
-              "blocks": [
-                  {
-                    "type": "select",
-                    "name": "New Item",
-                    "settings": [
-                       {
-                      "type": "image_picker",
-                      "id": "image",
-                      "label": "Image"
-                      },
-               {
-                      "type": "url",
-                      "id": "link",
-                      "label": "URL"
-                    },
-                      {
-                        "id": "text",
-                        "type": "text",
-                        "label": "Text"
-                      }
-                    ]
-                  }
-                ],
-              "presets": [
-              {
-              "name": "Premium Navbar TESTING",
-              "category": "Custom"
-              }
-              ]
-              }
-              {% endschema %}
-              
-              <p>we ends here yoyo</p>`}
               defaultValue=""
               name=""
               onChange={() => handleSectionCodeChange()}
@@ -173,6 +85,7 @@ export default function CodeTable() {
               rows="10"></textarea>
             <button
               onClick={async () => {
+                localStorage.clear();
                 convertSectionToJson();
                 await sleep(100);
                 const json = generateJSONSchema();
@@ -195,13 +108,30 @@ export default function CodeTable() {
             rows="10"></textarea>
         </div>
 
-        <button onClick={() => copyToClipboard()}>Copy to clipboard</button>
+        <button
+          onClick={() => {
+            const $section = document.querySelector(`#sectionResult`);
+            const _section = $section.value;
+            const section = cleanSectionCode(_section);
+
+            copyToClipboard(section);
+          }}>
+          Copy to clipboard
+        </button>
 
         <button
           onClick={() => {
             generateJSONAndVariables();
           }}>
           Generate JSON
+        </button>
+
+        <button
+          onClick={() => {
+            localStorage.clear();
+            window.location.reload();
+          }}>
+          Clear
         </button>
       </div>
     </div>

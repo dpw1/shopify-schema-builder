@@ -110,10 +110,6 @@ export default function FormItem(props) {
     console.log("look at me values", values);
   }, [values]);
 
-  // useEffect(() => {
-  //   console.log("last updated", lastChanfgedInput);
-  // }, [lastChangedInput]);
-
   const useFocus = () => {
     const htmlElRef = useRef(null);
     const setFocus = () => {
@@ -123,7 +119,7 @@ export default function FormItem(props) {
     return [htmlElRef, setFocus];
   };
 
-  const [inputRef, setInputFocus] = useFocus();
+  // const [inputRef, setInputFocus] = useFocus();
 
   return (
     <fieldset className="FormItem">
@@ -135,7 +131,6 @@ export default function FormItem(props) {
             <div className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
               <input
-                ref={inputRef}
                 value={values[`${itemId}_${e}`]}
                 onChange={(e) => {
                   handleInputChange(e);
