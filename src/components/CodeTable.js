@@ -11,6 +11,7 @@ import {
   setJsonResult,
   clearResultsTextarea,
   cleanSectionCode,
+  cleanJSONSchema,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -54,6 +55,23 @@ export default function CodeTable() {
     addSection(section);
   };
 
+  const copySectionToClipboard = () => {
+    const $section = document.querySelector(`#sectionResult`);
+    const _section = $section.value;
+    const section = cleanSectionCode(_section);
+
+    copyToClipboard(section);
+  };
+
+  const copyJSONToClipboard = () => {
+    const _json = generateJSONSchema();
+
+    console.log(_json);
+    const json = cleanJSONSchema(JSON.parse(_json));
+
+    copyToClipboard(json);
+  };
+
   return (
     <div className="CodeTable">
       <div className="CodeTable-wrapper">
@@ -66,14 +84,19 @@ export default function CodeTable() {
           rows="10"></textarea>
 
         <div className="CodeTable-tables">
-          <textarea
-            defaultValue={""}
-            value={""}
-            readOnly={false}
-            name=""
-            id="CodeTable-result"
-            cols="30"
-            rows="10"></textarea>
+          <div className="CodeTable-tables-result">
+            <textarea
+              defaultValue={""}
+              value={""}
+              readOnly={false}
+              name=""
+              id="CodeTable-result"
+              cols="30"
+              rows="10"></textarea>
+            <button onClick={() => copyJSONToClipboard()}>
+              Copy to clipboard
+            </button>
+          </div>
           <div className="CodeTable-tables-wrapper">
             <textarea
               placeholder="Paste section code here"
@@ -108,14 +131,7 @@ export default function CodeTable() {
             rows="10"></textarea>
         </div>
 
-        <button
-          onClick={() => {
-            const $section = document.querySelector(`#sectionResult`);
-            const _section = $section.value;
-            const section = cleanSectionCode(_section);
-
-            copyToClipboard(section);
-          }}>
+        <button onClick={() => copySectionToClipboard()}>
           Copy to clipboard
         </button>
 

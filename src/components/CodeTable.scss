@@ -28,6 +28,16 @@
     }
   }
 
+  &-tables-result {
+    position: relative;
+    button {
+      position: absolute;
+      bottom: 5px;
+      right: 0;
+      border: 1px solid #ffffff30;
+    }
+  }
+
   &-convert {
     position: absolute;
     bottom: 5px;

@@ -354,13 +354,13 @@ export const updateSectionWithUpdatedSchema = async (json) => {
       result,
     );
 
-    console.log("i orc -- ", /\[ezfyid_/gim.test(_updatedSection));
+    // console.log("i orc -- ", /\[ezfyid_/gim.test(_updatedSection));
 
-    const updatedSection = /\[ezfyid_/gim.test(_updatedSection)
-      ? _updatedSection
-      : replaceSectionSettingIdsOnFirstRender(_updatedSection);
+    // const updatedSection = /\[ezfyid_/gim.test(_updatedSection)
+    //   ? _updatedSection
+    //   : replaceSectionSettingIdsOnFirstRender(_updatedSection);
 
-    $result.value = updatedSection.trim();
+    $result.value = _updatedSection.trim();
   } catch (err) {
     console.log("xx error in schema: ", err);
   }
@@ -495,9 +495,27 @@ export const cleanSectionCode = (section) => {
     JSON.stringify(result, null, 2),
   );
 
-  console.log("macaco", updatedSection);
-
   return updatedSection;
+};
+
+/* clean the schema JSON to remove all of the __id.*/
+export const cleanJSONSchema = (_json) => {
+  if (!_json) {
+    throw new Error(`cleanJSONSchema - JSON doesn't exist`);
+  }
+
+  const json = _json.map((e) => {
+    if (e.hasOwnProperty("__id")) {
+      delete e.__id;
+    }
+    return e;
+  });
+
+  const result = `${JSON.stringify(json, null, 2)
+    .replace(`[`, "")
+    .replace(`]`, "")}`;
+
+  return result;
 };
 
 export function sleep(ms) {
