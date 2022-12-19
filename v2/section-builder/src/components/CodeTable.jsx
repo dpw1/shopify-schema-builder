@@ -69,6 +69,8 @@ export default function CodeTable() {
     console.log(_json);
     const json = cleanJSONSchema(JSON.parse(_json));
 
+    console.log("cleaned json", _json);
+
     copyToClipboard(json);
   };
 
@@ -130,10 +132,6 @@ export default function CodeTable() {
             cols="30"
             rows="10"></textarea>
         </div>
-
-        <button onClick={() => copySectionToClipboard()}>
-          Copy to clipboard
-        </button>
 
         <button
           onClick={() => {

@@ -1,1 +1,1 @@
-.Sidebar{background:#fff;max-width:30%;width:100%;height:100%;padding-top:15px}.Sidebar-sections{height:100vh;overflow-y:scroll}.Sidebar button{display:flex;justify-content:center}.Sidebar button svg{fill:var(--p-interactive);width:20px;height:20px;margin-right:5px}
+.Sidebar{background:#fff;max-width:30%;width:100%;height:100%;padding-top:15px;height:100vh;overflow-y:scroll}.Sidebar button{display:flex;justify-content:center}.Sidebar button svg{fill:var(--p-interactive);width:20px;height:20px;margin-right:5px}

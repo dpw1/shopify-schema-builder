@@ -7,6 +7,11 @@ import Sidebar from "./components/Sidebar";
 import Section from "./components/Section";
 import Header from "./components/Header";
 
+import { createGlobalState } from "react-hooks-global-state";
+import { initialState } from "./utils";
+
+const { GlobalStateProvider, useGlobalState } = createGlobalState(initialState);
+
 function App() {
   return (
     <div className="App">
@@ -34,15 +39,15 @@ function App() {
           .
         </h3>
         <div className="App-wrapper">
-          <>
+          {/* <>
             <Header></Header>
             <Sidebar>
               <Section />
             </Sidebar>
-          </>
+          </> */}
 
-          {/* <Creator />
-          <CodeTable></CodeTable> */}
+          <Creator />
+          <CodeTable></CodeTable>
         </div>
       </div>
     </div>

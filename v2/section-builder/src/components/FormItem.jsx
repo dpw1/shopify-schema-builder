@@ -13,12 +13,6 @@ import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
 export default function FormItem(props) {
-  const [modified, setModified] = useState(false);
-
-  const values = useStore((state) => state.values);
-
-  const addValues = useStore((state) => state.addValues);
-
   let {
     itemId,
     type,
@@ -27,9 +21,20 @@ export default function FormItem(props) {
     duplicatedSubOptions: _duplicatedSubOptions,
     defaultOptions,
     subOptions,
-    totalSubOptions,
+    totalSubOptions: _totalSubOptions,
     itemCount,
   } = props;
+
+  const [modified, setModified] = useState(false);
+  const [error, setError] = useState("");
+  const [totalSubOptions, setTotalSubOptions] = useStickyState(
+    `totalSubOptios-${itemId}`,
+    _totalSubOptions,
+  );
+
+  const values = useStore((state) => state.values);
+
+  const addValues = useStore((state) => state.addValues);
 
   let duplicatedSubOptions = _duplicatedSubOptions
     ? _duplicatedSubOptions
@@ -47,7 +52,11 @@ export default function FormItem(props) {
     defaultOptions = duplicatedOptions;
   }
 
+  const handleErrors = () => {};
+
   const handleInputChange = (e) => {
+    setError("");
+
     const name = e.target.name;
     const value = e.target.value;
 
@@ -65,6 +74,10 @@ export default function FormItem(props) {
     setModified(true);
 
     const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
+
+    if (modifiedItem.id === "") {
+      setError("Id cant be empty");
+    }
 
     if (modifiedItem.hasOwnProperty("id")) {
       updateSectionSettings(__id, modifiedItem.id);
@@ -164,7 +177,7 @@ export default function FormItem(props) {
 
                       <p>
                         {console.log(
-                          "shit",
+                          "moving!",
                           duplicatedSubOptions && duplicatedSubOptions[i]
                             ? duplicatedSubOptions[i][each]
                             : "",
@@ -202,8 +215,24 @@ export default function FormItem(props) {
                 return <div className="FormItem-suboption">{rowContent}</div>;
               });
           })}
+          <div className="FormItem-suboptions-contorl">
+            <button
+              onClick={() => {
+                setTotalSubOptions(totalSubOptions - 1);
+              }}>
+              Remove
+            </button>
+            <button
+              onClick={() => {
+                setTotalSubOptions(totalSubOptions + 1);
+              }}>
+              Add
+            </button>
+          </div>
         </div>
       )}
+
+      {error && error}
     </fieldset>
   );
 }

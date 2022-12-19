@@ -1,9 +1,13 @@
 import short from "short-uuid";
 
+export const initialState = {
+  activeSection: null,
+  sectionName: "Test",
+  count: 0,
+};
+
 export const schema = [
-  {
-    id: "header",
-  },
+  { id: "header" },
   { id: "paragraph" },
   { id: "text" },
   { id: "color" },
@@ -147,6 +151,11 @@ export const transformDOMIntoJSON = (each) => {
     /* type is "checkbox" and there is a "default", convert it to boolean */
     if (type === "checkbox" && name === "default" && value !== "") {
       value = value.toLowerCase() === "true" ? true : false;
+    }
+
+    /* type is "number" and there is a "default", convert it to integer */
+    if (type === "number" && name === "default" && value !== "") {
+      value = parseInt(value);
     }
 
     /* type is "range", convert values to integer */
@@ -529,6 +538,17 @@ export const cleanSectionCode = (section) => {
   return updatedSection;
 };
 
+function removeLastCharacter(str, char) {
+  return str
+    .split("")
+    .reverse()
+    .join("")
+    .replace(char, "")
+    .split("")
+    .reverse()
+    .join("");
+}
+
 /* clean the schema JSON to remove all of the __id.*/
 export const cleanJSONSchema = (_json) => {
   if (!_json) {
@@ -542,9 +562,8 @@ export const cleanJSONSchema = (_json) => {
     return e;
   });
 
-  const result = `${JSON.stringify(json, null, 2)
-    .replace(`[`, "")
-    .replace(`]`, "")}`;
+  const _result = `${JSON.stringify(json, null, 2).replace(`[`, "")}`;
+  const result = removeLastCharacter(_result, "]");
 
   return result;
 };
