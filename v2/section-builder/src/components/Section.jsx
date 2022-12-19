@@ -1,0 +1,16 @@
+import React from "react";
+import "./Section.scss";
+
+export default function Section() {
+  return (
+    <div className="Section">
+      <div className="Section-expand">
+        <svg viewBox="0 0 20 20">
+          <path d="M13.098 8h-6.196c-.751 0-1.172.754-.708 1.268l3.098 3.432c.36.399 1.055.399 1.416 0l3.098-3.433c.464-.513.043-1.267-.708-1.267Z" />
+        </svg>
+      </div>
+      <div className="Section-image"></div>
+      <div className="Section-title">EZFY Slideshow</div>
+    </div>
+  );
+}

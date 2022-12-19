@@ -3,6 +3,9 @@ import "./App.scss";
 import URL from "./components/URL";
 import Creator from "./components/Creator";
 import CodeTable from "./components/CodeTable";
+import Sidebar from "./components/Sidebar";
+import Section from "./components/Section";
+import Header from "./components/Header";
 
 function App() {
   return (
@@ -31,8 +34,15 @@ function App() {
           .
         </h3>
         <div className="App-wrapper">
-          <Creator />
-          <CodeTable></CodeTable>
+          <>
+            <Header></Header>
+            <Sidebar>
+              <Section />
+            </Sidebar>
+          </>
+
+          {/* <Creator />
+          <CodeTable></CodeTable> */}
         </div>
       </div>
     </div>

@@ -1,0 +1,1 @@
+.Header{display:block;width:100%;background-color:var(--osui_color-frame-surface-bg)}.Header-left{height:56px;width:55px;display:flex;align-items:center;justify-content:center;border:1px solid #c9cbcf}.Header svg{width:20px;height:20px;fill:var(--p-icon);transition:fill var(--p-duration-150) var(--p-ease)}
