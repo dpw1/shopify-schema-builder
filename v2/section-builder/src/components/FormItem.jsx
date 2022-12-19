@@ -26,7 +26,7 @@ export default function FormItem(props) {
   } = props;
 
   const [modified, setModified] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
   const [totalSubOptions, setTotalSubOptions] = useStickyState(
     `totalSubOptios-${itemId}`,
     _totalSubOptions,
@@ -55,7 +55,8 @@ export default function FormItem(props) {
   const handleErrors = () => {};
 
   const handleInputChange = (e) => {
-    setError("");
+    setErrors([]);
+    let formErrors = [];
 
     const name = e.target.name;
     const value = e.target.value;
@@ -76,12 +77,27 @@ export default function FormItem(props) {
     const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
 
     if (modifiedItem.id === "") {
-      setError("Id cant be empty");
+      formErrors.push({
+        id: "id",
+        error: "ID can't be empty",
+      });
+    }
+
+    if (modifiedItem.label === "") {
+      formErrors.push({
+        id: "label",
+        error: "Label can't be empty",
+      });
+    }
+
+    setErrors(formErrors);
+
+    if (formErrors.length >= 1) {
+      return;
     }
 
     if (modifiedItem.hasOwnProperty("id")) {
       updateSectionSettings(__id, modifiedItem.id);
-      console.log(`xxx ${settingsId} must be modified to ${modifiedItem.id}`);
     }
   };
 
@@ -154,6 +170,12 @@ export default function FormItem(props) {
                 placeholder={e}
                 autoComplete={"off"}
               />
+
+              <span className="FormItem-error">
+                {errors &&
+                  errors.filter((x) => x.id === e).length >= 1 &&
+                  errors.filter((x) => x.id === e)[0].error}
+              </span>
             </div>
           </React.Fragment>
         );
@@ -231,8 +253,6 @@ export default function FormItem(props) {
           </div>
         </div>
       )}
-
-      {error && error}
     </fieldset>
   );
 }
