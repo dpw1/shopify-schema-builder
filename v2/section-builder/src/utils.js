@@ -290,6 +290,35 @@ export const setJsonResult = (_json) => {
   localStorage.setItem("json_results", result);
 };
 
+function _scrollTo(el, yOffset = 0) {
+  const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
+
+/* Scrolls to item with specific ID */
+export const scrollToItem = (id) => {
+  const $select = document.querySelector(`[id*='${id}']`);
+
+  if (!$select) {
+    return;
+  }
+
+  const $parent = $select.closest(`li`);
+
+  if (!$parent) {
+    return;
+  }
+
+  /*
+  TODO
+  
+  Scroll down the height of previous el 
+  if last element, just scroll to bottom
+  */
+  return _scrollTo($parent, 380);
+};
+
 /* Gets the current JSON being edited via the DOM items.
 It's all persisted via the local storage instead of using the local store.
 
@@ -354,6 +383,8 @@ export const updateSectionWithUpdatedSchema = async (json) => {
       result,
     );
 
+    /* This would replace all the section.settings for [id]section.settings[id] to be able to track later on,
+    but Dawn theme has a different way to set these. It must be updated */
     // console.log("i orc -- ", /\[ezfyid_/gim.test(_updatedSection));
 
     // const updatedSection = /\[ezfyid_/gim.test(_updatedSection)

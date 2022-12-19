@@ -8,6 +8,7 @@ import {
   resetJsonResult,
   generateJSONSchema,
   setJsonResult,
+  scrollToItem,
 } from "./../utils";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
@@ -327,8 +328,10 @@ export default function Item(props) {
     /* ====== */
     const index = parseInt(itemCount) - 1;
 
+    const id = short.generate();
+
     const _item = {
-      id: short.generate(),
+      id,
       type,
       duplicatedOptions: _json,
     };
@@ -337,6 +340,8 @@ export default function Item(props) {
     updateItems(updatedItems);
 
     generateJSONAndVariables();
+    await sleep(100);
+    scrollToItem(id);
   };
 
   return (
