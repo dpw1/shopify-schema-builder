@@ -30,6 +30,23 @@
     max-width: 50px;
     width: 100%;
     padding: 0;
+    background: unset;
+    border: unset;
+    cursor: pointer;
+    transition-duration: var(--p-duration-150);
+    transition-property: color, background-color;
+    transition-timing-function: var(--p-ease);
+
+    &:hover svg {
+      fill: var(--p-icon-hovered);
+    }
+
+    svg {
+      fill: var(--p-icon);
+
+      &:hover {
+      }
+    }
 
     &--toggle {
       max-width: 30px;

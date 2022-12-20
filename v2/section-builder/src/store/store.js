@@ -95,6 +95,34 @@ const useStore = create((set, get) => ({
       };
     });
   },
+
+  /* Adds "section." to the variables. 
+	true => section.settings.my_variable
+	false => settings.my_variable
+  ======================================= */
+  sectionText: getLocalStorage("section-text"),
+  setSectionText: (value) => {
+    set((_) => {
+      setLocalStorage("section-text", value);
+      return {
+        sectionText: value,
+      };
+    });
+  },
+
+  /* Global JSON is the "ugly" JSON containing the __id. It's used for programatic purposes and not used on the actual Shopify section.
+  ======================================= */
+  globalJson: getLocalStorage("globalJson")
+    ? JSON.parse(getLocalStorage("globalJson"))
+    : [],
+  setGlobalJson: (json) => {
+    set((_) => {
+      setLocalStorage("globalJson", JSON.stringify(json));
+      return {
+        globalJson: json,
+      };
+    });
+  },
 }));
 
 export default useStore;

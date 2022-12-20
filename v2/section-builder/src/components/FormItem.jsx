@@ -35,6 +35,7 @@ export default function FormItem(props) {
   const values = useStore((state) => state.values);
 
   const addValues = useStore((state) => state.addValues);
+  const setGlobalJson = useStore((state) => state.setGlobalJson);
 
   let duplicatedSubOptions = _duplicatedSubOptions
     ? _duplicatedSubOptions
@@ -72,6 +73,7 @@ export default function FormItem(props) {
     const json = generateJSONSchema();
 
     setJsonResult(json);
+    setGlobalJson(json);
     setModified(true);
 
     const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
@@ -147,8 +149,6 @@ export default function FormItem(props) {
 
     return [htmlElRef, setFocus];
   };
-
-  // const [inputRef, setInputFocus] = useFocus();
 
   return (
     <fieldset className="FormItem">

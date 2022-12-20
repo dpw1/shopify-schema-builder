@@ -49,8 +49,15 @@ export function convertToLiquidVariables(json) {
 export function updateLiquidVariablesDOM(variables) {
   const $textarea = document.querySelector(`#CodeTable-variables`);
 
+  const showSectionText =
+    localStorage.getItem(`section-text`) === "true" ? true : false;
+
   if (!$textarea) {
     return;
+  }
+
+  if (showSectionText) {
+    variables = variables.replaceAll(`section.`, "");
   }
 
   $textarea.value = variables;
@@ -402,7 +409,7 @@ export const updateSectionWithUpdatedSchema = async (json) => {
 
     $result.value = _updatedSection.trim();
   } catch (err) {
-    console.log("xx error in schema: ", err);
+    console.log("xx error in function updateSectionWithUpdatedSchema: ", err);
   }
 };
 

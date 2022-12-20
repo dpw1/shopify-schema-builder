@@ -286,6 +286,10 @@
 }
 
 .App {
+  .App-wrapper {
+    display: flex;
+    align-items: flex-start;
+  }
   .container {
     max-width: 1200px;
     margin: 0 auto;

@@ -48,6 +48,7 @@ export default function Creator() {
   const updateItems = useStore((state) => state.updateItems);
 
   const jsonResult = useStore((state) => state.jsonResult);
+  const setGlobalJson = useStore((state) => state.setGlobalJson);
 
   const updateVariablesResult = useStore(
     (state) => state.updateVariablesResult,
@@ -197,6 +198,10 @@ export default function Creator() {
     const num = e.target.closest(`.item`).getAttribute("data-item-count");
     focusFirstInputWhenDropdownChanges(num);
     generateJSONAndVariables();
+    setTimeout(() => {
+      const json = generateJSONSchema();
+      setGlobalJson(json);
+    }, 50);
   };
 
   const focusFirstInputWhenDropdownChanges = (num) => {
@@ -221,6 +226,11 @@ export default function Creator() {
     updateItems(ordered);
 
     updateJSONAndVariables();
+
+    setTimeout(() => {
+      const json = generateJSONSchema();
+      setGlobalJson(json);
+    }, 50);
   };
 
   const handleToggle = (e, id) => {

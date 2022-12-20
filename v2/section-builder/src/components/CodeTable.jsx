@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   convertSchemaJSONToItems,
@@ -12,6 +12,7 @@ import {
   clearResultsTextarea,
   cleanSectionCode,
   cleanJSONSchema,
+  updateJSONAndVariables,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -20,7 +21,8 @@ import useStore from "./../store/store";
 export default function CodeTable() {
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
-
+  const sectionText = useStore((state) => state.sectionText);
+  const setSectionText = useStore((state) => state.setSectionText);
   const addSection = useStore((state) => state.addSection);
 
   const variablesResult = useStore((state) => state.variablesResult);
@@ -77,6 +79,24 @@ export default function CodeTable() {
   return (
     <div className="CodeTable">
       <div className="CodeTable-wrapper">
+        <div className="CodeTable-checkbox">
+          <input
+            checked={sectionText}
+            onClick={() => {
+              const update = !sectionText;
+              setSectionText(update);
+
+              setTimeout(() => {
+                updateJSONAndVariables();
+              }, 50);
+            }}
+            id="showSettings"
+            type="checkbox"
+          />
+          <label htmlFor="showSettings">
+            Remove <b>"sections."</b> from the variables
+          </label>
+        </div>
         <textarea
           defaultValue={variablesResult ? variablesResult : ""}
           value={variablesResult ? variablesResult : ""}
@@ -99,7 +119,7 @@ export default function CodeTable() {
               Copy to clipboard
             </button>
           </div>
-          <div className="CodeTable-tables-wrapper">
+          {/* <div className="CodeTable-tables-wrapper">
             <textarea
               placeholder="Paste section code here"
               defaultValue=""
@@ -121,16 +141,7 @@ export default function CodeTable() {
               className="CodeTable-convert">
               Go
             </button>
-          </div>
-
-          <textarea
-            defaultValue={""}
-            readOnly={true}
-            name=""
-            placeholder="Result"
-            id="sectionResult"
-            cols="30"
-            rows="10"></textarea>
+          </div> */}
         </div>
 
         <button
