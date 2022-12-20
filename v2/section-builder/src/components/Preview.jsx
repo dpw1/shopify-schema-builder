@@ -48,18 +48,13 @@ export default function Preview() {
   const RenderCheckboxPreview = (data) => {
     return (
       <>
-        <label
-          className="Preview-checkbox-label"
-          htmlFor={data.id + data.label}>
+        <label className="Preview-checkbox-label" htmlFor={data.id}>
           <span className="Preview-checkbox-label-child">
             <span className="Preview-checkbox-label-grandchild">
               <input
-                id={data.id + data.label}
+                id={data.id}
                 type="checkbox"
                 className="Preview-checkbox-input"
-                aria-checked="true"
-                defaultValue=""
-                defaultChecked=""
                 checked={data.default}
               />
               <span className="Preview-checkbox-tick" />
@@ -177,6 +172,92 @@ export default function Preview() {
     );
   };
 
+  const RenderCollectionPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-label">{data.label}</div>
+
+        <div className="Preview-button">Select collection</div>
+
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
+  const RenderLinkListPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-label">{data.label}</div>
+
+        <div className="Preview-button">Select menu</div>
+
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
+  const RenderNumberPreview = (data) => {
+    return (
+      <>
+        <>
+          <div className="Preview-label">{data.label}</div>
+          <div className="Preview-number">
+            <input
+              type="text"
+              value={data.default && data.default !== "" ? data.default : ""}
+              placeholder={
+                data.placeholder && data.placeholder !== ""
+                  ? data.placeholder
+                  : ""
+              }
+              className="Preview-input"
+            />
+            <div
+              className="Preview-number-arrows Polaris-TextField__Spinner_mzr5w"
+              aria-hidden="true">
+              <div
+                role="button"
+                className="Preview-number-arrows-child "
+                tabIndex={-1}>
+                <div className="Polaris-TextField__SpinnerIcon_185nu">
+                  <span className="Polaris-Icon_yj27d">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="Polaris-Icon__Svg_375hu"
+                      focusable="false"
+                      aria-hidden="true">
+                      <path d="M6.902 12h6.196c.751 0 1.172-.754.708-1.268l-3.098-3.432c-.36-.399-1.055-.399-1.416 0l-3.098 3.433c-.464.513-.043 1.267.708 1.267Z" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <div
+                role="button"
+                className="Preview-number-arrows-child"
+                tabIndex={-1}>
+                <div className="Polaris-TextField__SpinnerIcon_185nu">
+                  <span className="Polaris-Icon_yj27d">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="Polaris-Icon__Svg_375hu"
+                      focusable="false"
+                      aria-hidden="true">
+                      <path d="M13.098 8h-6.196c-.751 0-1.172.754-.708 1.268l3.098 3.432c.36.399 1.055.399 1.416 0l3.098-3.433c.464-.513.043-1.267-.708-1.267Z" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {data.info && data.info !== "" && (
+            <div className="Preview-info">{data.info}</div>
+          )}
+        </>
+      </>
+    );
+  };
+
   return (
     <div className="Preview">
       <h2 className="Preview-title">Preview</h2>
@@ -200,6 +281,12 @@ export default function Preview() {
                   return <RenderHeaderPreview {...e} />;
                 } else if (e.type === "image_picker") {
                   return <RenderImagePickerPreview {...e} />;
+                } else if (e.type === "collection") {
+                  return <RenderCollectionPreview {...e} />;
+                } else if (e.type === "link_list") {
+                  return <RenderLinkListPreview {...e} />;
+                } else if (e.type === "number") {
+                  return <RenderNumberPreview {...e} />;
                 }
               })()}
             </div>

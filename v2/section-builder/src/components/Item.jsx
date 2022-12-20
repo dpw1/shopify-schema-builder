@@ -242,7 +242,7 @@ const renderElement = (
       return (
         <FormItem
           itemCount={itemCount}
-          options={["id", "label", "info", "default"]}
+          options={["id", "label", "info", "placeholder", "default"]}
           type="number"
           duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}

@@ -3,12 +3,14 @@
   padding: 10px;
   border-radius: 5px;
   background: #ffffff0d;
-  margin-bottom: 20px;
   max-height: unset;
   height: auto;
   padding-bottom: 0;
   position: relative;
-  margin-top: 60px;
+
+  & + .item {
+    margin-top: 40px;
+  }
 
   &[data-item-count="1"] {
     margin-top: 40px;
@@ -42,6 +44,8 @@
     }
 
     svg {
+      width: 20px;
+      height: 20px;
       fill: var(--p-icon);
 
       &:hover {

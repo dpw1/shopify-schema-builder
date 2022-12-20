@@ -439,6 +439,10 @@ export const replaceSectionSettingIdsOnFirstRender = (section) => {
 export const updateSectionSettings = (id, value, type = "section") => {
   const $result = window.document.querySelector(`#sectionResult`);
 
+  if (!$result) {
+    return;
+  }
+
   const result = $result.value.trim();
 
   if (result === "") {

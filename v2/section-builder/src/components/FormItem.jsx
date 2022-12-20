@@ -53,17 +53,47 @@ export default function FormItem(props) {
     defaultOptions = duplicatedOptions;
   }
 
-  const handleErrors = () => {};
+  const handleErrors = (item) => {
+    let formErrors = [];
+    if (item.id === "") {
+      formErrors.push({
+        id: "id",
+        error: "ID can't be empty.",
+      });
+    }
+
+    if (item.label === "") {
+      formErrors.push({
+        id: "label",
+        error: "Label can't be empty.",
+      });
+    }
+
+    if (
+      item.type === "number" &&
+      item.hasOwnProperty("default") &&
+      !Number.isInteger(item.default)
+    ) {
+      formErrors.push({
+        id: "default",
+        error: "Default must be a negative or positive number.",
+      });
+    }
+
+    console.log("errors ", item.type, formErrors);
+
+    setErrors(formErrors);
+
+    return formErrors.length;
+  };
 
   const handleInputChange = (e) => {
     setErrors([]);
-    let formErrors = [];
 
     const name = e.target.name;
     const value = e.target.value;
 
     const __id = name.split("_")[0];
-    const settingsId = `[ezfyid_${__id}]`;
 
     addValues({
       ...values,
@@ -78,21 +108,7 @@ export default function FormItem(props) {
 
     const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
 
-    if (modifiedItem.id === "") {
-      formErrors.push({
-        id: "id",
-        error: "ID can't be empty",
-      });
-    }
-
-    if (modifiedItem.label === "") {
-      formErrors.push({
-        id: "label",
-        error: "Label can't be empty",
-      });
-    }
-
-    setErrors(formErrors);
+    const formErrors = handleErrors(modifiedItem);
 
     if (formErrors.length >= 1) {
       return;
@@ -155,8 +171,6 @@ export default function FormItem(props) {
       {options.map((e, i) => {
         return (
           <React.Fragment>
-            {i === 0 && <div className="FormItem-title">{setItemsTitle()}</div>}
-
             <div className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
               <input
