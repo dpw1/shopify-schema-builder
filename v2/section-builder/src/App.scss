@@ -164,6 +164,7 @@
     "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --p-font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
     "Liberation Mono", Menlo, monospace;
+
   --p-font-size-75: 0.75rem;
   --p-font-size-100: 0.875rem;
   --p-font-size-200: 1rem;
@@ -283,6 +284,8 @@
   --p-z-11: 519;
   --p-z-12: 520;
   color-scheme: light;
+
+  --p-font-size-xs: 14px;
 }
 
 .App {

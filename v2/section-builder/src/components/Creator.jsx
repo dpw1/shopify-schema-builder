@@ -73,6 +73,11 @@ export default function Creator() {
         },
       ],
     );
+
+    setTimeout(() => {
+      const json = generateJSONSchema();
+      setGlobalJson(json);
+    }, 50);
   };
 
   const addCustomItem = async () => {
@@ -174,6 +179,11 @@ export default function Creator() {
     updateItems(updated);
     handleUpdateTextarea();
     generateJSONAndVariables();
+
+    setTimeout(() => {
+      const json = generateJSONSchema();
+      setGlobalJson(json);
+    }, 50);
   };
 
   const handleOnChange = (e) => {

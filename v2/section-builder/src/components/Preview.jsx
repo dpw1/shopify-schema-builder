@@ -111,7 +111,9 @@ export default function Preview() {
               {data.default ? data.default : "Transparent"}
             </div>
           </div>
-          <svg viewBox="0 0 20 20" className="Preview-color-svg">
+          <svg
+            viewBox="0 0 20 20"
+            className="Preview-color-svg Preview-icon-database">
             <path d="M10 9c3.866 0 7-1.343 7-3s-3.134-3-7-3-7 1.343-7 3 3.134 3 7 3Zm6.602 0c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Zm0 4c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Z" />
           </svg>
         </div>
@@ -147,9 +149,37 @@ export default function Preview() {
     );
   };
 
+  const RenderHeaderPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-content">{data.content}</div>
+      </>
+    );
+  };
+
+  const RenderImagePickerPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-image-picker-top">
+          <div className="Preview-label">{data.label}</div>
+          <svg
+            viewBox="0 0 20 20"
+            className="Preview-color-svg Preview-icon-database">
+            <path d="M10 9c3.866 0 7-1.343 7-3s-3.134-3-7-3-7 1.343-7 3 3.134 3 7 3Zm6.602 0c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Zm0 4c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Z" />
+          </svg>
+        </div>
+
+        <div className="Preview-image-box">
+          <div className="Preview-button">Select image</div>
+        </div>
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
   return (
     <div className="Preview">
-      <h2>Preview</h2>
+      <h2 className="Preview-title">Preview</h2>
       {globalJson &&
         globalJson.length >= 1 &&
         JSON.parse(globalJson).map((e) => {
@@ -166,6 +196,10 @@ export default function Preview() {
                   return <RenderColorPreview {...e} />;
                 } else if (e.type === "font_picker") {
                   return <RenderFontPreview {...e} />;
+                } else if (e.type === "header") {
+                  return <RenderHeaderPreview {...e} />;
+                } else if (e.type === "image_picker") {
+                  return <RenderImagePickerPreview {...e} />;
                 }
               })()}
             </div>
