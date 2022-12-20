@@ -91,6 +91,9 @@ const renderElement = (
           duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
+          defaultOptions={{
+            default: "sans-serif",
+          }}
         />
       );
     case "collection":

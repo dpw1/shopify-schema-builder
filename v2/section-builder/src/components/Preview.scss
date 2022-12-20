@@ -96,6 +96,7 @@
     text-transform: none;
     font-size: var(--p-font-size-100);
     margin-bottom: 0.125rem;
+    color: var(--p-text);
   }
   .Preview-input {
     webkit-appearance: none;
@@ -148,6 +149,7 @@
 
   .Preview-checkbox-text {
     font-size: var(--p-font-size-100);
+    color: var(--p-text);
   }
 
   .Preview-checkbox-wrapper {
@@ -446,11 +448,10 @@
   }
 
   .Preview-color-label-text {
-    font-size: 0.75rem;
+    font-size: 12px;
   }
 
   .Preview-color-label-text {
-    font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1rem;
     text-overflow: ellipsis;
@@ -478,5 +479,44 @@
     fill: var(--p-icon);
     width: 20px;
     height: 20px;
+  }
+}
+
+/* ## Font picker 
+============================== */
+
+.Preview-item--font_picker {
+  .Preview-font-wrapper {
+    background-color: var(--p-surface-subdued);
+    border: 0.0625rem solid var(--p-border-subdued);
+    border-radius: var(--p-border-radius-1);
+    padding: 16px;
+  }
+
+  .Preview-font-title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 10px;
+  }
+
+  .Preview-font-button-container {
+    padding-top: 1rem;
+  }
+
+  .Preview-font-button-box {
+    flex: 1 1 auto;
+    width: 100%;
+    display: block;
+  }
+
+  * {
+    font-size: 14px !important;
+  }
+
+  .Preview-label {
+    font-size: var(--p-font-size-100) !important;
+    color: var(--p-text);
   }
 }

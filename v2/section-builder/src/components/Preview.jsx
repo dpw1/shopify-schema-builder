@@ -78,7 +78,7 @@ export default function Preview() {
             </span>
           </span>
           <span className="">
-            <span className="Preview-checkbox-text">Label for checkbox</span>
+            <span className="Preview-checkbox-text">{data.label}</span>
           </span>
         </label>
 
@@ -104,10 +104,12 @@ export default function Preview() {
 
           <div className="Preview-color-text">
             <label className="Preview-color-label">
-              <div className="Preview-color-label-text">Label for checkbox</div>
+              <div className="Preview-color-label-text">{data.label}</div>
             </label>
 
-            <div className="Preview-color-hex">#FFFFFF</div>
+            <div className="Preview-color-hex">
+              {data.default ? data.default : "Transparent"}
+            </div>
           </div>
           <svg viewBox="0 0 20 20" className="Preview-color-svg">
             <path d="M10 9c3.866 0 7-1.343 7-3s-3.134-3-7-3-7 1.343-7 3 3.134 3 7 3Zm6.602 0c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Zm0 4c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Z" />
@@ -121,8 +123,33 @@ export default function Preview() {
     );
   };
 
+  const RenderFontPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-label">{data.label}</div>
+        <div className="Preview-font-wrapper">
+          <span className="Preview-font-title">{data.default}</span>
+
+          <p>Regular</p>
+
+          <div className="Preview-font-button-container">
+            <div className="Preview-font-button-box Polaris-ButtonGroup_yy85z Polaris-ButtonGroup--segmented_150jh Polaris-ButtonGroup--fullWidth_zyvh4">
+              <button id="FontPicker1" className="Preview-button" type="button">
+                <span className="Polaris-Button__Content_xd1mk">
+                  <span className="Polaris-Button__Text_yj3uv">Change</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
   return (
     <div className="Preview">
+      <h2>Preview</h2>
       {globalJson &&
         globalJson.length >= 1 &&
         JSON.parse(globalJson).map((e) => {
@@ -137,6 +164,8 @@ export default function Preview() {
                   return <RenderCheckboxPreview {...e} />;
                 } else if (e.type === "color") {
                   return <RenderColorPreview {...e} />;
+                } else if (e.type === "font_picker") {
+                  return <RenderFontPreview {...e} />;
                 }
               })()}
             </div>
