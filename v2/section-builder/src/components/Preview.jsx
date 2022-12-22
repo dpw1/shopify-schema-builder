@@ -196,6 +196,18 @@ export default function Preview() {
     );
   };
 
+  const RenderPagePreview = (data) => {
+    return (
+      <>
+        <div className="Preview-label">{data.label}</div>
+
+        <div className="Preview-button">Select page</div>
+
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
   const RenderNumberPreview = (data) => {
     return (
       <>
@@ -258,6 +270,67 @@ export default function Preview() {
     );
   };
 
+  const RenderParagraphPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-info">{data.content}</div>
+      </>
+    );
+  };
+
+  const RenderProductPreview = (data) => {
+    return (
+      <>
+        <div className="Preview-label">{data.label}</div>
+
+        <div className="Preview-button">Select product</div>
+
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
+  const RenderRadioPreview = (data) => {
+    {
+      console.log("monkey", data);
+    }
+    return (
+      <>
+        <div className="Preview-label">{data.label}</div>
+
+        <div className="Preview-radio">
+          <ul>
+            {data.hasOwnProperty("options") &&
+              data.options &&
+              data.options.length >= 1 &&
+              data.options.map((e) => (
+                <li>
+                  <label
+                    className="Preview-radio-label"
+                    htmlFor="PolarisRadioButton1">
+                    <span className="Preview-radio-label-child">
+                      <span className="Preview-radio-label-gc">
+                        <input
+                          readOnly
+                          checked={e.label === data.default ? true : false}
+                          id="PolarisRadioButton1"
+                          type="radio"
+                        />
+                        <span className="Radio-radio-style" />
+                      </span>
+                    </span>
+                    <span className="Radio-preview-text">{e.label}</span>
+                  </label>
+                </li>
+              ))}
+          </ul>
+        </div>
+
+        <div className="Preview-info">{data.info}</div>
+      </>
+    );
+  };
+
   return (
     <div className="Preview">
       <h2 className="Preview-title">Preview</h2>
@@ -287,6 +360,14 @@ export default function Preview() {
                   return <RenderLinkListPreview {...e} />;
                 } else if (e.type === "number") {
                   return <RenderNumberPreview {...e} />;
+                } else if (e.type === "page") {
+                  return <RenderPagePreview {...e} />;
+                } else if (e.type === "paragraph") {
+                  return <RenderParagraphPreview {...e} />;
+                } else if (e.type === "product") {
+                  return <RenderProductPreview {...e} />;
+                } else if (e.type === "radio") {
+                  return <RenderRadioPreview {...e} />;
                 }
               })()}
             </div>

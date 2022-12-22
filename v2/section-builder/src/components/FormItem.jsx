@@ -3,6 +3,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
 import "./FormItem.scss";
+
+import {
+  sortableContainer,
+  sortableElement,
+  sortableHandle,
+} from "react-sortable-hoc";
+
 import {
   getJsonResult,
   setJsonResult,
@@ -181,6 +188,14 @@ export default function FormItem(props) {
     return [htmlElRef, setFocus];
   };
 
+  const SortableContainer = sortableContainer(({ children }) => {
+    return <div className={`FormItem-suboptions`}>{children}</div>;
+  });
+
+  const SortableItem = sortableElement(({ value }) => (
+    <React.Fragment>{value}</React.Fragment>
+  ));
+
   return (
     <fieldset className="FormItem">
       {options.map((e, i) => {
@@ -212,70 +227,89 @@ export default function FormItem(props) {
 
       {subOptions && (
         <div className={`FormItem-suboptions`}>
-          {[...Array(totalSubOptions)].map((_, i) => {
-            var itemIdSuboption = `${itemId}_sub_${i}`;
+          <div>
+            {[...Array(totalSubOptions)].map((_, i) => {
+              var itemIdSuboption = `${itemId}_sub_${i}`;
 
-            /* Grouping every 3 items into a <div>.
+              /* Grouping every 3 items into a <div>.
             This is where the "select" and "radio" items are rendered. */
-            return subOptions
-              .map((each, index) => {
-                return (
-                  <React.Fragment>
-                    <div className="FormItem-suboption-item">
-                      <label data-label-name={each}>
-                        {each} {i + 1}:
-                      </label>
 
-                      <p>
-                        {console.log(
-                          "moving!",
-                          duplicatedSubOptions && duplicatedSubOptions[i]
-                            ? duplicatedSubOptions[i][each]
-                            : "",
-                        )}
-                      </p>
-                      <input
-                        value={values[`${itemIdSuboption}_${each}`]}
-                        onChange={handleInputChange}
-                        name={`${itemIdSuboption}_${each}`}
-                        label={each}
-                        defaultValue={
-                          duplicatedSubOptions && duplicatedSubOptions[i]
-                            ? duplicatedSubOptions[i][each]
-                            : ""
-                        }
-                        placeholder={each}
-                        autoComplete={"off"}
-                      />
-                    </div>
+              return subOptions
+                .map((each, index) => {
+                  return (
+                    <React.Fragment>
+                      <div className="FormItem-suboption-item">
+                        <label data-label-name={each}>
+                          {each} {i + 1}:
+                        </label>
 
-                    {(index % subOptions.length) - 1 === 0 && (
-                      <div className="FormItem-suboption-item FormItem-suboption-item--button">
-                        <button>+</button>
+                        <p>
+                          {console.log(
+                            "moving!",
+                            duplicatedSubOptions && duplicatedSubOptions[i]
+                              ? duplicatedSubOptions[i][each]
+                              : "",
+                          )}
+                        </p>
+                        <input
+                          value={values[`${itemIdSuboption}_${each}`]}
+                          onChange={handleInputChange}
+                          name={`${itemIdSuboption}_${each}`}
+                          label={each}
+                          defaultValue={
+                            duplicatedSubOptions && duplicatedSubOptions[i]
+                              ? duplicatedSubOptions[i][each]
+                              : ""
+                          }
+                          placeholder={each}
+                          autoComplete={"off"}
+                        />
                       </div>
-                    )}
-                  </React.Fragment>
-                );
-              })
-              .reduce(function (r, element, _index) {
-                _index % 3 === 0 && r.push([]);
-                r[r.length - 1].push(element);
-                return r;
-              }, [])
-              .map(function (rowContent) {
-                return <div className="FormItem-suboption">{rowContent}</div>;
-              });
-          })}
+
+                      {(index % subOptions.length) - 1 === 0 && (
+                        <div className="FormItem-suboption-item FormItem-suboption-item--button">
+                          <button>+</button>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })
+                .reduce(function (r, element, _index) {
+                  _index % 3 === 0 && r.push([]);
+                  r[r.length - 1].push(element);
+                  return r;
+                }, [])
+                .map(function (rowContent, i) {
+                  return <div className="FormItem-suboption">{rowContent}</div>;
+                });
+            })}
+          </div>
           <div className="FormItem-suboptions-contorl">
             <button
               onClick={() => {
                 setTotalSubOptions(totalSubOptions - 1);
+
+                setTimeout((_) => {
+                  const json = generateJSONSchema();
+
+                  setJsonResult(json);
+                  setGlobalJson(json);
+                  setModified(true);
+                }, 50);
               }}>
               Remove
             </button>
             <button
               onClick={() => {
                 setTotalSubOptions(totalSubOptions + 1);
+
+                setTimeout((_) => {
+                  const json = generateJSONSchema();
+
+                  setJsonResult(json);
+                  setGlobalJson(json);
+                  setModified(true);
+                }, 50);
               }}>
               Add
             </button>
