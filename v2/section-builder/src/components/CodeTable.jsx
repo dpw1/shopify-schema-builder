@@ -107,41 +107,15 @@ export default function CodeTable() {
 
         <div className="CodeTable-tables">
           <div className="CodeTable-tables-result">
-            <textarea
+            {/* <textarea
               defaultValue={""}
               value={""}
               readOnly={false}
               name=""
               id="CodeTable-result"
               cols="30"
-              rows="10"></textarea>
-            <button onClick={() => copyJSONToClipboard()}>
-              Copy to clipboard
-            </button>
+              rows="10"></textarea> */}
           </div>
-          {/* <div className="CodeTable-tables-wrapper">
-            <textarea
-              placeholder="Paste section code here"
-              defaultValue=""
-              name=""
-              onChange={() => handleSectionCodeChange()}
-              id="sectionCode"
-              cols="30"
-              rows="10"></textarea>
-            <button
-              onClick={async () => {
-                localStorage.clear();
-                convertSectionToJson();
-                await sleep(100);
-                const json = generateJSONSchema();
-                setJsonResult(json);
-                clearResultsTextarea();
-              }}
-              id="convertToJson"
-              className="CodeTable-convert">
-              Go
-            </button>
-          </div> */}
         </div>
 
         <button
@@ -150,6 +124,7 @@ export default function CodeTable() {
           }}>
           Generate JSON
         </button>
+        <button onClick={() => copyJSONToClipboard()}>Copy JSON</button>
 
         <button
           onClick={() => {

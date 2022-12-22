@@ -55,6 +55,7 @@ export default function FormItem(props) {
 
   const handleErrors = (item) => {
     let formErrors = [];
+
     if (item.id === "") {
       formErrors.push({
         id: "id",
@@ -80,11 +81,27 @@ export default function FormItem(props) {
       });
     }
 
-    console.log("errors ", item.type, formErrors);
-
     setErrors(formErrors);
 
     return formErrors.length;
+  };
+
+  /* Ensures that a given input has the correct length, characters, etc. 
+  
+ Example: numbers can't have characters, only numbers. */
+  const handleInputFilter = (item) => {
+    let allErrors = 0;
+
+    console.log("my ttt", item.default.toString());
+    if (item.default && item.default.toString().includes("a")) {
+      alert();
+
+      allErrors += 1;
+    }
+
+    console.log("xx errors", allErrors);
+
+    return allErrors;
   };
 
   const handleInputChange = (e) => {
@@ -95,11 +112,6 @@ export default function FormItem(props) {
 
     const __id = name.split("_")[0];
 
-    addValues({
-      ...values,
-      [name]: value,
-    });
-
     const json = generateJSONSchema();
 
     setJsonResult(json);
@@ -108,15 +120,18 @@ export default function FormItem(props) {
 
     const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
 
-    const formErrors = handleErrors(modifiedItem);
-
-    if (formErrors.length >= 1) {
+    if (handleErrors(modifiedItem).length >= 1) {
       return;
     }
 
     if (modifiedItem.hasOwnProperty("id")) {
       updateSectionSettings(__id, modifiedItem.id);
     }
+
+    addValues({
+      ...values,
+      [name]: value,
+    });
   };
 
   const setDefaultValue = (labelName) => {
@@ -154,7 +169,7 @@ export default function FormItem(props) {
 
   useEffect(() => {
     updateJSONAndVariables();
-    console.log("look at me values", values);
+    //console.log("look at me values", values);
   }, [values]);
 
   const useFocus = () => {

@@ -7,6 +7,7 @@
   height: auto;
   padding-bottom: 0;
   position: relative;
+  list-style: none !important;
 
   & + .item {
     margin-top: 40px;
@@ -23,7 +24,19 @@
   &-wrapper {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: nowrap;
   }
+
+  .item-buttons {
+    display: flex;
+  }
+
+  .item-button + .item-button {
+    margin-left: 15px;
+  }
+
   select {
   }
 
@@ -80,7 +93,7 @@
       display: none;
     }
 
-    svg {
+    .item-button--toggle svg {
       transform: rotate(-180deg);
     }
   }

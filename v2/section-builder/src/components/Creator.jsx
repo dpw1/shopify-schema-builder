@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import short from "short-uuid";
-import { sortableContainer, sortableElement } from "react-sortable-hoc";
+import {
+  sortableContainer,
+  sortableElement,
+  sortableHandle,
+} from "react-sortable-hoc";
 import arrayMove from "array-move";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -290,31 +294,34 @@ export default function Creator() {
         </button>
       </div>
 
-      <SortableContainer onSortEnd={onSortEnd}>
+      <SortableContainer useDragHandle onSortEnd={onSortEnd}>
         {items.map((props, i) => {
           return (
-            <SortableItem
-              key={`item-${short.generate()}`}
-              index={i}
-              value={
-                <Item
-                  duplicatedOptions={props.duplicatedOptions}
-                  duplicatedSubOptions={props.duplicatedSubOptions}
-                  isToggled={props.isToggled}
-                  Content={props.content}
-                  register={register}
-                  setValue={setValue}
-                  schema={schema}
-                  handleOnChange={handleOnChange}
-                  id={props.id}
-                  type={props.type}
-                  handleToggle={handleToggle}
-                  handleDeleteItem={handleDeleteItem}
-                  itemCount={`${i + 1}`}
-                  defaultValue={props.type}
-                  name={`name-${i}`}></Item>
-              }
-            />
+            <React.Fragment>
+              <SortableItem
+                key={`item-${short.generate()}`}
+                index={i}
+                value={
+                  <Item
+                    duplicatedOptions={props.duplicatedOptions}
+                    duplicatedSubOptions={props.duplicatedSubOptions}
+                    isToggled={props.isToggled}
+                    Content={props.content}
+                    register={register}
+                    setValue={setValue}
+                    schema={schema}
+                    handleOnChange={handleOnChange}
+                    id={props.id}
+                    type={props.type}
+                    handleToggle={handleToggle}
+                    handleDeleteItem={handleDeleteItem}
+                    itemCount={`${i + 1}`}
+                    defaultValue={props.type}
+                    name={`name-${i}`}
+                    sortableHandle={sortableHandle}></Item>
+                }
+              />
+            </React.Fragment>
           );
         })}
       </SortableContainer>

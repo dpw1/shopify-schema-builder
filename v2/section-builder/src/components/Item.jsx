@@ -11,8 +11,6 @@ import {
   scrollToItem,
 } from "./../utils";
 
-import { useStatePersist as useStickyState } from "use-state-persist";
-import Collapsible from "react-collapsible";
 import short from "short-uuid";
 import "./Item.scss";
 
@@ -310,6 +308,7 @@ export default function Item(props) {
     handleDelete,
     duplicatedOptions,
     duplicatedSubOptions,
+    sortableHandle,
   } = props;
 
   const items = useStore((state) => state.items);
@@ -347,6 +346,19 @@ export default function Item(props) {
     scrollToItem(id);
   };
 
+  const DragHandle = sortableHandle(() => (
+    <span className="item-button" tabIndex={0}>
+      <button
+        className="item-button item-button--drag"
+        tabIndex={-1}
+        style={{ pointerEvents: "none" }}>
+        <svg viewBox="0 0 20 20">
+          <path d="M7 2a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm6-8a2 2 0 1 0-.001-4.001 2 2 0 0 0 .001 4.001zm0 2a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001z" />
+        </svg>
+      </button>
+    </span>
+  ));
+
   return (
     <li
       data-item-count={itemCount}
@@ -368,73 +380,76 @@ export default function Item(props) {
               );
             })}
         </select>
-        <button
-          title="Delete"
-          tabindex="-1"
-          onClick={async () => {
-            resetJsonResult();
-            handleDeleteItem(id);
-            await sleep(100);
-            const json = generateJSONSchema();
-            setJsonResult(json);
-          }}
-          className="item-delete item-button">
-          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
-            <path d="M8 3.994c0-1.101.895-1.994 2-1.994s2 .893 2 1.994h4c.552 0 1 .446 1 .997a1 1 0 0 1-1 .997h-12c-.552 0-1-.447-1-.997s.448-.997 1-.997h4zm-3 10.514v-6.508h2v6.508a.5.5 0 0 0 .5.498h1.5v-7.006h2v7.006h1.5a.5.5 0 0 0 .5-.498v-6.508h2v6.508a2.496 2.496 0 0 1-2.5 2.492h-5c-1.38 0-2.5-1.116-2.5-2.492z" />
-          </svg>
-        </button>
-        <button
-          title="Duplicate"
-          onClick={() => {
-            handleDuplicate();
-          }}
-          className="item-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 14 14"
-            height={32}
-            width={32}
-            strokeWidth={1}>
-            <g>
-              <rect
-                x={3}
-                y={3}
-                width="10.5"
-                height="10.5"
-                rx={1}
-                transform="translate(16.5 16.5) rotate(180)"
-                fill="none"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M.5,10.5v-9a1,1,0,0,1,1-1h9"
-                fill="none"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
-          </svg>
-        </button>
-        <button
-          className="item-button  item-button--toggle"
-          onClick={(e) => handleToggle(e, id)}>
-          {
-            <svg
-              width={16}
-              height={16}
-              fill="currentColor"
-              className="bi bi-chevron-down"
-              viewBox="0 0 16 16">
-              <path
-                fillRule="evenodd"
-                d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-              />
+        <div className="item-buttons">
+          <button
+            title="Delete"
+            tabindex="-1"
+            onClick={async () => {
+              resetJsonResult();
+              handleDeleteItem(id);
+              await sleep(100);
+              const json = generateJSONSchema();
+              setJsonResult(json);
+            }}
+            className="item-delete item-button">
+            <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+              <path d="M8 3.994c0-1.101.895-1.994 2-1.994s2 .893 2 1.994h4c.552 0 1 .446 1 .997a1 1 0 0 1-1 .997h-12c-.552 0-1-.447-1-.997s.448-.997 1-.997h4zm-3 10.514v-6.508h2v6.508a.5.5 0 0 0 .5.498h1.5v-7.006h2v7.006h1.5a.5.5 0 0 0 .5-.498v-6.508h2v6.508a2.496 2.496 0 0 1-2.5 2.492h-5c-1.38 0-2.5-1.116-2.5-2.492z" />
             </svg>
-          }
-        </button>
+          </button>
+          <button
+            title="Duplicate"
+            onClick={() => {
+              handleDuplicate();
+            }}
+            className="item-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 14 14"
+              height={32}
+              width={32}
+              strokeWidth={1}>
+              <g>
+                <rect
+                  x={3}
+                  y={3}
+                  width="10.5"
+                  height="10.5"
+                  rx={1}
+                  transform="translate(16.5 16.5) rotate(180)"
+                  fill="none"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M.5,10.5v-9a1,1,0,0,1,1-1h9"
+                  fill="none"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+            </svg>
+          </button>
+          <button
+            className="item-button  item-button--toggle"
+            onClick={(e) => handleToggle(e, id)}>
+            {
+              <svg
+                width={16}
+                height={16}
+                fill="currentColor"
+                className="bi bi-chevron-down"
+                viewBox="0 0 16 16">
+                <path
+                  fillRule="evenodd"
+                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                />
+              </svg>
+            }
+          </button>
+          <DragHandle />
+        </div>
       </div>
       <div className="item-content">
         {renderElement(

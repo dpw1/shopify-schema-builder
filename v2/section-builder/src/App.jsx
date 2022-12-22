@@ -45,8 +45,8 @@ function App() {
           </> */}
 
           <>
-            <Creator />
             <Preview />
+            <Creator />
             <CodeTable></CodeTable>
           </>
         </div>

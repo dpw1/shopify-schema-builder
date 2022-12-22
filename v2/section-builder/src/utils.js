@@ -408,9 +408,7 @@ export const updateSectionWithUpdatedSchema = async (json) => {
     //   : replaceSectionSettingIdsOnFirstRender(_updatedSection);
 
     $result.value = _updatedSection.trim();
-  } catch (err) {
-    console.log("xx error in function updateSectionWithUpdatedSchema: ", err);
-  }
+  } catch (err) {}
 };
 
 /* This will attach EZFY's unique ID to the section.settings in the code.
