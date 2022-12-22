@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { FC, useState, useEffect, useRef } from "react";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
 import "./FormItem.scss";
+
+import Sortable from "sortablejs";
 
 import {
   sortableContainer,
@@ -31,6 +33,8 @@ export default function FormItem(props) {
     totalSubOptions: _totalSubOptions,
     itemCount,
   } = props;
+
+  const [list, setList] = useState(subOptions ? subOptions : []);
 
   const [modified, setModified] = useState(false);
   const [errors, setErrors] = useState([]);
@@ -179,6 +183,17 @@ export default function FormItem(props) {
     //console.log("look at me values", values);
   }, [values]);
 
+  useEffect(() => {
+    var $suboptions = window.document.querySelector(
+      ".FormItem-sortable-suboptions",
+    );
+    var sortable = Sortable.create($suboptions, {
+      onEnd: function () {
+        updateOnChange();
+      },
+    });
+  }, []);
+
   const useFocus = () => {
     const htmlElRef = useRef(null);
     const setFocus = () => {
@@ -188,13 +203,15 @@ export default function FormItem(props) {
     return [htmlElRef, setFocus];
   };
 
-  const SortableContainer = sortableContainer(({ children }) => {
-    return <div className={`FormItem-suboptions`}>{children}</div>;
-  });
+  function updateOnChange() {
+    setTimeout((_) => {
+      const json = generateJSONSchema();
 
-  const SortableItem = sortableElement(({ value }) => (
-    <React.Fragment>{value}</React.Fragment>
-  ));
+      setJsonResult(json);
+      setGlobalJson(json);
+      setModified(true);
+    }, 50);
+  }
 
   return (
     <fieldset className="FormItem">
@@ -227,7 +244,7 @@ export default function FormItem(props) {
 
       {subOptions && (
         <div className={`FormItem-suboptions`}>
-          <div>
+          <div className="FormItem-sortable-suboptions">
             {[...Array(totalSubOptions)].map((_, i) => {
               var itemIdSuboption = `${itemId}_sub_${i}`;
 
@@ -284,18 +301,11 @@ export default function FormItem(props) {
                 });
             })}
           </div>
-          <div className="FormItem-suboptions-contorl">
+          <div className="FormItem-suboptions-control">
             <button
               onClick={() => {
                 setTotalSubOptions(totalSubOptions - 1);
-
-                setTimeout((_) => {
-                  const json = generateJSONSchema();
-
-                  setJsonResult(json);
-                  setGlobalJson(json);
-                  setModified(true);
-                }, 50);
+                updateOnChange();
               }}>
               Remove
             </button>
@@ -303,13 +313,7 @@ export default function FormItem(props) {
               onClick={() => {
                 setTotalSubOptions(totalSubOptions + 1);
 
-                setTimeout((_) => {
-                  const json = generateJSONSchema();
-
-                  setJsonResult(json);
-                  setGlobalJson(json);
-                  setModified(true);
-                }, 50);
+                updateOnChange();
               }}>
               Add
             </button>
