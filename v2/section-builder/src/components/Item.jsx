@@ -4,7 +4,6 @@ import {
   schema,
   sleep,
   transformDOMIntoJSON,
-  generateJSONAndVariables,
   resetJsonResult,
   generateJSONSchema,
   setJsonResult,
@@ -18,6 +17,7 @@ import Text from "./Text";
 import FormItem from "./FormItem";
 
 import useStore from "../store/store";
+import { Select } from "@shopify/polaris";
 
 const renderElement = (
   type,
@@ -341,7 +341,6 @@ export default function Item(props) {
     const updatedItems = addToIndex(items, index, _item);
     updateItems(updatedItems);
 
-    generateJSONAndVariables();
     await sleep(100);
     scrollToItem(id);
   };
@@ -358,6 +357,22 @@ export default function Item(props) {
       </button>
     </span>
   ));
+
+  const [selected, setSelected] = useState("today");
+
+  const handleSelectChange = React.useCallback(
+    (value) => setSelected(value),
+    [],
+  );
+
+  const options = schema
+    .sort((a, b) => a.id.localeCompare(b.id))
+    .map(({ id: _id }) => {
+      return {
+        label: _id,
+        value: _id,
+      };
+    });
 
   return (
     <li
@@ -380,6 +395,18 @@ export default function Item(props) {
               );
             })}
         </select>
+        {/* <Select
+          options={options}
+          defaultValue={defaultValue}
+          name={name}
+          id={id}
+          ref={register}
+          onChange={(e) => {
+            handleSelectChange(e);
+            handleOnChange(e);
+          }}
+          value={selected}
+        /> */}
         <div className="item-buttons">
           <button
             title="Delete"

@@ -94,7 +94,7 @@ export default function Form() {
             nonDragAreaSelector=".field">
             {generateForm(form)}
           </Container>
-          <button onClick={handleAdd}>Add</button>
+          <button onClick={handleAdd}>Add</button>x
         </div>
       </div>
     </div>

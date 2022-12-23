@@ -135,6 +135,8 @@ export const transformDOMIntoJSON = (each) => {
     _json.__id = __id;
     let value = attribute.querySelector(`input`).value;
 
+    /* Clean and format based on Shopify section rules for JSON */
+
     /* If there is no property 'info', ignore */
     if (name === "info" && (value === "" || !value)) {
       continue;
@@ -150,7 +152,12 @@ export const transformDOMIntoJSON = (each) => {
       continue;
     }
 
-    /* If this is a 'textarea', replace all line breaks for liquid-friendly line breaks */
+    /* type is 'richtext' and contains 'default', add <p> to it. */
+    if (type === "richtext" && name === "default" && value !== "") {
+      value = `<p>${value}</p>`;
+    }
+
+    /* type is 'textarea', replace all line breaks for liquid-friendly line breaks */
     if (type === "textarea" && name === "default" && value !== "") {
       value = value.replace(/\\n/g, `\n`);
     }
@@ -180,7 +187,7 @@ export const transformDOMIntoJSON = (each) => {
     _json[name] = value;
   }
 
-  /* If is of type 'select' or 'radio' it contains an array of objects. */
+  /* type is 'select' or 'radio', process array of objects. */
   if (
     (type === "select" || type === "radio") &&
     $suboptions &&
@@ -254,7 +261,7 @@ export const convertSchemaJSONToItems = (json) => {
       duplicatedOptions: {
         ...object,
       },
-      duplicatedSubOptions: e.options,
+      duplicatedSubOptions: { ...e.options },
     };
   });
 };

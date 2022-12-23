@@ -67,6 +67,8 @@ export default function FormItem(props) {
   const handleErrors = (item) => {
     let formErrors = [];
 
+    /* Errors for all inputs 
+	========================================= */
     if (item.id === "") {
       formErrors.push({
         id: "id",
@@ -81,6 +83,8 @@ export default function FormItem(props) {
       });
     }
 
+    /* ## Number 
+	========================================= */
     if (
       item.type === "number" &&
       item.hasOwnProperty("default") &&
@@ -109,8 +113,6 @@ export default function FormItem(props) {
 
       allErrors += 1;
     }
-
-    console.log("xx errors", allErrors);
 
     return allErrors;
   };
@@ -184,14 +186,21 @@ export default function FormItem(props) {
   }, [values]);
 
   useEffect(() => {
-    var $suboptions = window.document.querySelector(
+    var $suboptions = window.document.querySelectorAll(
       ".FormItem-sortable-suboptions",
     );
-    var sortable = Sortable.create($suboptions, {
-      onEnd: function () {
-        updateOnChange();
-      },
-    });
+
+    if (!$suboptions) {
+      return;
+    }
+
+    for (var each of $suboptions) {
+      var sortable = Sortable.create(each, {
+        onEnd: function () {
+          updateOnChange();
+        },
+      });
+    }
   }, []);
 
   const useFocus = () => {

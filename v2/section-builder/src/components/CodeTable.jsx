@@ -4,7 +4,6 @@ import {
   convertSchemaJSONToItems,
   convertToLiquidVariables,
   copyToClipboard,
-  generateJSONAndVariables,
   generateJSONSchema,
   sleep,
   _extractTextBetween,
@@ -17,8 +16,11 @@ import {
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
+import { TextField } from "@shopify/polaris";
 
 export default function CodeTable() {
+  const [importedSection, setImportedSection] = useState("");
+
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
   const sectionText = useStore((state) => state.sectionText);
@@ -118,12 +120,6 @@ export default function CodeTable() {
           </div>
         </div>
 
-        <button
-          onClick={() => {
-            generateJSONAndVariables();
-          }}>
-          Generate JSON
-        </button>
         <button onClick={() => copyJSONToClipboard()}>Copy JSON</button>
 
         <button
@@ -133,7 +129,44 @@ export default function CodeTable() {
           }}>
           Clear
         </button>
+
+        <TextField
+          label={"Import section"}
+          value={importedSection}
+          onChange={React.useCallback(
+            (newValue) => setImportedSection(newValue),
+            [],
+          )}
+          maxHeight={100}
+          multiline={4}></TextField>
       </div>
+      <button
+        onClick={() => {
+          function _extractTextBetween(text, start, end) {
+            if (!start || !end) {
+              throw new Error(`Please add a "start" and "end" parameter`);
+            }
+
+            return text.split(start)[1].split(end)[0];
+          }
+
+          const _json = _extractTextBetween(
+            importedSection,
+            `{% schema %}`,
+            `{% endschema %}`,
+          );
+
+          const json = JSON.parse(_json).settings;
+
+          console.log("extract", json);
+          const op = convertSchemaJSONToItems(json);
+
+          console.log("result", op);
+
+          addItems(op);
+        }}>
+        Extract
+      </button>
     </div>
   );
 }

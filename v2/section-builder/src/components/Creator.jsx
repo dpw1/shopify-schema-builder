@@ -7,6 +7,7 @@ import {
 } from "react-sortable-hoc";
 import arrayMove from "array-move";
 import { useStatePersist as useStickyState } from "use-state-persist";
+import { Button, RangeSlider, TextField } from "@shopify/polaris";
 
 import { useForm } from "react-hook-form";
 
@@ -18,7 +19,6 @@ import {
   focusDropdown,
   sleep,
   convertToLiquidVariables,
-  generateJSONAndVariables,
   updateJSONAndVariables,
   convertSchemaJSONToItems,
   getJsonResult,
@@ -100,56 +100,9 @@ export default function Creator() {
             label: "450px",
             value: "450px",
           },
-          {
-            label: "550px",
-            value: "550px",
-          },
-          {
-            label: "650px",
-            value: "650px",
-          },
-          {
-            label: "750px",
-            value: "750px",
-          },
-          {
-            label: "Full screen",
-            value: "100vh",
-          },
         ],
       },
-      {
-        type: "select",
-        id: "section_height_mobile",
-        label: "Mobile height",
-        default: "auto",
-        options: [
-          {
-            label: "Auto",
-            value: "auto",
-          },
-          {
-            label: "250px",
-            value: "250px",
-          },
-          {
-            label: "300px",
-            value: "300px",
-          },
-          {
-            label: "400px",
-            value: "400px",
-          },
-          {
-            label: "500px",
-            value: "500px",
-          },
-          {
-            label: "Full screen",
-            value: "100vh",
-          },
-        ],
-      },
+
       {
         type: "checkbox",
         id: "full_width_images",
@@ -157,23 +110,12 @@ export default function Creator() {
         info: 'Images that won\'t cut off. This will overwrite the "Desktop height". Recommended size: 1440 x 810px',
         default: false,
       },
-      {
-        type: "checkbox",
-        id: "full_width_images_mobile",
-        label: "Full width images (mobile)",
-        info: 'Images that won\'t cut off. This will overwrite the "Mobile height". Recommended size: 800 x 800px',
-        default: false,
-      },
-      {
-        type: "checkbox",
-        id: "parallax",
-        label: "Enable parallax",
-        info: 'Parallax may zoom in some images, making them look "cut off".',
-        default: false,
-      },
     ];
 
     const op = convertSchemaJSONToItems(test);
+
+    console.log("result", op);
+    // return;
     addItems(op);
   };
 
@@ -182,7 +124,6 @@ export default function Creator() {
 
     updateItems(updated);
     handleUpdateTextarea();
-    generateJSONAndVariables();
 
     setTimeout(() => {
       const json = generateJSONSchema();
@@ -211,7 +152,6 @@ export default function Creator() {
 
     const num = e.target.closest(`.item`).getAttribute("data-item-count");
     focusFirstInputWhenDropdownChanges(num);
-    generateJSONAndVariables();
     setTimeout(() => {
       const json = generateJSONSchema();
       setGlobalJson(json);
@@ -230,8 +170,6 @@ export default function Creator() {
 
       $el.focus();
     }, 50);
-
-    generateJSONAndVariables();
   };
 
   const onSortEnd = async ({ oldIndex, newIndex }) => {
@@ -289,9 +227,9 @@ export default function Creator() {
   return (
     <div className="Creator">
       <div className="Creator-controls">
-        <button id="toggleAll" onClick={handleToggleAll}>
+        {/* <button id="toggleAll" onClick={handleToggleAll}>
           Toggle all
-        </button>
+        </button> */}
       </div>
 
       <SortableContainer useDragHandle onSortEnd={onSortEnd}>
@@ -326,23 +264,23 @@ export default function Creator() {
         })}
       </SortableContainer>
       <fieldset>
-        <button className="Creator-add" onClick={() => handleAddItem()}>
+        <Button className="Creator-add" onClick={() => handleAddItem()}>
           Add
-        </button>
-        <button
+        </Button>
+        <Button
           className="Creator-test"
           onClick={async () => {
             addCustomItem();
           }}>
           Test
-        </button>
-        <button
+        </Button>
+        <Button
           id="generateJSON"
           onClick={async () => {
             generateJSON();
           }}>
           Generate JSON
-        </button>
+        </Button>
       </fieldset>
     </div>
   );

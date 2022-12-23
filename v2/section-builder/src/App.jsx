@@ -9,6 +9,8 @@ import Header from "./components/Header";
 
 import { initialState } from "./utils";
 import Preview from "./components/Preview";
+import "./assets/Polaris.scss";
+import { AppProvider } from "@shopify/polaris";
 
 function App() {
   return (
@@ -31,7 +33,9 @@ function App() {
             marginBottom: 60,
           }}>
           Copy & paste pre-made sections{" "}
-          <a target="_blank" href="https://ezfycode.com/shop">
+          <a
+            target="_blank"
+            href="https://ezfycode.com/shop?source=section-builder">
             available here
           </a>
           .
@@ -44,11 +48,11 @@ function App() {
             </Sidebar>
           </> */}
 
-          <>
+          <AppProvider>
             <Preview />
             <Creator />
             <CodeTable></CodeTable>
-          </>
+          </AppProvider>
         </div>
       </div>
     </div>
