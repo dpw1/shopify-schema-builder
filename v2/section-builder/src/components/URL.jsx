@@ -31,7 +31,7 @@ function URL() {
       info,
     };
 
-    setItems([...items, JSON.stringify(item)]);
+    setItems([...items, item]);
   };
 
   return (

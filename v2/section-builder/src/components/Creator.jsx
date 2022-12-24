@@ -72,7 +72,7 @@ export default function Creator() {
       ids.push(each.getAttribute("data-is-editing-id"));
     }
 
-    var updated = items.filter((e) => ids.includes(e.id));
+    var updated = Array.from(items).filter((e) => ids.includes(e.id));
 
     setVisibleItems(updated);
   }, [items]);
@@ -98,10 +98,7 @@ export default function Creator() {
   };
 
   useEffect(() => {
-    console.log(
-      "my visib",
-      items.filter((x) => visibleItems.includes(x.id)),
-    );
+    console.log("my visib", visibleItems);
   }, [visibleItems]);
 
   const addCustomItem = async () => {
@@ -253,8 +250,8 @@ export default function Creator() {
       </div>
 
       <SortableContainer useDragHandle onSortEnd={onSortEnd}>
-        {items
-          .filter((x) => visibleItems.includes(x.id))
+        {Array.from(items)
+          .filter((x) => x.id === "hRtJKPrK9eUG9DLgTUEHzh")
           .map((props, i) => {
             return (
               <React.Fragment>

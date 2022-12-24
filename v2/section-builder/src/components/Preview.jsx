@@ -7,38 +7,19 @@ import { Select, RangeSlider, TextField, Button } from "@shopify/polaris";
 
 import useStore from "../store/store";
 import short from "short-uuid";
-import { generateJSONSchema } from "../utils";
+import { generateJSONSchema, schema } from "../utils";
+import Editor from "./Editor";
 
 const RenderTextPreview = (data) => {
-  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, true);
-  const [visibleItems, setVisibleItems] = useStickyState("@visibleItems", []);
-
   return (
     <>
       <TextField
+        autoComplete={"off"}
         label={data.label}
         helpText={data.info}
         placeholder={data.placeholder}
-        defaultValue={data.default}></TextField>
-      <button
-        data-is-editing={isEditing}
-        data-is-editing-id={data.__id}
-        className="Preview-edit"
-        onClick={() => {
-          setIsEditing(!isEditing);
-
-          let updated = [];
-          if (!isEditing === true) {
-            updated = [...visibleItems, data.__id];
-          } else {
-            updated = visibleItems.filter((e) => e !== data.__id);
-          }
-
-          console.log("my updated", updated);
-          setVisibleItems(updated);
-        }}>
-        {isEditing ? "UNEDIT" : "Edit"}
-      </button>
+        value={data.default}></TextField>
+      <Editor data={data} />
     </>
   );
 };
@@ -56,6 +37,7 @@ const RenderBlogPreview = (data) => {
       {data.info && data.info !== "" && (
         <div className="Preview-info">{data.info}</div>
       )}
+      <Editor data={data} />
     </>
   );
 };
@@ -95,6 +77,7 @@ const RenderCheckboxPreview = (data) => {
       {data.info && data.info !== "" && (
         <div className="Preview-info">{data.info}</div>
       )}
+      <Editor data={data} />
     </>
   );
 };
@@ -130,6 +113,7 @@ const RenderColorPreview = (data) => {
       {data.info && data.info !== "" && (
         <div className="Preview-info">{data.info}</div>
       )}
+      <Editor data={data} />
     </>
   );
 };
@@ -154,6 +138,7 @@ const RenderFontPreview = (data) => {
         </div>
       </div>
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -162,6 +147,7 @@ const RenderHeaderPreview = (data) => {
   return (
     <>
       <div className="Preview-content">{data.content}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -182,6 +168,7 @@ const RenderImagePickerPreview = (data) => {
         <div className="Preview-button">Select image</div>
       </div>
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -194,6 +181,7 @@ const RenderCollectionPreview = (data) => {
       <div className="Preview-button">Select collection</div>
 
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -206,6 +194,7 @@ const RenderLinkListPreview = (data) => {
       <div className="Preview-button">Select menu</div>
 
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -218,6 +207,7 @@ const RenderPagePreview = (data) => {
       <div className="Preview-button">Select page</div>
 
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -282,6 +272,7 @@ const RenderNumberPreview = (data) => {
         {data.info && data.info !== "" && (
           <div className="Preview-info">{data.info}</div>
         )}
+        <Editor data={data} />
       </>
     </>
   );
@@ -291,6 +282,7 @@ const RenderParagraphPreview = (data) => {
   return (
     <>
       <div className="Preview-info">{data.content}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -303,6 +295,7 @@ const RenderProductPreview = (data) => {
       <div className="Preview-button">Select product</div>
 
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -341,6 +334,7 @@ const RenderRadioPreview = (data) => {
       </div>
 
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -365,6 +359,7 @@ const RenderRangePreview = (data) => {
           }
         />
       </div>
+      <Editor data={data} />
     </>
   );
 };
@@ -597,6 +592,7 @@ const RenderRichTextPreview = (data) => {
       </div>
 
       <div className="Preview-info">{data.info}</div>
+      <Editor data={data} />
     </>
   );
 };
@@ -620,6 +616,7 @@ const RenderSelectPreview = (data) => {
           }
         />
       </div>
+      <Editor data={data} />
     </>
   );
 };
@@ -629,6 +626,7 @@ const RenderTextareaPreview = (data) => {
     <>
       <div className="Preview-textarea">
         <TextField
+          autoComplete={"off"}
           label={data.label}
           helpText={data.info}
           placeholder={data.placeholder}
@@ -644,6 +642,7 @@ const RenderUrlPreview = (data) => {
     <>
       <div className="Preview-url">
         <TextField
+          autoComplete={"off"}
           label={data.label}
           helpText={data.info}
           placeholder="Paste a link or search"
@@ -654,6 +653,7 @@ const RenderUrlPreview = (data) => {
           <path d="M10 9c3.866 0 7-1.343 7-3s-3.134-3-7-3-7 1.343-7 3 3.134 3 7 3Zm6.602 0c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Zm0 4c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Z" />
         </svg>
       </div>
+      <Editor data={data} />
     </>
   );
 };
@@ -668,6 +668,7 @@ const RenderVideoUrlPreview = (data) => {
           placeholder={data.placeholder}
           defaultValue={data.default}></TextField>
       </div>
+      <Editor data={data} />
     </>
   );
 };
@@ -675,8 +676,8 @@ const RenderVideoUrlPreview = (data) => {
 export default function Preview() {
   const globalJson = useStore((state) => state.globalJson);
   const addItem = useStore((state) => state.addItem);
-  const setGlobalJson = useStore((state) => state.setGlobalJson);
-  const [visibleItems, setVisibleItems] = useStickyState("@visibleItems", []);
+  const items = useStore((state) => state.items);
+  const [type, setType] = useStickyState("@type", "select");
 
   return (
     <div className="Preview">
@@ -685,83 +686,98 @@ export default function Preview() {
         {globalJson && globalJson.length >= 1 && JSON.parse(globalJson).length}{" "}
         item(s)
       </h2>
-      {globalJson &&
-        globalJson.length >= 1 &&
-        JSON.parse(globalJson).map((e, i) => {
+      {items &&
+        Array.from(items).map((e, i) => {
           const index = i + 1;
+
+          const props = {
+            ...e,
+            itemCount: index,
+          };
+
           return (
             <div
               data-item-count={index}
               className={`Preview-item Preview-item--${e.type}`}>
               {(() => {
                 if (e.type === "text") {
-                  return <RenderTextPreview {...e} />;
+                  return <RenderTextPreview {...props} />;
                 } else if (e.type === "blog") {
-                  return <RenderBlogPreview {...e} />;
+                  return <RenderBlogPreview {...props} />;
                 } else if (e.type === "checkbox") {
-                  return <RenderCheckboxPreview {...e} />;
+                  return <RenderCheckboxPreview {...props} />;
                 } else if (e.type === "color") {
-                  return <RenderColorPreview {...e} />;
+                  return <RenderColorPreview {...props} />;
                 } else if (e.type === "font_picker") {
-                  return <RenderFontPreview {...e} />;
+                  return <RenderFontPreview {...props} />;
                 } else if (e.type === "header") {
-                  return <RenderHeaderPreview {...e} />;
+                  return <RenderHeaderPreview {...props} />;
                 } else if (e.type === "image_picker") {
-                  return <RenderImagePickerPreview {...e} />;
+                  return <RenderImagePickerPreview {...props} />;
                 } else if (e.type === "collection") {
-                  return <RenderCollectionPreview {...e} />;
+                  return <RenderCollectionPreview {...props} />;
                 } else if (e.type === "link_list") {
-                  return <RenderLinkListPreview {...e} />;
+                  return <RenderLinkListPreview {...props} />;
                 } else if (e.type === "number") {
-                  return <RenderNumberPreview {...e} />;
+                  return <RenderNumberPreview {...props} />;
                 } else if (e.type === "page") {
-                  return <RenderPagePreview {...e} />;
+                  return <RenderPagePreview {...props} />;
                 } else if (e.type === "paragraph") {
-                  return <RenderParagraphPreview {...e} />;
+                  return <RenderParagraphPreview {...props} />;
                 } else if (e.type === "product") {
-                  return <RenderProductPreview {...e} />;
+                  return <RenderProductPreview {...props} />;
                 } else if (e.type === "radio") {
-                  return <RenderRadioPreview {...e} />;
+                  return <RenderRadioPreview {...props} />;
                 } else if (e.type === "range") {
-                  return <RenderRangePreview {...e} />;
+                  return <RenderRangePreview {...props} />;
                 } else if (e.type === "richtext") {
-                  return <RenderRichTextPreview {...e} />;
+                  return <RenderRichTextPreview {...props} />;
                 } else if (e.type === "select") {
-                  return <RenderSelectPreview {...e} />;
+                  return <RenderSelectPreview {...props} />;
                 } else if (e.type === "textarea") {
-                  return <RenderTextareaPreview {...e} />;
+                  return <RenderTextareaPreview {...props} />;
                 } else if (e.type === "url") {
-                  return <RenderUrlPreview {...e} />;
+                  return <RenderUrlPreview {...props} />;
                 } else if (e.type === "video_url") {
-                  return <RenderVideoUrlPreview {...e} />;
+                  return <RenderVideoUrlPreview {...props} />;
                 }
               })()}
             </div>
           );
         })}
 
-      <Button
-        onClick={() => {
-          const id = short.generate();
-
-          addItem(
-            ...[
-              {
-                id,
-                type: "text",
-              },
-            ],
-          );
-
-          setVisibleItems([...visibleItems, id]);
-
-          setTimeout(() => {
-            const json = generateJSONSchema();
-            setGlobalJson(json);
-          }, 250);
-        }}>
-        Add
-      </Button>
+      <div style={{ display: "flex" }}>
+        <Button
+          onClick={() => {
+            const __id = short.generate();
+            const index = items.length + 1;
+            addItem(
+              ...[
+                {
+                  __id,
+                  type: type.toLowerCase(),
+                  label: `${type} ${index}`,
+                  id: `${type}_${index}`,
+                  content: `${type}`,
+                },
+              ],
+            );
+          }}>
+          Add
+        </Button>
+        <Select
+          value={type}
+          options={Object.values(schema)
+            .map((e) => e.id)
+            .sort()
+            .map((e) => {
+              return {
+                label: e,
+                value: e,
+              };
+            })}
+          onChange={React.useCallback((value) => setType(value), [])}></Select>
+      </div>
     </div>
   );
 }

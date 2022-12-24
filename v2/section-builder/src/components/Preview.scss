@@ -4,6 +4,7 @@
   padding-left: 10px;
   padding-right: 10px;
   margin-right: 50px;
+  background-color: #fff;
 
   .Preview-title {
     margin-bottom: 20px;
@@ -416,6 +417,29 @@
     flex-direction: row;
     justify-content: space-between;
     position: relative;
+
+    button {
+      -webkit-appearance: none;
+      appearance: none;
+      background: none;
+      border: none;
+      border-radius: var(--p-border-radius-1);
+      color: inherit;
+      cursor: pointer;
+      font-size: inherit;
+      line-height: inherit;
+      margin: 0;
+      padding: 0;
+      border-radius: 50% !important;
+      background: repeating-conic-gradient(
+          var(--p-surface) 0 25%,
+          var(--p-surface-neutral-subdued) 0 50%
+        )
+        50%/0.5rem 0.5rem;
+      border-radius: 3px;
+      box-shadow: inset 0 0 0 1px #00000030;
+      flex-shrink: 0;
+    }
   }
 
   .J6aSf,
@@ -434,29 +458,6 @@
     flex-grow: 1;
     margin-left: 0.5rem;
     margin-right: 0.25rem;
-  }
-
-  button {
-    -webkit-appearance: none;
-    appearance: none;
-    background: none;
-    border: none;
-    border-radius: var(--p-border-radius-1);
-    color: inherit;
-    cursor: pointer;
-    font-size: inherit;
-    line-height: inherit;
-    margin: 0;
-    padding: 0;
-    border-radius: 50% !important;
-    background: repeating-conic-gradient(
-        var(--p-surface) 0 25%,
-        var(--p-surface-neutral-subdued) 0 50%
-      )
-      50%/0.5rem 0.5rem;
-    border-radius: 3px;
-    box-shadow: inset 0 0 0 1px #00000030;
-    flex-shrink: 0;
   }
 
   .Preview-color-button-helper {
@@ -2540,7 +2541,7 @@
   }
 }
 
-.Preview-item--header {
+[id] .Preview-item--header {
   border-top: 0.0625rem solid var(--p-border-subdued);
   padding-top: 1rem;
 }

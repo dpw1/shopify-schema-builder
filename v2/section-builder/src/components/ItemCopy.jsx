@@ -10,7 +10,7 @@ import {
   generateJSONSchema,
   setJsonResult,
   scrollToItem,
-} from "./../utils";
+} from "../utils";
 
 import short from "short-uuid";
 import "./Item.scss";
@@ -24,12 +24,10 @@ import { Select } from "@shopify/polaris";
 const renderElement = (
   type,
   itemId,
-  handleOnFormChange,
   itemCount,
   duplicatedOptions,
   duplicatedSubOptions,
   defaultOptions,
-  totalSubOptions,
 ) => {
   switch (type) {
     case "header":
@@ -37,7 +35,6 @@ const renderElement = (
         <FormItem
           itemCount={itemCount}
           options={["content"]}
-          handleOnFormChange={handleOnFormChange}
           type={"header"}
           itemId={itemId}
           duplicatedOptions={duplicatedOptions}
@@ -53,21 +50,27 @@ const renderElement = (
           options={["content"]}
           type={"paragraph"}
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
+          defaultOptions={defaultOptions}
           itemId={itemId}
         />
       );
     case "text":
       return (
-        <FormItem
-          itemCount={itemCount}
-          options={["id", "label", "info", "placeholder", "default"]}
-          type="text"
-          duplicatedOptions={duplicatedOptions}
-          defaultOptions={defaultOptions}
-          handleOnFormChange={handleOnFormChange}
-          itemId={itemId}
-        />
+        <>
+          {console.log("look default", typeof defaultOptions, defaultOptions)}
+          <FormItem
+            itemCount={itemCount}
+            options={["id", "label", "info", "placeholder", "default"]}
+            type="text"
+            duplicatedOptions={duplicatedOptions}
+            defaultOptions={{
+              ...defaultOptions,
+              id: `text_${itemCount}`,
+              label: `Text ${itemCount}`,
+            }}
+            itemId={itemId}
+          />
+        </>
       );
     case "color":
       return (
@@ -76,10 +79,11 @@ const renderElement = (
           options={["id", "label", "info", "default"]}
           type="color"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
           defaultOptions={{
             default: "#ffffff",
+            id: `color_${itemCount}`,
+            label: `Color ${itemCount}`,
           }}
         />
       );
@@ -90,7 +94,6 @@ const renderElement = (
           options={["id", "label", "info", "default"]}
           type="font_picker"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
           defaultOptions={{
             default: "sans-serif",
@@ -104,7 +107,6 @@ const renderElement = (
           options={["id", "label", "info"]}
           type="collection"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -115,7 +117,6 @@ const renderElement = (
           options={["id", "label", "info"]}
           type="product"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -126,7 +127,6 @@ const renderElement = (
           options={["id", "label", "info"]}
           type="blog"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -137,7 +137,6 @@ const renderElement = (
           options={["id", "label", "info"]}
           type="page"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -148,7 +147,6 @@ const renderElement = (
           options={["id", "label", "info"]}
           type="link_list"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -159,7 +157,6 @@ const renderElement = (
           options={["id", "label", "info"]}
           type="url"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -169,8 +166,8 @@ const renderElement = (
           itemCount={itemCount}
           options={["id", "label", "accept", "placeholder", "info", "default"]}
           type="video_url"
+          defaultOptions={defaultOptions}
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -182,9 +179,9 @@ const renderElement = (
           type="richtext"
           duplicatedOptions={duplicatedOptions}
           defaultOptions={{
+            ...defaultOptions,
             default: "<p></p>",
           }}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -197,9 +194,9 @@ const renderElement = (
           type="checkbox"
           duplicatedOptions={duplicatedOptions}
           defaultOptions={{
+            ...defaultOptions,
             default: "true",
           }}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -221,9 +218,9 @@ const renderElement = (
           type="richtext"
           duplicatedOptions={duplicatedOptions}
           defaultOptions={{
+            ...defaultOptions,
             unit: "px",
           }}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -233,8 +230,8 @@ const renderElement = (
           itemCount={itemCount}
           options={["id", "label", "info", "placeholder", "default"]}
           type="textarea"
+          defaultOptions={defaultOptions}
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -245,7 +242,7 @@ const renderElement = (
           options={["id", "label", "info", "placeholder", "default"]}
           type="number"
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
+          defaultOptions={defaultOptions}
           itemId={itemId}
         />
       );
@@ -257,9 +254,9 @@ const renderElement = (
           subOptions={["value", "label"]}
           totalSubOptions={5}
           type="select"
+          defaultOptions={defaultOptions}
           duplicatedOptions={duplicatedOptions}
           duplicatedSubOptions={duplicatedSubOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -271,9 +268,9 @@ const renderElement = (
           subOptions={["value", "label"]}
           totalSubOptions={5}
           type="radio"
+          defaultOptions={defaultOptions}
           duplicatedOptions={duplicatedOptions}
           duplicatedSubOptions={duplicatedSubOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -283,8 +280,8 @@ const renderElement = (
           itemCount={itemCount}
           options={["id", "label", "info"]}
           type="image_picker"
+          defaultOptions={defaultOptions}
           duplicatedOptions={duplicatedOptions}
-          handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
       );
@@ -293,25 +290,19 @@ const renderElement = (
   }
 };
 
-export default function Item(props) {
+export default function ItemCopy(props) {
   let {
     defaultValue,
-    name,
     type,
     id,
-    handleOnFormChange,
     handleOnChange,
-    register,
-    setValue,
     handleDeleteItem,
     defaultOptions,
     itemCount,
-    isToggled,
-    handleToggle,
     handleDelete,
     duplicatedOptions,
     duplicatedSubOptions,
-    sortableHandle,
+    isEditing,
   } = props;
 
   const items = useStore((state) => state.items);
@@ -324,6 +315,8 @@ export default function Item(props) {
 
     let _json = transformDOMIntoJSON($this);
     delete _json.type;
+
+    console.log("my josn", _json);
 
     /* ====== */
     const index = parseInt(itemCount) - 1;
@@ -347,37 +340,18 @@ export default function Item(props) {
     scrollToItem(id);
   };
 
-  const DragHandle = sortableHandle(() => (
-    <span className="item-button" tabIndex={0}>
-      <button
-        className="item-button item-button--drag"
-        tabIndex={-1}
-        style={{ pointerEvents: "none" }}>
-        <svg viewBox="0 0 20 20">
-          <path d="M7 2a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm6-8a2 2 0 1 0-.001-4.001 2 2 0 0 0 .001 4.001zm0 2a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001zm0 6a2 2 0 1 0 .001 4.001 2 2 0 0 0-.001-4.001z" />
-        </svg>
-      </button>
-    </span>
-  ));
-
   const totalSubOptions =
     props.hasOwnProperty("duplicatedSubOptions") && !!props.duplicatedSubOptions
       ? Object.keys(props.duplicatedSubOptions).length
       : 5;
 
-  console.log("my sub optison", totalSubOptions);
-
   return (
-    <li
-      data-item-count={itemCount}
-      className={`item ${isToggled ? "item--toggle" : ""}`}>
+    <li data-item-count={itemCount} className={`item`}>
       <div className="item-wrapper">
         <select
           onChange={(e) => handleOnChange(e)}
           defaultValue={defaultValue}
-          name={name}
-          id={id}
-          ref={register}>
+          id={id}>
           {schema
             .sort((a, b) => a.id.localeCompare(b.id))
             .map(({ id: _id }) => {
@@ -388,18 +362,7 @@ export default function Item(props) {
               );
             })}
         </select>
-        {/* <Select
-          options={options}
-          defaultValue={defaultValue}
-          name={name}
-          id={id}
-          ref={register}
-          onChange={(e) => {
-            handleSelectChange(e);
-            handleOnChange(e);
-          }}
-          value={selected}
-        /> */}
+
         <div className="item-buttons">
           <button
             title="Delete"
@@ -451,35 +414,16 @@ export default function Item(props) {
               </g>
             </svg>
           </button>
-          <button
-            className="item-button  item-button--toggle"
-            onClick={(e) => handleToggle(e, id)}>
-            {
-              <svg
-                width={16}
-                height={16}
-                fill="currentColor"
-                className="bi bi-chevron-down"
-                viewBox="0 0 16 16">
-                <path
-                  fillRule="evenodd"
-                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                />
-              </svg>
-            }
-          </button>
-          <DragHandle />
         </div>
       </div>
       <div className="item-content">
         {renderElement(
           type,
           id,
-          handleOnFormChange,
           itemCount,
           duplicatedOptions,
           duplicatedSubOptions,
-          totalSubOptions,
+          defaultOptions,
         )}
       </div>
       <br />

@@ -50,7 +50,7 @@ function App() {
 
           <AppProvider>
             <Preview />
-            <Creator />
+            {/* <Creator /> */}
             <CodeTable></CodeTable>
           </AppProvider>
         </div>

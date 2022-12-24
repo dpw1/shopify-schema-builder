@@ -25,6 +25,7 @@ export default function CodeTable() {
   const sectionText = useStore((state) => state.sectionText);
   const setSectionText = useStore((state) => state.setSectionText);
   const addSection = useStore((state) => state.addSection);
+  const items = useStore((state) => state.items);
 
   const variablesResult = useStore((state) => state.variablesResult);
 
@@ -67,12 +68,9 @@ export default function CodeTable() {
   };
 
   const copyJSONToClipboard = () => {
-    const _json = generateJSONSchema();
-
-    console.log(_json);
-    const json = cleanJSONSchema(JSON.parse(_json));
-
-    console.log("cleaned json", _json);
+    const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
+    var _json = JSON.stringify(items, null, 2);
+    var json = cleanJSONSchema(JSON.parse(_json));
 
     copyToClipboard(json);
   };
@@ -108,14 +106,10 @@ export default function CodeTable() {
 
         <div className="CodeTable-tables">
           <div className="CodeTable-tables-result">
-            {/* <textarea
+            <textarea
               defaultValue={""}
-              value={""}
-              readOnly={false}
-              name=""
-              id="CodeTable-result"
-              cols="30"
-              rows="10"></textarea> */}
+              value={JSON.stringify(items)}
+              readOnly={false}></textarea>
           </div>
         </div>
 
@@ -157,17 +151,11 @@ export default function CodeTable() {
 
           const json = JSON.parse(_json).settings;
 
-          console.log("extract", json);
           const op = convertSchemaJSONToItems(json);
-
-          console.log("result", op);
 
           addItems(op);
 
-          console.log("my json", json);
-
           const schemaJson = generateJSONSchema();
-          console.log("schema json", schemaJson);
         }}>
         Extract
       </button>

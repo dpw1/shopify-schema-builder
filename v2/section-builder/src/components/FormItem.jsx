@@ -15,6 +15,7 @@ import {
 import {
   getJsonResult,
   setJsonResult,
+  transformDOMIntoJSON,
   updateJSONAndVariables,
   updateSectionSettings,
 } from "../utils";
@@ -44,7 +45,9 @@ function FormItem(props) {
   const values = useStore((state) => state.values);
 
   const addValues = useStore((state) => state.addValues);
-  const setGlobalJson = useStore((state) => state.setGlobalJson);
+  const updateItem = useStore((state) => state.updateItem);
+  const setItems = useStore((state) => state.setItems);
+  const items = useStore((state) => state.items);
 
   let duplicatedSubOptions = _duplicatedSubOptions
     ? _duplicatedSubOptions
@@ -111,36 +114,32 @@ function FormItem(props) {
     return allErrors;
   };
 
+  /* Detects input changes (typing) and update the JSON store's accordingly */
   const handleInputChange = (e) => {
-    setErrors([]);
+    const $item = e.target.closest(`.item`);
 
-    console.log("input change");
+    if (!$item) {
+      return;
+    }
 
+    const json = transformDOMIntoJSON($item);
+
+    console.log("updated json (formitem.js): ", json);
+
+    updateItem(json);
+
+    /* Update values */
     const name = e.target.name;
     const value = e.target.value;
 
     const __id = name.split("_")[0];
 
-    const json = generateJSONSchema();
-
-    setJsonResult(json);
-    setGlobalJson(json);
-    setModified(true);
-
-    const modifiedItem = JSON.parse(json).filter((e) => e.__id === __id)[0];
-
-    if (handleErrors(modifiedItem).length >= 1) {
-      return;
-    }
-
-    if (modifiedItem.hasOwnProperty("id")) {
-      updateSectionSettings(__id, modifiedItem.id);
-    }
-
     addValues({
       ...values,
       [name]: value,
     });
+
+    return;
   };
 
   const setDefaultValue = (labelName) => {
@@ -155,47 +154,22 @@ function FormItem(props) {
     return "";
   };
 
-  const filterValue = (text) => {
-    if (!text) {
-      return "error";
-    }
-
-    return text;
-  };
-
-  const setItemsTitle = () => {
-    const characters = values[`${itemId}_id`] && values[`${itemId}_id`].length;
-
-    if (!characters || characters <= 0) {
-      if (modified) {
-        return "";
-      }
-
-      return setDefaultValue("id");
-    }
-    return values[`${itemId}_id`] || setDefaultValue("id");
-  };
-
   useEffect(() => {
     updateJSONAndVariables();
   }, [values]);
 
   useEffect(() => {
-    var $suboptions = window.document.querySelectorAll(
-      ".FormItem-sortable-suboptions",
-    );
-
-    if (!$suboptions) {
-      return;
-    }
-
-    for (var each of $suboptions) {
-      var sortable = Sortable.create(each, {
-        onEnd: function () {
-          updateOnChange();
-        },
-      });
-    }
+    // var $suboptions = window.document.querySelector(
+    //   `[class*="${itemId}"] .FormItem-sortable-suboptions`,
+    // );
+    // if (!$suboptions) {
+    //   return;
+    // }
+    // var sortable = Sortable.create($suboptions, {
+    //   onEnd: function () {
+    //     updateOnChange();
+    //   },
+    // });
   }, []);
 
   const useFocus = () => {
@@ -207,14 +181,18 @@ function FormItem(props) {
     return [htmlElRef, setFocus];
   };
 
-  function updateOnChange() {
-    setTimeout((_) => {
-      const json = generateJSONSchema();
+  function updateOnChange($parent = null) {
+    const $item = $parent ? $parent : e.target.closest(`.item`);
 
-      setJsonResult(json);
-      setGlobalJson(json);
-      setModified(true);
-    }, 50);
+    if (!$item) {
+      return;
+    }
+
+    const json = transformDOMIntoJSON($item);
+
+    console.log("update json", json);
+
+    updateItem(json);
   }
 
   return (
@@ -222,7 +200,7 @@ function FormItem(props) {
       {options.map((e, i) => {
         return (
           <React.Fragment>
-            <div className="FormItem-attr">
+            <div key={e + i} className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
               <input
                 value={values[`${itemId}_${e}`]}
@@ -247,10 +225,10 @@ function FormItem(props) {
       })}
 
       {subOptions && (
-        <div className={`FormItem-suboptions`}>
+        <div className={`FormItem-suboptions FormItem-suboptions--${itemId}`}>
           <div className="FormItem-sortable-suboptions">
             {[...Array(totalSubOptions)].map((_, i) => {
-              var itemIdSuboption = `${itemId}_sub_${i}`;
+              var itemIdSuboption = `${itemId}_suboption_${i}`;
 
               /* Grouping every 3 items into a <div>.
             This is where the "select" and "radio" items are rendered. */
@@ -299,16 +277,19 @@ function FormItem(props) {
           </div>
           <div className="FormItem-suboptions-control">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                const $parent = e.target.closest(`.item`);
+
                 setTotalSubOptions(totalSubOptions - 1);
-                updateOnChange();
+                updateOnChange($parent);
               }}>
               Remove
             </button>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                const $parent = e.target.closest(`.item`);
                 setTotalSubOptions(totalSubOptions + 1);
-                updateOnChange();
+                updateOnChange($parent);
               }}>
               Add
             </button>

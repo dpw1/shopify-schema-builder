@@ -226,7 +226,7 @@ export const transformDOMIntoJSON = (each) => {
   return _json;
 };
 
-/* Converts all DOM items into JSON for the section's schema. */
+/* Convert the ugly JSON from the store to "Shopify section ready" schema */
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
 
@@ -244,6 +244,11 @@ export const generateJSONSchema = () => {
   const result = JSON.stringify(finalJSON, null, 2);
 
   return result;
+
+  //   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
+  //   var result = JSON.stringify(items, null, 2);
+
+  //   return result;
 };
 
 /* This function will convert a typical Liquid schema into a EZFY Shopify Section Creator JSON-friendly items. */
@@ -587,17 +592,34 @@ function removeLastCharacter(str, char) {
 }
 
 /* clean the schema JSON to remove all of the __id.*/
-export const cleanJSONSchema = (_json) => {
-  if (!_json) {
+export const cleanJSONSchema = (__json) => {
+  if (!__json) {
     throw new Error(`cleanJSONSchema - JSON doesn't exist`);
   }
 
-  const json = _json.map((e) => {
+  const _json = __json.map((e) => {
     if (e.hasOwnProperty("__id")) {
       delete e.__id;
     }
     return e;
   });
+
+  const json = _json.map((e, i) => {
+    const index = i + 1;
+    if (e.type !== "header" && e.type !== "paragraph") {
+      if (!e.hasOwnProperty("label")) {
+        e.label = `${e.type} ${index}`;
+      }
+
+      if (!e.hasOwnProperty("id")) {
+        e.id = `${e.type}_${index}`;
+      }
+    }
+
+    return e;
+  });
+
+  console.log("mmm", json);
 
   const _result = `${JSON.stringify(json, null, 2).replace(`[`, "")}`;
   const result = removeLastCharacter(_result, "]");

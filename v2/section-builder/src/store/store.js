@@ -8,14 +8,14 @@ const useStore = create((set, get) => ({
   /* All the items from the section "Item.jsx".
   This is the "ugly" JSON with __id.
   ======================================= */
-  items: getLocalStorage("items") || [],
+  items: getLocalStorage("items") ? JSON.parse(getLocalStorage("items")) : [],
   addItem: (item) => {
     const items = get().items;
 
     const updated = [...items, item];
 
     set((_) => {
-      setLocalStorage("items", updated);
+      setLocalStorage("items", JSON.stringify(updated));
       return {
         items: updated,
       };
@@ -27,7 +27,7 @@ const useStore = create((set, get) => ({
     const updated = [...items, ..._items];
 
     set((_) => {
-      setLocalStorage("items", updated);
+      setLocalStorage("items", JSON.stringify(updated));
       return {
         items: updated,
       };
@@ -37,9 +37,27 @@ const useStore = create((set, get) => ({
     const items = [..._items];
 
     set((_) => {
-      setLocalStorage("items", items);
+      setLocalStorage("items", JSON.stringify(items));
       return {
         items,
+      };
+    });
+  },
+  updateItem: (item) => {
+    const items = get().items;
+
+    const updated = items.map((e) => {
+      if (e.__id === item.__id) {
+        e = item;
+      }
+
+      return e;
+    });
+
+    set((_) => {
+      setLocalStorage("items", JSON.stringify(updated));
+      return {
+        items: updated,
       };
     });
   },
@@ -51,10 +69,22 @@ const useStore = create((set, get) => ({
       };
     });
   },
-  /* This will overwrite all items */
+  removeItem: (__id) => {
+    const items = get().items;
+
+    const updated = items.filter((e) => e.__id !== __id);
+
+    set((_) => {
+      setLocalStorage("items", JSON.stringify(updated));
+      return {
+        items: updated,
+      };
+    });
+  },
+  /* Overwrite all items with new json */
   setItems: (items) => {
     set((_) => {
-      setLocalStorage("items", items);
+      setLocalStorage("items", JSON.stringify(items));
       return {
         items,
       };
@@ -78,7 +108,12 @@ const useStore = create((set, get) => ({
     });
   },
 
-  /* The values of each input. For instance: ID, Label, Info, Default, etc. 
+  /* 
+  Values are used to store the input name and value of each input.
+  Example:
+  
+  
+ The input "id" will be stored like this: 9D1E6NZjgUiUiQxrAUDVN2_id: "my_id"
   ======================================= */
   values: getLocalStorage("values") || [],
   addValues: (_values) => {
