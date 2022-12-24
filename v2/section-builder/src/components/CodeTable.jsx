@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import {
   convertSchemaJSONToItems,
-  convertToLiquidVariables,
   copyToClipboard,
   generateJSONSchema,
   sleep,
@@ -164,6 +163,11 @@ export default function CodeTable() {
           console.log("result", op);
 
           addItems(op);
+
+          console.log("my json", json);
+
+          const schemaJson = generateJSONSchema();
+          console.log("schema json", schemaJson);
         }}>
         Extract
       </button>

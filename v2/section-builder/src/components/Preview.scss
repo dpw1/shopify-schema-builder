@@ -3,6 +3,7 @@
   width: 100%;
   padding-left: 10px;
   padding-right: 10px;
+  margin-right: 50px;
 
   .Preview-title {
     margin-bottom: 20px;
@@ -17,9 +18,22 @@
   }
 
   .Preview-item {
+    position: relative;
+    border: 2px solid transparent;
     & + .Preview-item {
       margin-top: 1rem;
     }
+  }
+
+  .Preview-item:hover {
+    border: 2px solid blue;
+  }
+
+  .Preview-edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999999999;
   }
 
   .Preview-button {
@@ -2524,4 +2538,9 @@
     top: 0;
     right: 0;
   }
+}
+
+.Preview-item--header {
+  border-top: 0.0625rem solid var(--p-border-subdued);
+  padding-top: 1rem;
 }

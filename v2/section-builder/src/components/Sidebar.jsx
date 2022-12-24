@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import SectionEditor from "./SectionEditor";
+
 import "./Sidebar.scss";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
@@ -19,9 +19,7 @@ export default function Sidebar(props) {
     <div className="Sidebar">
       <div className="Sidebar-sections">{props.children}</div>
 
-      <div className="Sidebar-current">
-        {activeSection !== null && <SectionEditor></SectionEditor>}
-      </div>
+      <div className="Sidebar-current"></div>
     </div>
   );
 }

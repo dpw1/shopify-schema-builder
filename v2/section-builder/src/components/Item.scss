@@ -8,6 +8,15 @@
   padding-bottom: 0;
   position: relative;
   list-style: none !important;
+  //   display: none;
+
+  &--visible {
+    display: block;
+  }
+
+  &--tagged {
+    border: 1px solid blue;
+  }
 
   & + .item {
     margin-top: 40px;

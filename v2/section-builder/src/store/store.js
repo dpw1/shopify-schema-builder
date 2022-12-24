@@ -5,7 +5,8 @@ const setLocalStorage = (key, value) =>
   window.localStorage.setItem(key, JSON.stringify(value));
 
 const useStore = create((set, get) => ({
-  /* All the items that are part of the schema's JSON. 
+  /* All the items from the section "Item.jsx".
+  This is the "ugly" JSON with __id.
   ======================================= */
   items: getLocalStorage("items") || [],
   addItem: (item) => {
@@ -50,8 +51,18 @@ const useStore = create((set, get) => ({
       };
     });
   },
+  /* This will overwrite all items */
+  setItems: (items) => {
+    set((_) => {
+      setLocalStorage("items", items);
+      return {
+        items,
+      };
+    });
+  },
 
   /* the JSON that is generated to use in the section's schema. 
+  This is the "clean" JSON to use in the Shopify section.
   ======================================= */
   jsonResult: getLocalStorage("jsonResult") || [],
 
@@ -110,7 +121,10 @@ const useStore = create((set, get) => ({
     });
   },
 
-  /* Global JSON is the "ugly" JSON containing the __id. It's used for programatic purposes and not used on the actual Shopify section.
+  /* Global JSON is the "ugly" JSON containing the __id. All available schemas are found here.
+  It's used for programatic purposes and not used on the actual Shopify section.
+
+  This one is mostly used for the UI. There is redundancy with the "items".
   ======================================= */
   globalJson: getLocalStorage("globalJson")
     ? JSON.parse(getLocalStorage("globalJson"))

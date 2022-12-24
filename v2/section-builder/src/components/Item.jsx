@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import handleViewport from "react-in-viewport";
+
 import {
   addToIndex,
   schema,
@@ -27,6 +29,7 @@ const renderElement = (
   duplicatedOptions,
   duplicatedSubOptions,
   defaultOptions,
+  totalSubOptions,
 ) => {
   switch (type) {
     case "header":
@@ -167,7 +170,6 @@ const renderElement = (
           options={["id", "label", "accept", "placeholder", "info", "default"]}
           type="video_url"
           duplicatedOptions={duplicatedOptions}
-          duplicatedOptions={duplicatedOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -270,6 +272,7 @@ const renderElement = (
           totalSubOptions={5}
           type="radio"
           duplicatedOptions={duplicatedOptions}
+          duplicatedSubOptions={duplicatedSubOptions}
           handleOnFormChange={handleOnFormChange}
           itemId={itemId}
         />
@@ -314,9 +317,6 @@ export default function Item(props) {
   const items = useStore((state) => state.items);
   const updateItems = useStore((state) => state.updateItems);
 
-  /* TODO 
-  "duplicatedItemOptions' should receive the _json data. */
-
   /** Responsible to duplicate items. */
   const handleDuplicate = async () => {
     /* "$this" is modified once "setItems" is updated. */
@@ -338,6 +338,10 @@ export default function Item(props) {
       duplicatedOptions: _json,
     };
 
+    if (_json.hasOwnProperty("options")) {
+      _item["duplicatedSubOptions"] = _json.options;
+    }
+
     const updatedItems = addToIndex(items, index, _item);
     updateItems(updatedItems);
 
@@ -358,21 +362,12 @@ export default function Item(props) {
     </span>
   ));
 
-  const [selected, setSelected] = useState("today");
+  const totalSubOptions =
+    props.hasOwnProperty("duplicatedSubOptions") && !!props.duplicatedSubOptions
+      ? Object.keys(props.duplicatedSubOptions).length
+      : 5;
 
-  const handleSelectChange = React.useCallback(
-    (value) => setSelected(value),
-    [],
-  );
-
-  const options = schema
-    .sort((a, b) => a.id.localeCompare(b.id))
-    .map(({ id: _id }) => {
-      return {
-        label: _id,
-        value: _id,
-      };
-    });
+  console.log("my sub optison", totalSubOptions);
 
   return (
     <li
@@ -486,6 +481,7 @@ export default function Item(props) {
           itemCount,
           duplicatedOptions,
           duplicatedSubOptions,
+          totalSubOptions,
         )}
       </div>
       <br />

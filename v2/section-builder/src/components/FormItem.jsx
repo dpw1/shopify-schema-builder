@@ -21,7 +21,7 @@ import {
 import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
-export default function FormItem(props) {
+function FormItem(props) {
   let {
     itemId,
     type,
@@ -34,14 +34,12 @@ export default function FormItem(props) {
     itemCount,
   } = props;
 
-  const [list, setList] = useState(subOptions ? subOptions : []);
+  const [totalSubOptions, setTotalSubOptions] = useState(
+    _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
+  );
 
   const [modified, setModified] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [totalSubOptions, setTotalSubOptions] = useStickyState(
-    `totalSubOptios-${itemId}`,
-    _totalSubOptions,
-  );
 
   const values = useStore((state) => state.values);
 
@@ -51,10 +49,6 @@ export default function FormItem(props) {
   let duplicatedSubOptions = _duplicatedSubOptions
     ? _duplicatedSubOptions
     : null;
-
-  if (duplicatedSubOptions && duplicatedSubOptions.length > 5) {
-    totalSubOptions = duplicatedSubOptions.length;
-  }
 
   if (!defaultOptions || defaultOptions.length <= 0) {
     defaultOptions = "";
@@ -120,6 +114,8 @@ export default function FormItem(props) {
   const handleInputChange = (e) => {
     setErrors([]);
 
+    console.log("input change");
+
     const name = e.target.name;
     const value = e.target.value;
 
@@ -182,7 +178,6 @@ export default function FormItem(props) {
 
   useEffect(() => {
     updateJSONAndVariables();
-    //console.log("look at me values", values);
   }, [values]);
 
   useEffect(() => {
@@ -269,14 +264,6 @@ export default function FormItem(props) {
                           {each} {i + 1}:
                         </label>
 
-                        <p>
-                          {console.log(
-                            "moving!",
-                            duplicatedSubOptions && duplicatedSubOptions[i]
-                              ? duplicatedSubOptions[i][each]
-                              : "",
-                          )}
-                        </p>
                         <input
                           value={values[`${itemIdSuboption}_${each}`]}
                           onChange={handleInputChange}
@@ -321,7 +308,6 @@ export default function FormItem(props) {
             <button
               onClick={() => {
                 setTotalSubOptions(totalSubOptions + 1);
-
                 updateOnChange();
               }}>
               Add
@@ -332,3 +318,5 @@ export default function FormItem(props) {
     </fieldset>
   );
 }
+
+export default FormItem;

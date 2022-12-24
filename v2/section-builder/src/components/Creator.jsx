@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import ViewportList from "react-viewport-list";
+
 import short from "short-uuid";
 import {
   sortableContainer,
@@ -39,17 +41,13 @@ const SortableContainer = sortableContainer(({ children }) => {
 export default function Creator() {
   const { register, setValue, handleSubmit, watch, errors } = useForm();
   const [isToggled, setIsToggled] = useStickyState(false);
-  const [lastChangedInput, setLastChangedInput] = useStickyState(
-    "@lastChangedInput",
-    [],
-  );
 
   const items = useStore((state) => state.items);
-  // const values = useStore((state) => state.values);
-
   const addItems = useStore((state) => state.addItems);
   const addItem = useStore((state) => state.addItem);
   const updateItems = useStore((state) => state.updateItems);
+
+  const [visibleItems, setVisibleItems] = useStickyState("@visibleItems", []);
 
   const jsonResult = useStore((state) => state.jsonResult);
   const setGlobalJson = useStore((state) => state.setGlobalJson);
@@ -63,6 +61,21 @@ export default function Creator() {
     const json = generateJSONSchema();
     updateJSONDOM(json);
   };
+
+  useEffect(() => {
+    console.log("my items", items);
+
+    let ids = [];
+    var $editing = document.querySelectorAll(`[data-is-editing='true']`);
+
+    for (var each of $editing) {
+      ids.push(each.getAttribute("data-is-editing-id"));
+    }
+
+    var updated = items.filter((e) => ids.includes(e.id));
+
+    setVisibleItems(updated);
+  }, [items]);
 
   const handleAddItem = async () => {
     /* All available par<<ameters can be found as the props for FormItem.js */
@@ -83,6 +96,13 @@ export default function Creator() {
       setGlobalJson(json);
     }, 50);
   };
+
+  useEffect(() => {
+    console.log(
+      "my visib",
+      items.filter((x) => visibleItems.includes(x.id)),
+    );
+  }, [visibleItems]);
 
   const addCustomItem = async () => {
     var test = [
@@ -233,36 +253,39 @@ export default function Creator() {
       </div>
 
       <SortableContainer useDragHandle onSortEnd={onSortEnd}>
-        {items.map((props, i) => {
-          return (
-            <React.Fragment>
-              <SortableItem
-                key={`item-${short.generate()}`}
-                index={i}
-                value={
-                  <Item
-                    duplicatedOptions={props.duplicatedOptions}
-                    duplicatedSubOptions={props.duplicatedSubOptions}
-                    isToggled={props.isToggled}
-                    Content={props.content}
-                    register={register}
-                    setValue={setValue}
-                    schema={schema}
-                    handleOnChange={handleOnChange}
-                    id={props.id}
-                    type={props.type}
-                    handleToggle={handleToggle}
-                    handleDeleteItem={handleDeleteItem}
-                    itemCount={`${i + 1}`}
-                    defaultValue={props.type}
-                    name={`name-${i}`}
-                    sortableHandle={sortableHandle}></Item>
-                }
-              />
-            </React.Fragment>
-          );
-        })}
+        {items
+          .filter((x) => visibleItems.includes(x.id))
+          .map((props, i) => {
+            return (
+              <React.Fragment>
+                <SortableItem
+                  key={`item-${short.generate()}`}
+                  index={i}
+                  value={
+                    <Item
+                      duplicatedOptions={props.duplicatedOptions}
+                      duplicatedSubOptions={props.duplicatedSubOptions}
+                      isToggled={props.isToggled}
+                      Content={props.content}
+                      register={register}
+                      setValue={setValue}
+                      schema={schema}
+                      handleOnChange={handleOnChange}
+                      id={props.id}
+                      type={props.type}
+                      handleToggle={handleToggle}
+                      handleDeleteItem={handleDeleteItem}
+                      itemCount={`${i + 1}`}
+                      defaultValue={props.type}
+                      name={`name-${i}`}
+                      sortableHandle={sortableHandle}></Item>
+                  }
+                />
+              </React.Fragment>
+            );
+          })}
       </SortableContainer>
+
       <fieldset>
         <Button className="Creator-add" onClick={() => handleAddItem()}>
           Add
@@ -274,13 +297,13 @@ export default function Creator() {
           }}>
           Test
         </Button>
-        <Button
+        {/* <Button
           id="generateJSON"
           onClick={async () => {
             generateJSON();
           }}>
           Generate JSON
-        </Button>
+        </Button> */}
       </fieldset>
     </div>
   );

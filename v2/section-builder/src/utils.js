@@ -93,7 +93,7 @@ export const updateJSONDOM = (json) => {
     const $textarea = window.document.getElementById(`CodeTable-result`);
     $textarea.value = json;
   } catch (err) {
-    console.error("Couldn't update textarea.");
+    //console.error("Couldn't update textarea.");
   }
 };
 
@@ -288,6 +288,31 @@ export const clearResultsTextarea = (_) => {
   $section.value = "";
 };
 
+export const extractSchemaFromCode = (importedSection, addItems) => {
+  function _extractTextBetween(text, start, end) {
+    if (!start || !end) {
+      throw new Error(`Please add a "start" and "end" parameter`);
+    }
+
+    return text.split(start)[1].split(end)[0];
+  }
+
+  const _json = _extractTextBetween(
+    importedSection,
+    `{% schema %}`,
+    `{% endschema %}`,
+  );
+
+  const json = JSON.parse(_json).settings;
+
+  console.log("extract", json);
+  const op = convertSchemaJSONToItems(json);
+
+  console.log("result", op);
+
+  addItems(op);
+};
+
 /* Sets the current JSON edited via the DOM items. */
 export const setJsonResult = (_json) => {
   let initialState = localStorage.getItem("json_initial_state");
@@ -297,7 +322,7 @@ export const setJsonResult = (_json) => {
     localStorage.setItem("json_initial_state", initialState);
   }
 
-  console.log("SETTING INITIAL STATE", initialState);
+  //   console.log("UPDATING JSON RESULT", initialState);
 
   const _previous = localStorage.getItem("json_results");
   const previous = _previous ? JSON.parse(_previous).current : {};
@@ -355,8 +380,6 @@ export const getJsonResult = (_) => {
 
   const json = JSON.parse(_json);
 
-  // debugger;
-
   const result = {
     initialState: JSON.parse(json.initialState),
     previous: JSON.parse(json.previous),
@@ -381,8 +404,6 @@ export const updateSectionWithUpdatedSchema = async (json) => {
     const _result = $result.value.trim();
     const section = _result.length >= 1 ? _result : $section.value.trim();
     // const section = $section.value;
-
-    // debugger;
 
     if (!/{% schema %}/gim.test(section) || section.trim() === "") {
       return;
@@ -588,19 +609,9 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/* Add an element to a specific index in an array */
 export function addToIndex(arr, index, newItem) {
   return [...arr.slice(0, index), newItem, ...arr.slice(index)];
-}
-
-export async function generateJSONAndVariables() {
-  return;
-  const $generator = window.document.getElementById("generateJSON");
-
-  if ($generator) {
-    $generator.click();
-    // await sleep(25);
-    // $generator.click();
-  }
 }
 
 export function _extractTextBetween(text, start, end) {
