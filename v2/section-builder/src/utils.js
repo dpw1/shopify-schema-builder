@@ -224,7 +224,6 @@ export const transformDOMIntoJSON = (each) => {
       e.order = i + 1;
       return e;
     });
-    console.log("args ", _suboptions);
 
     _json["options"] = _suboptions;
   }
@@ -612,7 +611,11 @@ export const cleanJSONSchema = (__json) => {
 
   const json = _json.map((e, i) => {
     const index = i + 1;
+
+    /* For all non "header" or "paragraphs" */
     if (e.type !== "header" && e.type !== "paragraph") {
+      /* Set default values for 'label' and 'id' */
+
       if (!e.hasOwnProperty("label")) {
         e.label = `${e.type} ${index}`;
       }
@@ -620,6 +623,17 @@ export const cleanJSONSchema = (__json) => {
       if (!e.hasOwnProperty("id")) {
         e.id = `${e.type}_${index}`;
       }
+
+      /* Remove 'content' */
+      delete e.content;
+    }
+
+    /* Remove 'order' from the sub options **/
+    if (e.hasOwnProperty("options")) {
+      e.options = e.options.map((e) => {
+        delete e.order;
+        return e;
+      });
     }
 
     return e;
