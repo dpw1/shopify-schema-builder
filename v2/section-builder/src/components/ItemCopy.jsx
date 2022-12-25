@@ -302,7 +302,6 @@ export default function ItemCopy(props) {
     handleDelete,
     duplicatedOptions,
     duplicatedSubOptions,
-    isEditing,
   } = props;
 
   const items = useStore((state) => state.items);

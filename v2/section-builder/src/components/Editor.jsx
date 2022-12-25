@@ -49,11 +49,13 @@ export default function Editor(props) {
         data-is-editing-id={data.__id}
         className="Preview-edit"
         onClick={() => {
-          setIsEditing(!isEditing);
+          setTimeout(() => {
+            setIsEditing(!isEditing);
 
-          if (!isEditing === true) {
-            //alert(`enable sortable for ${data.__id}`);
-          }
+            if (!isEditing === true) {
+              //alert(`enable sortable for ${data.__id}`);
+            }
+          }, 10);
         }}>
         {isEditing ? "UNEDIT" : "Edit"}
       </button>

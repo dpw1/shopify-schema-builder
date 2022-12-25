@@ -2,4 +2,9 @@
   .Editor-panel {
     position: relative;
   }
+
+  .Editor-edit {
+    z-index: 999999999999;
+    display: block;
+  }
 }
