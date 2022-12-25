@@ -11,6 +11,7 @@ import {
   cleanSectionCode,
   cleanJSONSchema,
   updateJSONAndVariables,
+  generateVariables,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -27,7 +28,7 @@ export default function CodeTable() {
   const addSection = useStore((state) => state.addSection);
   const items = useStore((state) => state.items);
 
-  const variablesResult = useStore((state) => state.variablesResult);
+  const [variables, setVariables] = useState(JSON.stringify(items));
 
   const convertSectionToJson = () => {
     const $code = window.document.querySelector(`#sectionCode`);
@@ -59,14 +60,6 @@ export default function CodeTable() {
     addSection(section);
   };
 
-  const copySectionToClipboard = () => {
-    const $section = document.querySelector(`#sectionResult`);
-    const _section = $section.value;
-    const section = cleanSectionCode(_section);
-
-    copyToClipboard(section);
-  };
-
   const copyJSONToClipboard = () => {
     const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
     var _json = JSON.stringify(items, null, 2);
@@ -74,6 +67,14 @@ export default function CodeTable() {
 
     copyToClipboard(json);
   };
+
+  useEffect(() => {
+    if (items && items.length >= 1) {
+      const result = generateVariables();
+
+      setVariables(result);
+    }
+  }, [items]);
 
   return (
     <div className="CodeTable">
@@ -97,8 +98,7 @@ export default function CodeTable() {
           </label>
         </div>
         <textarea
-          defaultValue={variablesResult ? variablesResult : ""}
-          value={variablesResult ? variablesResult : ""}
+          value={variables}
           readOnly={true}
           id="CodeTable-variables"
           cols="10"

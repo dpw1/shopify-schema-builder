@@ -596,6 +596,33 @@ function removeLastCharacter(str, char) {
     .join("");
 }
 
+export function generateVariables() {
+  const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
+  var __json = JSON.stringify(items, null, 2);
+  var _json = cleanJSONSchema(JSON.parse(__json));
+  const json = JSON.parse(`[${_json}]`).sort((a, b) => {
+    if (a.id < b.id) {
+      return -1;
+    }
+    if (a.id > b.id) {
+      return 1;
+    }
+    return 0;
+  });
+
+  let variables = [];
+  for (var each of json) {
+    const id = each.id;
+
+    if (id) {
+      const variable = `{% assign ${id} = section.settings.${id} %}`;
+      variables.push(variable);
+    }
+  }
+
+  return variables.join("\n");
+}
+
 /* clean the schema JSON to remove all of the __id.*/
 export const cleanJSONSchema = (__json) => {
   if (!__json) {
