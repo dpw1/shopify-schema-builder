@@ -111,7 +111,7 @@ export const focusDropdown = (delay = 50) => {
   }, delay);
 };
 
-/* This function converts a DOM item containing to JSON.  */
+/* This function converts a DOM item to JSON.  */
 export const transformDOMIntoJSON = (each) => {
   let _json;
   const type = each.querySelector("select").value;
@@ -195,7 +195,7 @@ export const transformDOMIntoJSON = (each) => {
   ) {
     let _suboptions = [];
 
-    for (const suboption of $suboptions) {
+    for (const [index, suboption] of $suboptions.entries()) {
       let _suboptionsJSON = {};
 
       /* Getting all the sub options available. */
@@ -219,6 +219,12 @@ export const transformDOMIntoJSON = (each) => {
         _suboptions.push(_suboptionsJSON);
       }
     }
+
+    _suboptions = _suboptions.map((e, i) => {
+      e.order = i + 1;
+      return e;
+    });
+    console.log("args ", _suboptions);
 
     _json["options"] = _suboptions;
   }

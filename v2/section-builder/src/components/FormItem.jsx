@@ -44,7 +44,6 @@ function FormItem(props) {
 
   const values = useStore((state) => state.values);
 
-  const addValues = useStore((state) => state.addValues);
   const updateItem = useStore((state) => state.updateItem);
   const setItems = useStore((state) => state.setItems);
   const items = useStore((state) => state.items);
@@ -128,17 +127,6 @@ function FormItem(props) {
 
     updateItem(json);
 
-    /* Update values */
-    const name = e.target.name;
-    const value = e.target.value;
-
-    const __id = name.split("_")[0];
-
-    addValues({
-      ...values,
-      [name]: value,
-    });
-
     return;
   };
 
@@ -155,21 +143,24 @@ function FormItem(props) {
   };
 
   useEffect(() => {
-    updateJSONAndVariables();
+    //updateJSONAndVariables();
   }, [values]);
 
   useEffect(() => {
-    // var $suboptions = window.document.querySelector(
-    //   `[class*="${itemId}"] .FormItem-sortable-suboptions`,
-    // );
-    // if (!$suboptions) {
-    //   return;
-    // }
-    // var sortable = Sortable.create($suboptions, {
-    //   onEnd: function () {
-    //     updateOnChange();
-    //   },
-    // });
+    var $suboptions = window.document.querySelector(
+      `[class*="${itemId}"] .FormItem-sortable-suboptions`,
+    );
+    if (!$suboptions) {
+      return;
+    }
+    var sortable = Sortable.create($suboptions, {
+      onEnd: function (e) {
+        setTimeout((_) => {
+          const $item = e.item.closest(`.item`);
+          updateOnChange($item);
+        }, 10);
+      },
+    });
   }, []);
 
   const useFocus = () => {
@@ -181,18 +172,19 @@ function FormItem(props) {
     return [htmlElRef, setFocus];
   };
 
-  function updateOnChange($parent = null) {
-    const $item = $parent ? $parent : e.target.closest(`.item`);
-
+  function updateOnChange($item = null) {
     if (!$item) {
+      throw new Error("no $item passed");
       return;
     }
 
-    const json = transformDOMIntoJSON($item);
+    setTimeout(() => {
+      const json = transformDOMIntoJSON($item);
 
-    console.log("update json", json);
+      console.log("updated json (formitem.js): ", json);
 
-    updateItem(json);
+      updateItem(json);
+    }, 50);
   }
 
   return (
@@ -278,18 +270,21 @@ function FormItem(props) {
           <div className="FormItem-suboptions-control">
             <button
               onClick={(e) => {
-                const $parent = e.target.closest(`.item`);
-
-                setTotalSubOptions(totalSubOptions - 1);
-                updateOnChange($parent);
+                setTimeout(() => {
+                  const $parent = e.target.closest(`.item`);
+                  setTotalSubOptions(totalSubOptions - 1);
+                  updateOnChange($parent);
+                }, 10);
               }}>
               Remove
             </button>
             <button
               onClick={(e) => {
-                const $parent = e.target.closest(`.item`);
-                setTotalSubOptions(totalSubOptions + 1);
-                updateOnChange($parent);
+                setTimeout(() => {
+                  const $parent = e.target.closest(`.item`);
+                  setTotalSubOptions(totalSubOptions + 1);
+                  updateOnChange($parent);
+                }, 10);
               }}>
               Add
             </button>
