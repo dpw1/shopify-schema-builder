@@ -596,7 +596,7 @@ function removeLastCharacter(str, char) {
     .join("");
 }
 
-export function generateVariables() {
+export function generateLiquidVariables() {
   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
   var __json = JSON.stringify(items, null, 2);
   var _json = cleanJSONSchema(JSON.parse(__json));

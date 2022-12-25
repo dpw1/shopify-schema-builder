@@ -11,7 +11,7 @@ import {
   cleanSectionCode,
   cleanJSONSchema,
   updateJSONAndVariables,
-  generateVariables,
+  generateLiquidVariables,
 } from "../utils";
 
 import "./CodeTable.scss";
@@ -70,7 +70,7 @@ export default function CodeTable() {
 
   useEffect(() => {
     if (items && items.length >= 1) {
-      const result = generateVariables();
+      const result = generateLiquidVariables();
 
       setVariables(result);
     }
