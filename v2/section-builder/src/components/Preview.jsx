@@ -677,7 +677,7 @@ export default function Preview() {
   const globalJson = useStore((state) => state.globalJson);
   const addItem = useStore((state) => state.addItem);
   const items = useStore((state) => state.items);
-  const [type, setType] = useStickyState("@type", "select");
+  const [type, setType] = useStickyState("@type", "text");
 
   return (
     <div className="Preview">
@@ -698,6 +698,7 @@ export default function Preview() {
 
             return (
               <div
+                data-item-id={e.__id}
                 data-item-count={index}
                 className={`Preview-item Preview-item--${e.type}`}>
                 {(() => {
@@ -761,7 +762,6 @@ export default function Preview() {
                   label: `${type} ${index}`,
                   id: `${type}_${index}`,
                   content: `${type}`,
-                  order: index,
                 },
               ],
             );

@@ -363,7 +363,7 @@ export default function ItemCopy(props) {
 
       // Called when an item is deselected
       onDeselect: function (/**Event*/ evt) {
-        console.log("SELECT");
+        console.log("DESELECT");
       },
       onEnd: function (e) {
         /* TODO 
@@ -371,8 +371,6 @@ export default function ItemCopy(props) {
         console.log("END");
       },
     });
-
-    console.log("srt", sortable);
   }, []);
 
   return (

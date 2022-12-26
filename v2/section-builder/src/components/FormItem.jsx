@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import short from "short-uuid";
@@ -6,19 +6,7 @@ import "./FormItem.scss";
 
 import Sortable from "sortablejs";
 
-import {
-  sortableContainer,
-  sortableElement,
-  sortableHandle,
-} from "react-sortable-hoc";
-
-import {
-  getJsonResult,
-  setJsonResult,
-  transformDOMIntoJSON,
-  updateJSONAndVariables,
-  updateSectionSettings,
-} from "../utils";
+import { transformDOMIntoJSON } from "../utils";
 import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
@@ -34,6 +22,8 @@ function FormItem(props) {
     totalSubOptions: _totalSubOptions,
     itemCount,
   } = props;
+
+  const items = useStore((state) => state.items);
 
   const [totalSubOptions, setTotalSubOptions] = useState(
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
@@ -174,12 +164,14 @@ function FormItem(props) {
   return (
     <fieldset className="FormItem">
       {options.map((e, i) => {
+        const value = items.filter((e) => e.__id === itemId)[0];
+
         return (
           <React.Fragment>
             <div key={e + i} className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
               <input
-                value={values[`${itemId}_${e}`]}
+                value={value[e]}
                 onChange={(e) => {
                   handleInputChange(e);
                 }}
