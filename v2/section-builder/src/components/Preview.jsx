@@ -4,6 +4,7 @@ import "./Preview.scss";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import { Select, RangeSlider, TextField, Button } from "@shopify/polaris";
+import { DragHandleMinor } from "@shopify/polaris-icons";
 
 import Sortable, { MultiDrag } from "sortablejs";
 Sortable.mount(new MultiDrag());
@@ -786,7 +787,9 @@ export default function Preview() {
                   data-item-id={e.__id}
                   data-item-count={index}
                   className={`Preview-item Preview-item--${e.type}`}>
-                  <button className="Preview-handle">Drag me</button>
+                  <button className="Preview-handle Preview-icon-button">
+                    <DragHandleMinor></DragHandleMinor>
+                  </button>
 
                   {(() => {
                     if (e.type === "text") {

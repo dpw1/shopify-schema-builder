@@ -68,6 +68,9 @@ export default function CodeTable() {
     if (!items) {
       alert("no items.");
     }
+
+    /* TODO 
+	Json is copying wrong data (including  __id, etc) */
     var _json = JSON.stringify(items, null, 2);
     var json = cleanJSONSchema(JSON.parse(_json));
 

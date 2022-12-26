@@ -2,25 +2,4 @@
   .Editor-panel {
     position: relative;
   }
-
-  .Editor-edit {
-    z-index: 2;
-
-    position: absolute;
-    top: 0;
-    right: 0;
-    border: unset;
-    background: transparent;
-    cursor: pointer;
-
-    svg {
-      width: 20px;
-      height: 20px;
-      transition: all var(--ezfy-transition-normal);
-    }
-
-    &:hover svg {
-      fill: var(--p-interactive-hovered);
-    }
-  }
 }

@@ -49,7 +49,7 @@ export default function Editor(props) {
       <button
         data-is-editing={isEditing}
         data-is-editing-id={data.__id}
-        className="Editor-edit"
+        className="Editor-edit Preview-edit Preview-icon-button"
         onClick={() => {
           setTimeout(() => {
             setIsEditing(!isEditing);

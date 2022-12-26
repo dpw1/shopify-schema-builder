@@ -6,9 +6,100 @@
   margin-right: 50px;
   background-color: #fff;
 
+  .Preview-sortable > *:nth-child(1) {
+    border-top: unset;
+  }
+
+  .Preview-item {
+    position: relative;
+    padding: 5px;
+    border: 2px solid transparent;
+    transition: all var(--ezfy-transition-fast);
+
+    &:hover {
+      border: 2px solid lightblue;
+
+      .Preview-icon-button {
+        opacity: 1;
+      }
+    }
+
+    & + .Preview-item {
+      margin-top: 10px;
+    }
+  }
+
+  .sortable-ghost {
+    opacity: 0.3;
+  }
+
+  /* Icons [start] 
+  ==================================== */
+
+  .Preview-icon-button {
+    opacity: 0;
+    border: unset;
+    background: transparent;
+    outline: unset;
+    z-index: 2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: auto;
+    transition: all var(--ezfy-transition-fast);
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      transition: all var(--ezfy-transition-normal);
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover svg {
+      fill: var(--p-interactive-hovered);
+    }
+  }
+
+  .Preview-edit {
+    position: absolute;
+    top: 0px;
+    right: 0;
+
+    svg {
+      transition: all var(--ezfy-transition-normal);
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .Preview-handle {
+    position: absolute;
+    top: 0;
+    right: 35px;
+
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+
+    &:active {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+      cursor: grabbing;
+    }
+  }
+
   .sortable-selected {
     background-color: lightblue;
   }
+
+  /* Icons [end] 
+  ==================================== */
 
   .Preview-title {
     margin-bottom: 20px;
@@ -20,28 +111,6 @@
     line-height: var(--p-font-line-height-1);
     margin: 0;
     text-transform: uppercase;
-  }
-
-  .Preview-item {
-    position: relative;
-    padding: 5px;
-    border: 2px solid transparent;
-    transition: all var(--ezfy-transition-fast);
-
-    & + .Preview-item {
-      margin-top: 1rem;
-    }
-  }
-
-  .Preview-item:hover {
-    border: 2px solid lightblue;
-  }
-
-  .Preview-edit {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 999999999;
   }
 
   .Preview-button {
