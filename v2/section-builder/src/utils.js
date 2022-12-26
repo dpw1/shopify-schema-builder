@@ -111,8 +111,8 @@ export const focusDropdown = (delay = 50) => {
   }, delay);
 };
 
-/* This function converts a DOM item to JSON.  */
-export const transformDOMIntoJSON = (each) => {
+/* This function converts a DOM item to pretty, Shopify-section-friendly JSON.  */
+export const transformDOMIntoJSON = (each, isDuplication = false) => {
   let _json;
 
   const $attributes = each.querySelectorAll(`.FormItem-attr`);
@@ -134,10 +134,15 @@ export const transformDOMIntoJSON = (each) => {
       .getAttribute("name")
       .split("_")[0];
 
-    _json.__id = __id;
+    if (!isDuplication) {
+      _json.__id = __id;
+    } else {
+      _json.__id = short.generate();
+    }
+
     let value = attribute.querySelector(`input`).value;
 
-    /* Clean and format based on Shopify section rules for JSON */
+    /* Clean and format based on Shopify section rules for JSON. */
 
     /* If there is no property 'info', ignore */
     if (name === "info" && (value === "" || !value)) {
@@ -233,7 +238,7 @@ export const transformDOMIntoJSON = (each) => {
   return _json;
 };
 
-/* Convert the ugly JSON from the store to "Shopify section ready" schema */
+/* Convert the ugly JSON from the store.js to "Shopify section ready" schema */
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
 
@@ -272,7 +277,7 @@ export function createEmptyCopyOfObject(source, isArray) {
   return o;
 }
 
-/* This function will convert a typical Liquid schema into a EZFY Shopify Section Creator JSON-friendly items. */
+/* Converts a typical Shopify section schema into a EZFY Section Builder JSON. */
 export const convertSchemaJSONToItems = (json) => {
   return json.map((e) => {
     var object = { ...e };
@@ -417,7 +422,6 @@ export const getJsonResult = (_) => {
 };
 
 export const resetJsonResult = (_) => {
-  // localStorage.removeItem("json_initial_state");
   localStorage.removeItem("json_results");
 };
 
@@ -639,18 +643,15 @@ export function generateLiquidVariables() {
   return variables.join("\n");
 }
 
-/* clean the schema JSON to remove all of the __id.*/
+/* clean the schema JSON to remove all of the __id.
+
+Returns a JSON.stringify-ed string.
+
+*/
 export const cleanJSONSchema = (_json) => {
   if (!_json) {
     throw new Error(`cleanJSONSchema - JSON doesn't exist`);
   }
-
-  //   const _json = __json.map((e) => {
-  //     if (e.hasOwnProperty("__id")) {
-  //       delete e.__id;
-  //     }
-  //     return e;
-  //   });
 
   const json = _json.map((e, i) => {
     const index = i + 1;

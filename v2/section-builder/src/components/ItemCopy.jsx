@@ -29,13 +29,17 @@ const renderElement = (
   type,
   itemId,
   itemCount,
-  duplicatedOptions,
+  _duplicatedOptions,
   duplicatedSubOptions,
   defaultOptions,
 ) => {
   /* 
 Options = editable elements. (id, label, info, etc)
 */
+
+  const duplicatedOptions = _duplicatedOptions
+    ? _duplicatedOptions
+    : defaultOptions;
 
   switch (type) {
     case "header":
@@ -314,46 +318,34 @@ export default function ItemCopy(props) {
   const items = useStore((state) => state.items);
   const setItems = useStore((state) => state.setItems);
   const updateItems = useStore((state) => state.updateItems);
-  const [mustUpdate, setMustUpdate] = useStickyState("@mustUpdate", false);
 
   /** Responsible to duplicate items. */
   const handleDuplicate = async () => {
     /* "$this" is modified once "setItems" is updated. */
     let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
 
-    let _json = transformDOMIntoJSON($this);
-    delete _json.type;
-
-    console.log("my josn", _json);
+    let _json = transformDOMIntoJSON($this, true);
 
     /* ====== */
     const index = parseInt(itemCount) - 1;
 
-    const id = short.generate();
+    // const _item = {
+    //   id,
+    //   type,
+    //   ...duplicatedOptions,
+    // };
 
-    const _item = {
-      id,
-      type,
-      duplicatedOptions: _json,
-    };
+    // if (_json.hasOwnProperty("options")) {
+    //   duplicatedSubOptions = _json.options;
+    // }
 
-    if (_json.hasOwnProperty("options")) {
-      _item["duplicatedSubOptions"] = _json.options;
-    }
+    const updatedItems = addToIndex(items, index, _json);
 
-    const updatedItems = addToIndex(items, index, _item);
     updateItems(updatedItems);
-
-    await sleep(100);
-    scrollToItem(id);
   };
 
-  useEffect(() => {
-    console.log("Existing... item copy");
-  }, []);
-
   return (
-    <li data-item-count={itemCount} className={`item`}>
+    <li data-item-id={id} data-item-count={itemCount} className={`item`}>
       <div className="item-wrapper">
         <select
           onChange={(e) => handleOnChange(e)}
