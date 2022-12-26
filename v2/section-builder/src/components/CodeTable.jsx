@@ -41,6 +41,28 @@ export default function CodeTable() {
 
   const tabs = [
     {
+      id: "tab-schema-settings-json",
+      content: "Schema's settings JSON",
+      panelID: "schema-settings-json",
+      component: (
+        <>
+          <TextField
+            label={"Schema's settings JSON"}
+            value={JSON.stringify(items)}
+            maxHeight={100}
+            multiline={4}></TextField>{" "}
+          <Button onClick={() => copyJSONToClipboard()}>Copy JSON</Button>
+          <Button
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}>
+            Clear
+          </Button>
+        </>
+      ),
+    },
+    {
       id: "tab-liquid-variables",
       content: "Liquid variables",
       panelID: "all-customers-content-1",
@@ -73,56 +95,72 @@ export default function CodeTable() {
         </>
       ),
     },
-    {
-      id: "tab-schema-settings-json",
-      content: "Schema's settings JSON",
-      panelID: "schema-settings-json",
-      component: (
-        <>
-          <TextField
-            label={"Schema's settings JSON"}
-            value={JSON.stringify(items)}
-            maxHeight={100}
-            multiline={4}></TextField>
-        </>
-      ),
-    },
+
     {
       id: "tab-css-variables",
       content: "CSS Variables",
       panelID: "panel-css-variables",
+      component: (
+        <>
+          <TextField
+            label={"Import section"}
+            value={cssVariables}
+            maxHeight={100}
+            multiline={4}></TextField>
+          <Button
+            onClick={() => {
+              const css = generateCSSVariables();
+
+              setCssVariables(css);
+            }}>
+            Generate CSS
+          </Button>
+        </>
+      ),
+    },
+    {
+      id: "tab-import-section",
+      content: "Import",
+      panelID: "panel-import-section",
+      component: (
+        <>
+          <TextField
+            value={importedSection}
+            onChange={React.useCallback(
+              (newValue) => setImportedSection(newValue),
+              [],
+            )}
+            maxHeight={100}
+            multiline={4}></TextField>
+          <Button
+            onClick={() => {
+              function _extractTextBetween(text, start, end) {
+                if (!start || !end) {
+                  throw new Error(`Please add a "start" and "end" parameter`);
+                }
+
+                return text.split(start)[1].split(end)[0];
+              }
+
+              const _json = _extractTextBetween(
+                importedSection,
+                `{% schema %}`,
+                `{% endschema %}`,
+              );
+
+              const json = JSON.parse(_json).settings;
+
+              const extractedJson = convertSchemaJSONToItems(json);
+
+              removeItems();
+              addItems(extractedJson);
+            }}>
+            Import
+          </Button>
+        </>
+      ),
     },
   ];
-
-  //   const convertSectionToJson = () => {
-  //     const $code = window.document.querySelector(`#sectionCode`);
-
-  //     try {
-  //       const _code = $code.value;
-  //       const code = _extractTextBetween(
-  //         _code,
-  //         `{% schema %}`,
-  //         `{% endschema %}`,
-  //       );
-
-  //       const settings = convertSchemaJSONToItems(JSON.parse(code).settings);
-
-  //       removeItems();
-  //       addItems(settings);
-
-  //       console.log(`my schema's settings: `, settings);
-  //     } catch (err) {
-  //       console.log("error in schema's settings: ", err);
-  //     }
-  //   };
-
-  //   const handleSectionCodeChange = () => {
-  //     const $section = document.querySelector(`#sectionCode`);
-
-  //     const section = $section.value;
-
-  //     addSection(section);
-  //   };
 
   const copyJSONToClipboard = () => {
     const items = useStore.getState().items;
@@ -161,68 +199,7 @@ export default function CodeTable() {
         <div className="CodeTable-tables">
           <div className="CodeTable-tables-result"></div>
         </div>
-
-        <button onClick={() => copyJSONToClipboard()}>Copy JSON</button>
-
-        <button
-          onClick={() => {
-            localStorage.clear();
-            window.location.reload();
-          }}>
-          Clear
-        </button>
-
-        <div>
-          <TextField
-            label={"Import section"}
-            value={cssVariables}
-            maxHeight={100}
-            multiline={4}></TextField>
-          <Button
-            onClick={() => {
-              const css = generateCSSVariables();
-
-              setCssVariables(css);
-            }}>
-            Generate CSS
-          </Button>
-        </div>
-
-        <TextField
-          label={"Import section"}
-          value={importedSection}
-          onChange={React.useCallback(
-            (newValue) => setImportedSection(newValue),
-            [],
-          )}
-          maxHeight={100}
-          multiline={4}></TextField>
       </div>
-      <button
-        onClick={() => {
-          function _extractTextBetween(text, start, end) {
-            if (!start || !end) {
-              throw new Error(`Please add a "start" and "end" parameter`);
-            }
-
-            return text.split(start)[1].split(end)[0];
-          }
-
-          const _json = _extractTextBetween(
-            importedSection,
-            `{% schema %}`,
-            `{% endschema %}`,
-          );
-
-          const json = JSON.parse(_json).settings;
-
-          const extractedJson = convertSchemaJSONToItems(json);
-
-          removeItems();
-          addItems(extractedJson);
-        }}>
-        Import
-      </button>
     </div>
   );
 }
