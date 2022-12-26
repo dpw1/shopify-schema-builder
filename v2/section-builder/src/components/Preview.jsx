@@ -768,7 +768,6 @@ export default function Preview() {
       <h2 className="Preview-title">
         Previewing {items && items.length >= 1 && items.length} item(s)
       </h2>
-      <h2>must update? {mustUpdate ? "yes" : "no"}</h2>
       <div className="Preview-sortable">
         {items &&
           items

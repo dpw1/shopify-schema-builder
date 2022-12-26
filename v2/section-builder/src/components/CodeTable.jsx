@@ -12,11 +12,12 @@ import {
   cleanJSONSchema,
   updateJSONAndVariables,
   generateLiquidVariables,
+  generateCSSVariables,
 } from "../utils";
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
-import { TextField } from "@shopify/polaris";
+import { Button, TextField } from "@shopify/polaris";
 
 export default function CodeTable() {
   const [importedSection, setImportedSection] = useState("");
@@ -29,6 +30,7 @@ export default function CodeTable() {
   const items = useStore((state) => state.items);
 
   const [variables, setVariables] = useState(JSON.stringify(items));
+  const [cssVariables, setCssVariables] = useState("");
 
   const convertSectionToJson = () => {
     const $code = window.document.querySelector(`#sectionCode`);
@@ -123,6 +125,22 @@ export default function CodeTable() {
           }}>
           Clear
         </button>
+
+        <div>
+          <TextField
+            label={"Import section"}
+            value={cssVariables}
+            maxHeight={100}
+            multiline={4}></TextField>
+          <Button
+            onClick={() => {
+              const css = generateCSSVariables();
+
+              setCssVariables(css);
+            }}>
+            Generate CSS
+          </Button>
+        </div>
 
         <TextField
           label={"Import section"}

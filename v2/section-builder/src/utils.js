@@ -1,4 +1,6 @@
 import short from "short-uuid";
+import create from "zustand";
+import { subscribeWithSelector } from "zustand/middleware";
 
 export const initialState = {
   activeSection: null,
@@ -285,6 +287,32 @@ export const convertSchemaJSONToItems = (json) => {
     };
   });
 };
+
+export function generateCSSVariables() {
+  const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
+
+  console.log("xxx store", items);
+
+  let variables = ``;
+  let i = 0;
+
+  for (var [index, each] of items.entries()) {
+    if (each.hasOwnProperty("id")) {
+      variables += `\t--${each.id}: {{ ${each.id} }};\n`;
+    }
+
+    i += 1;
+  }
+
+  const result = `
+<style data-custom-variables="https://ezfycode.com">
+\t[id*='{{ section.id }}']{
+\t${variables.trim()}
+\t}
+</style>`.trim();
+
+  return result;
+}
 
 /* Responsible to update the textareas. */
 export const updateJSONAndVariables = async () => {
@@ -609,6 +637,7 @@ export function generateLiquidVariables() {
   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
   var __json = JSON.stringify(items, null, 2);
   var _json = cleanJSONSchema(JSON.parse(__json));
+
   const json = JSON.parse(`[${_json}]`).sort((a, b) => {
     if (a.id < b.id) {
       return -1;

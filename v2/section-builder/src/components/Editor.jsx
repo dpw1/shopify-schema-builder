@@ -5,6 +5,7 @@ import useStore from "../store/store";
 import "./Editor.scss";
 import Item from "./Item";
 import ItemCopy from "./ItemCopy";
+import { EditMajor, CancelMajor } from "@shopify/polaris-icons";
 
 export default function Editor(props) {
   const data = props.data;
@@ -58,7 +59,7 @@ export default function Editor(props) {
             }
           }, 10);
         }}>
-        {isEditing ? "UNEDIT" : "Edit"}
+        {isEditing ? <CancelMajor /> : <EditMajor />}
       </button>
       {isEditing && (
         <div className={`Editor-panel  Editor-panel--${data.__id}`}>

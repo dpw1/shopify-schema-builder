@@ -15,7 +15,7 @@
   }
 
   &--tagged {
-    border: 1px solid blue;
+    border: 1px solid var(--p-interactive-hovered);
   }
 
   & + .item {

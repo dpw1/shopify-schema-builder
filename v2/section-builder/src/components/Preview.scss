@@ -24,14 +24,17 @@
 
   .Preview-item {
     position: relative;
+    padding: 5px;
     border: 2px solid transparent;
+    transition: all var(--ezfy-transition-fast);
+
     & + .Preview-item {
       margin-top: 1rem;
     }
   }
 
   .Preview-item:hover {
-    border: 2px solid blue;
+    border: 2px solid lightblue;
   }
 
   .Preview-edit {
