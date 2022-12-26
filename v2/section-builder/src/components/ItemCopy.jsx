@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import handleViewport from "react-in-viewport";
+import Sortable, { MultiDrag } from "sortablejs";
+Sortable.mount(new MultiDrag());
 
 import {
   addToIndex,
@@ -306,6 +308,7 @@ export default function ItemCopy(props) {
 
   const items = useStore((state) => state.items);
   const updateItems = useStore((state) => state.updateItems);
+  const [mounted, setMounted] = useState(false);
 
   /** Responsible to duplicate items. */
   const handleDuplicate = async () => {
@@ -339,10 +342,38 @@ export default function ItemCopy(props) {
     scrollToItem(id);
   };
 
-  const totalSubOptions =
-    props.hasOwnProperty("duplicatedSubOptions") && !!props.duplicatedSubOptions
-      ? Object.keys(props.duplicatedSubOptions).length
-      : 5;
+  useEffect(() => {
+    var $items = window.document.querySelector(`.Preview-sortable `);
+
+    if (!$items) {
+      return;
+    }
+
+    var sortable = Sortable.create($items, {
+      animation: 150,
+      handle: `.Editor-handle`,
+      multiDrag: true, // Enable the plugin
+      selectedClass: "sortable-selected", // Class name for selected item
+      avoidImplicitDeselect: false, // true - if you don't want to deselect items on outside click
+
+      // Called when an item is selected
+      onSelect: function (/**Event*/ evt) {
+        console.log("SELECT");
+      },
+
+      // Called when an item is deselected
+      onDeselect: function (/**Event*/ evt) {
+        console.log("SELECT");
+      },
+      onEnd: function (e) {
+        /* TODO 
+		SORTABLE container*/
+        console.log("END");
+      },
+    });
+
+    console.log("srt", sortable);
+  }, []);
 
   return (
     <li data-item-count={itemCount} className={`item`}>

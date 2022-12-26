@@ -44,10 +44,11 @@ export default function Editor(props) {
 
   return (
     <div className="Editor">
+      <button className="Editor-handle">HANDLE</button>
       <button
         data-is-editing={isEditing}
         data-is-editing-id={data.__id}
-        className="Preview-edit"
+        className="Editor-edit"
         onClick={() => {
           setTimeout(() => {
             setIsEditing(!isEditing);

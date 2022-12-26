@@ -686,65 +686,67 @@ export default function Preview() {
         {globalJson && globalJson.length >= 1 && JSON.parse(globalJson).length}{" "}
         item(s)
       </h2>
-      {items &&
-        Array.from(items).map((e, i) => {
-          const index = i + 1;
+      <div className="Preview-sortable">
+        {items &&
+          Array.from(items).map((e, i) => {
+            const index = i + 1;
 
-          const props = {
-            ...e,
-            itemCount: index,
-          };
+            const props = {
+              ...e,
+              itemCount: index,
+            };
 
-          return (
-            <div
-              data-item-count={index}
-              className={`Preview-item Preview-item--${e.type}`}>
-              {(() => {
-                if (e.type === "text") {
-                  return <RenderTextPreview {...props} />;
-                } else if (e.type === "blog") {
-                  return <RenderBlogPreview {...props} />;
-                } else if (e.type === "checkbox") {
-                  return <RenderCheckboxPreview {...props} />;
-                } else if (e.type === "color") {
-                  return <RenderColorPreview {...props} />;
-                } else if (e.type === "font_picker") {
-                  return <RenderFontPreview {...props} />;
-                } else if (e.type === "header") {
-                  return <RenderHeaderPreview {...props} />;
-                } else if (e.type === "image_picker") {
-                  return <RenderImagePickerPreview {...props} />;
-                } else if (e.type === "collection") {
-                  return <RenderCollectionPreview {...props} />;
-                } else if (e.type === "link_list") {
-                  return <RenderLinkListPreview {...props} />;
-                } else if (e.type === "number") {
-                  return <RenderNumberPreview {...props} />;
-                } else if (e.type === "page") {
-                  return <RenderPagePreview {...props} />;
-                } else if (e.type === "paragraph") {
-                  return <RenderParagraphPreview {...props} />;
-                } else if (e.type === "product") {
-                  return <RenderProductPreview {...props} />;
-                } else if (e.type === "radio") {
-                  return <RenderRadioPreview {...props} />;
-                } else if (e.type === "range") {
-                  return <RenderRangePreview {...props} />;
-                } else if (e.type === "richtext") {
-                  return <RenderRichTextPreview {...props} />;
-                } else if (e.type === "select") {
-                  return <RenderSelectPreview {...props} />;
-                } else if (e.type === "textarea") {
-                  return <RenderTextareaPreview {...props} />;
-                } else if (e.type === "url") {
-                  return <RenderUrlPreview {...props} />;
-                } else if (e.type === "video_url") {
-                  return <RenderVideoUrlPreview {...props} />;
-                }
-              })()}
-            </div>
-          );
-        })}
+            return (
+              <div
+                data-item-count={index}
+                className={`Preview-item Preview-item--${e.type}`}>
+                {(() => {
+                  if (e.type === "text") {
+                    return <RenderTextPreview {...props} />;
+                  } else if (e.type === "blog") {
+                    return <RenderBlogPreview {...props} />;
+                  } else if (e.type === "checkbox") {
+                    return <RenderCheckboxPreview {...props} />;
+                  } else if (e.type === "color") {
+                    return <RenderColorPreview {...props} />;
+                  } else if (e.type === "font_picker") {
+                    return <RenderFontPreview {...props} />;
+                  } else if (e.type === "header") {
+                    return <RenderHeaderPreview {...props} />;
+                  } else if (e.type === "image_picker") {
+                    return <RenderImagePickerPreview {...props} />;
+                  } else if (e.type === "collection") {
+                    return <RenderCollectionPreview {...props} />;
+                  } else if (e.type === "link_list") {
+                    return <RenderLinkListPreview {...props} />;
+                  } else if (e.type === "number") {
+                    return <RenderNumberPreview {...props} />;
+                  } else if (e.type === "page") {
+                    return <RenderPagePreview {...props} />;
+                  } else if (e.type === "paragraph") {
+                    return <RenderParagraphPreview {...props} />;
+                  } else if (e.type === "product") {
+                    return <RenderProductPreview {...props} />;
+                  } else if (e.type === "radio") {
+                    return <RenderRadioPreview {...props} />;
+                  } else if (e.type === "range") {
+                    return <RenderRangePreview {...props} />;
+                  } else if (e.type === "richtext") {
+                    return <RenderRichTextPreview {...props} />;
+                  } else if (e.type === "select") {
+                    return <RenderSelectPreview {...props} />;
+                  } else if (e.type === "textarea") {
+                    return <RenderTextareaPreview {...props} />;
+                  } else if (e.type === "url") {
+                    return <RenderUrlPreview {...props} />;
+                  } else if (e.type === "video_url") {
+                    return <RenderVideoUrlPreview {...props} />;
+                  }
+                })()}
+              </div>
+            );
+          })}
+      </div>
 
       <div style={{ display: "flex" }}>
         <Button
@@ -759,6 +761,7 @@ export default function Preview() {
                   label: `${type} ${index}`,
                   id: `${type}_${index}`,
                   content: `${type}`,
+                  order: index,
                 },
               ],
             );

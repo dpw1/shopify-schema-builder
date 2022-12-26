@@ -6,6 +6,10 @@
   margin-right: 50px;
   background-color: #fff;
 
+  .sortable-selected {
+    background-color: lightblue;
+  }
+
   .Preview-title {
     margin-bottom: 20px;
   }
@@ -680,7 +684,7 @@
 
 /* ## Radio
 ============================== */
-.Preview-item--radio [class^='Preview'] {
+.Preview-item--radio [class^="Preview"] {
   .Preview-radio-label {
     display: inline-flex;
   }

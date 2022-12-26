@@ -39,14 +39,11 @@ function FormItem(props) {
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
   );
 
-  const [modified, setModified] = useState(false);
   const [errors, setErrors] = useState([]);
 
   const values = useStore((state) => state.values);
 
   const updateItem = useStore((state) => state.updateItem);
-  const setItems = useStore((state) => state.setItems);
-  const items = useStore((state) => state.items);
 
   let duplicatedSubOptions = _duplicatedSubOptions
     ? _duplicatedSubOptions
@@ -143,13 +140,10 @@ function FormItem(props) {
   };
 
   useEffect(() => {
-    //updateJSONAndVariables();
-  }, [values]);
-
-  useEffect(() => {
     var $suboptions = window.document.querySelector(
       `[class*="${itemId}"] .FormItem-sortable-suboptions`,
     );
+
     if (!$suboptions) {
       return;
     }
@@ -163,19 +157,9 @@ function FormItem(props) {
     });
   }, []);
 
-  const useFocus = () => {
-    const htmlElRef = useRef(null);
-    const setFocus = () => {
-      htmlElRef.current && htmlElRef.current.focus();
-    };
-
-    return [htmlElRef, setFocus];
-  };
-
   function updateOnChange($item = null) {
     if (!$item) {
       throw new Error("no $item passed");
-      return;
     }
 
     setTimeout(() => {

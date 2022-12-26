@@ -13,7 +13,6 @@ export default function Text(props) {
 
   const { register, handleSubmit, watch, errors, setValue } = useForm();
 
-  const [items, setItems] = useStickyState("@items");
   const [values, setValues] = useStickyState("@values", initialValues);
 
   const handleInputChange = (e) => {
