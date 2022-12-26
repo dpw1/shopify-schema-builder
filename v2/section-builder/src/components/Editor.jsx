@@ -5,7 +5,7 @@ import useStore from "../store/store";
 import "./Editor.scss";
 import Item from "./Item";
 import ItemCopy from "./ItemCopy";
-import { EditMajor, CancelMajor } from "@shopify/polaris-icons";
+import { EditMajor, CancelMajor, HideMinor } from "@shopify/polaris-icons";
 
 export default function Editor(props) {
   const data = props.data;
@@ -49,6 +49,7 @@ export default function Editor(props) {
       <button
         data-is-editing={isEditing}
         data-is-editing-id={data.__id}
+        title="Edit"
         className="Editor-edit Preview-edit Preview-icon-button"
         onClick={() => {
           setTimeout(() => {
@@ -59,7 +60,7 @@ export default function Editor(props) {
             }
           }, 10);
         }}>
-        {isEditing ? <CancelMajor /> : <EditMajor />}
+        {isEditing ? <HideMinor /> : <EditMajor />}
       </button>
       {isEditing && (
         <div className={`Editor-panel  Editor-panel--${data.__id}`}>
