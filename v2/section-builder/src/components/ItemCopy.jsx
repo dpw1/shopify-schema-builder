@@ -325,19 +325,8 @@ export default function ItemCopy(props) {
     let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
 
     let _json = transformDOMIntoJSON($this, true);
-
-    /* ====== */
+    _json.__id = short.generate();
     const index = parseInt(itemCount) - 1;
-
-    // const _item = {
-    //   id,
-    //   type,
-    //   ...duplicatedOptions,
-    // };
-
-    // if (_json.hasOwnProperty("options")) {
-    //   duplicatedSubOptions = _json.options;
-    // }
 
     const updatedItems = addToIndex(items, index, _json);
 

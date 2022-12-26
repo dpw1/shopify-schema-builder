@@ -152,13 +152,12 @@ export default function CodeTable() {
 
           const json = JSON.parse(_json).settings;
 
-          const op = convertSchemaJSONToItems(json);
+          const extractedJson = convertSchemaJSONToItems(json);
 
-          addItems(op);
-
-          const schemaJson = generateJSONSchema();
+          removeItems();
+          addItems(extractedJson);
         }}>
-        Extract
+        Import
       </button>
     </div>
   );

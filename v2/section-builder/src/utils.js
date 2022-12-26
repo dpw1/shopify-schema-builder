@@ -112,16 +112,18 @@ export const focusDropdown = (delay = 50) => {
 };
 
 /* This function converts a DOM item to pretty, Shopify-section-friendly JSON.  */
-export const transformDOMIntoJSON = (each, isDuplication = false) => {
+export const transformDOMIntoJSON = (each) => {
   let _json;
 
   const $attributes = each.querySelectorAll(`.FormItem-attr`);
   const $suboptions = each.querySelectorAll(`.FormItem-suboption`);
 
+  const __id = each.getAttribute(`data-item-id`);
   const type = each.querySelector("select").value;
 
   _json = {
     type,
+    __id,
   };
 
   for (const attribute of $attributes) {
@@ -133,12 +135,6 @@ export const transformDOMIntoJSON = (each, isDuplication = false) => {
       .querySelector(`[data-label-name] + input`)
       .getAttribute("name")
       .split("_")[0];
-
-    if (!isDuplication) {
-      _json.__id = __id;
-    } else {
-      _json.__id = short.generate();
-    }
 
     let value = attribute.querySelector(`input`).value;
 
@@ -279,20 +275,13 @@ export function createEmptyCopyOfObject(source, isArray) {
 
 /* Converts a typical Shopify section schema into a EZFY Section Builder JSON. */
 export const convertSchemaJSONToItems = (json) => {
-  return json.map((e) => {
-    var object = { ...e };
-
-    delete object.type;
-    // delete object.options;
+  return json.map((e, i) => {
+    const order = i + 1;
 
     return {
-      id: short.generate(),
-      type: e.type,
-
-      duplicatedOptions: {
-        ...object,
-      },
-      duplicatedSubOptions: { ...e.options },
+      __id: short.generate(),
+      order,
+      ...e,
     };
   });
 };
