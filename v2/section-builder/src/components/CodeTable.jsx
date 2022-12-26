@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import {
   convertSchemaJSONToItems,
@@ -17,7 +17,7 @@ import {
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
-import { Button, TextField } from "@shopify/polaris";
+import { Button, TextField, Card, Tabs } from "@shopify/polaris";
 
 export default function CodeTable() {
   const [importedSection, setImportedSection] = useState("");
@@ -32,35 +32,97 @@ export default function CodeTable() {
   const [variables, setVariables] = useState(JSON.stringify(items));
   const [cssVariables, setCssVariables] = useState("");
 
-  const convertSectionToJson = () => {
-    const $code = window.document.querySelector(`#sectionCode`);
+  const [selectedTab, setSelectedTab] = useState(0);
 
-    try {
-      const _code = $code.value;
-      const code = _extractTextBetween(
-        _code,
-        `{% schema %}`,
-        `{% endschema %}`,
-      );
+  const handleTabChange = useCallback(
+    (selectedTabIndex) => setSelectedTab(selectedTabIndex),
+    [],
+  );
 
-      const settings = convertSchemaJSONToItems(JSON.parse(code).settings);
+  const tabs = [
+    {
+      id: "tab-liquid-variables",
+      content: "Liquid variables",
+      panelID: "all-customers-content-1",
+      component: (
+        <>
+          <input
+            checked={sectionText}
+            onClick={() => {
+              const update = !sectionText;
+              setSectionText(update);
 
-      removeItems();
-      addItems(settings);
+              setTimeout(() => {
+                updateJSONAndVariables();
+              }, 50);
+            }}
+            id="showSettings"
+            type="checkbox"
+          />
+          <label htmlFor="showSettings">
+            <b>TODO - not working</b>
+            Remove <b>"sections."</b> from the variables
+          </label>
+          <TextField
+            value={variables}
+            readOnly={true}
+            multiline={4}
+            maxHeight={100}
+            id="CodeTable-variables"
+          />
+        </>
+      ),
+    },
+    {
+      id: "tab-schema-settings-json",
+      content: "Schema's settings JSON",
+      panelID: "schema-settings-json",
+      component: (
+        <>
+          <TextField
+            label={"Schema's settings JSON"}
+            value={JSON.stringify(items)}
+            maxHeight={100}
+            multiline={4}></TextField>
+        </>
+      ),
+    },
+    {
+      id: "tab-css-variables",
+      content: "CSS Variables",
+      panelID: "panel-css-variables",
+    },
+  ];
 
-      console.log(`my schema's settings: `, settings);
-    } catch (err) {
-      console.log("error in schema's settings: ", err);
-    }
-  };
+  //   const convertSectionToJson = () => {
+  //     const $code = window.document.querySelector(`#sectionCode`);
 
-  const handleSectionCodeChange = () => {
-    const $section = document.querySelector(`#sectionCode`);
+  //     try {
+  //       const _code = $code.value;
+  //       const code = _extractTextBetween(
+  //         _code,
+  //         `{% schema %}`,
+  //         `{% endschema %}`,
+  //       );
 
-    const section = $section.value;
+  //       const settings = convertSchemaJSONToItems(JSON.parse(code).settings);
 
-    addSection(section);
-  };
+  //       removeItems();
+  //       addItems(settings);
+
+  //       console.log(`my schema's settings: `, settings);
+  //     } catch (err) {
+  //       console.log("error in schema's settings: ", err);
+  //     }
+  //   };
+
+  //   const handleSectionCodeChange = () => {
+  //     const $section = document.querySelector(`#sectionCode`);
+
+  //     const section = $section.value;
+
+  //     addSection(section);
+  //   };
 
   const copyJSONToClipboard = () => {
     const items = useStore.getState().items;
@@ -89,34 +151,15 @@ export default function CodeTable() {
     <div className="CodeTable">
       <div className="CodeTable-wrapper">
         <div className="CodeTable-box">
-          <input
-            checked={sectionText}
-            onClick={() => {
-              const update = !sectionText;
-              setSectionText(update);
-
-              setTimeout(() => {
-                updateJSONAndVariables();
-              }, 50);
-            }}
-            id="showSettings"
-            type="checkbox"
-          />
-          <label htmlFor="showSettings">
-            Remove <b>"sections."</b> from the variables
-          </label>
+          <Card>
+            <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
+              <Card.Section>{tabs[selectedTab].component}</Card.Section>
+            </Tabs>
+          </Card>
         </div>
-        <textarea
-          value={variables}
-          readOnly={true}
-          id="CodeTable-variables"
-          cols="10"
-          rows="10"></textarea>
 
         <div className="CodeTable-tables">
-          <div className="CodeTable-tables-result">
-            <textarea value={JSON.stringify(items)} readOnly={false}></textarea>
-          </div>
+          <div className="CodeTable-tables-result"></div>
         </div>
 
         <button onClick={() => copyJSONToClipboard()}>Copy JSON</button>

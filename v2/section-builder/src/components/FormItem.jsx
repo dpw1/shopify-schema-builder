@@ -108,10 +108,6 @@ function FormItem(props) {
       return;
     }
 
-    /* TODO 
-	Make sure that order persists here.
-	*/
-
     const json = transformDOMIntoJSON($item);
 
     console.log("updated json (formitem.js): ", json);

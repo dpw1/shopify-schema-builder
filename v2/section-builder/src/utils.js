@@ -406,12 +406,6 @@ export const scrollToItem = (id) => {
     return;
   }
 
-  /*
-  TODO
-  
-  Scroll down the height of previous el 
-  if last element, just scroll to bottom
-  */
   return _scrollTo($parent, 380);
 };
 
