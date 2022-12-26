@@ -83,6 +83,11 @@ const useStore = create((set, get) => ({
   },
   /* Overwrite all items with new json */
   setItems: (items) => {
+    // debugger;
+    console.log("setting items...", items);
+
+    localStorage.removeItem(`items`);
+
     set((_) => {
       setLocalStorage("items", JSON.stringify(items));
       return {
@@ -161,17 +166,17 @@ const useStore = create((set, get) => ({
 
   This one is mostly used for the UI. There is redundancy with the "items".
   ======================================= */
-  globalJson: getLocalStorage("globalJson")
-    ? JSON.parse(getLocalStorage("globalJson"))
-    : [],
-  setGlobalJson: (json) => {
-    set((_) => {
-      setLocalStorage("globalJson", JSON.stringify(json));
-      return {
-        globalJson: json,
-      };
-    });
-  },
+  //   globalJson: getLocalStorage("globalJson")
+  //     ? JSON.parse(getLocalStorage("globalJson"))
+  //     : [],
+  //   setGlobalJson: (json) => {
+  //     set((_) => {
+  //       setLocalStorage("globalJson", JSON.stringify(json));
+  //       return {
+  //         globalJson: json,
+  //       };
+  //     });
+  //   },
 }));
 
 export default useStore;

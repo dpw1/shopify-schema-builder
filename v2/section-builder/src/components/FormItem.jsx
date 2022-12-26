@@ -108,6 +108,10 @@ function FormItem(props) {
       return;
     }
 
+    /* TODO 
+	Make sure that order persists here.
+	*/
+
     const json = transformDOMIntoJSON($item);
 
     console.log("updated json (formitem.js): ", json);
@@ -164,7 +168,7 @@ function FormItem(props) {
   return (
     <fieldset className="FormItem">
       {options.map((e, i) => {
-        const value = items.filter((e) => e.__id === itemId)[0];
+        const value = items.filter((x) => x.__id === itemId)[0];
 
         return (
           <React.Fragment>

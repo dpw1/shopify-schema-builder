@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import handleViewport from "react-in-viewport";
-import Sortable, { MultiDrag } from "sortablejs";
-Sortable.mount(new MultiDrag());
+
+import { useStatePersist as useStickyState } from "use-state-persist";
 
 import {
   addToIndex,
@@ -22,6 +21,9 @@ import FormItem from "./FormItem";
 
 import useStore from "../store/store";
 import { Select } from "@shopify/polaris";
+import create from "zustand";
+
+import { subscribeWithSelector } from "zustand/middleware";
 
 const renderElement = (
   type,
@@ -31,6 +33,10 @@ const renderElement = (
   duplicatedSubOptions,
   defaultOptions,
 ) => {
+  /* 
+Options = editable elements. (id, label, info, etc)
+*/
+
   switch (type) {
     case "header":
       return (
@@ -59,7 +65,6 @@ const renderElement = (
     case "text":
       return (
         <>
-          {console.log("look default", typeof defaultOptions, defaultOptions)}
           <FormItem
             itemCount={itemCount}
             options={["id", "label", "info", "placeholder", "default"]}
@@ -307,8 +312,9 @@ export default function ItemCopy(props) {
   } = props;
 
   const items = useStore((state) => state.items);
+  const setItems = useStore((state) => state.setItems);
   const updateItems = useStore((state) => state.updateItems);
-  const [mounted, setMounted] = useState(false);
+  const [mustUpdate, setMustUpdate] = useStickyState("@mustUpdate", false);
 
   /** Responsible to duplicate items. */
   const handleDuplicate = async () => {
@@ -343,34 +349,7 @@ export default function ItemCopy(props) {
   };
 
   useEffect(() => {
-    var $items = window.document.querySelector(`.Preview-sortable `);
-
-    if (!$items) {
-      return;
-    }
-
-    var sortable = Sortable.create($items, {
-      animation: 150,
-      handle: `.Editor-handle`,
-      multiDrag: true, // Enable the plugin
-      selectedClass: "sortable-selected", // Class name for selected item
-      avoidImplicitDeselect: false, // true - if you don't want to deselect items on outside click
-
-      // Called when an item is selected
-      onSelect: function (/**Event*/ evt) {
-        console.log("SELECT");
-      },
-
-      // Called when an item is deselected
-      onDeselect: function (/**Event*/ evt) {
-        console.log("DESELECT");
-      },
-      onEnd: function (e) {
-        /* TODO 
-		SORTABLE container*/
-        console.log("END");
-      },
-    });
+    console.log("Existing... item copy");
   }, []);
 
   return (

@@ -114,9 +114,11 @@ export const focusDropdown = (delay = 50) => {
 /* This function converts a DOM item to JSON.  */
 export const transformDOMIntoJSON = (each) => {
   let _json;
-  const type = each.querySelector("select").value;
+
   const $attributes = each.querySelectorAll(`.FormItem-attr`);
   const $suboptions = each.querySelectorAll(`.FormItem-suboption`);
+
+  const type = each.querySelector("select").value;
 
   _json = {
     type,
@@ -255,6 +257,20 @@ export const generateJSONSchema = () => {
 
   //   return result;
 };
+
+export function createEmptyCopyOfObject(source, isArray) {
+  var o = Array.isArray(source) ? [] : {};
+  for (var key in source) {
+    if (source.hasOwnProperty(key)) {
+      var t = typeof source[key];
+      o[key] =
+        t == "object"
+          ? createEmptyCopyOfObject(source[key])
+          : { string: "", number: 0, boolean: false }[t];
+    }
+  }
+  return o;
+}
 
 /* This function will convert a typical Liquid schema into a EZFY Shopify Section Creator JSON-friendly items. */
 export const convertSchemaJSONToItems = (json) => {
@@ -624,17 +640,17 @@ export function generateLiquidVariables() {
 }
 
 /* clean the schema JSON to remove all of the __id.*/
-export const cleanJSONSchema = (__json) => {
-  if (!__json) {
+export const cleanJSONSchema = (_json) => {
+  if (!_json) {
     throw new Error(`cleanJSONSchema - JSON doesn't exist`);
   }
 
-  const _json = __json.map((e) => {
-    if (e.hasOwnProperty("__id")) {
-      delete e.__id;
-    }
-    return e;
-  });
+  //   const _json = __json.map((e) => {
+  //     if (e.hasOwnProperty("__id")) {
+  //       delete e.__id;
+  //     }
+  //     return e;
+  //   });
 
   const json = _json.map((e, i) => {
     const index = i + 1;
@@ -651,8 +667,10 @@ export const cleanJSONSchema = (__json) => {
         e.id = `${e.type}_${index}`;
       }
 
-      /* Remove 'content' */
+      /* Remove unnecessary items */
       delete e.content;
+      delete e.__id;
+      delete e.order;
     }
 
     /* Remove 'order' from the sub options **/
@@ -665,8 +683,6 @@ export const cleanJSONSchema = (__json) => {
 
     return e;
   });
-
-  console.log("mmm", json);
 
   const _result = `${JSON.stringify(json, null, 2).replace(`[`, "")}`;
   const result = removeLastCharacter(_result, "]");

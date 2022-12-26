@@ -369,6 +369,7 @@ export default function Item(props) {
 
   return (
     <li
+      data-item-order={itemCount}
       data-item-count={itemCount}
       className={`item ${isToggled ? "item--toggle" : ""}`}>
       <div className="item-wrapper">
@@ -388,18 +389,7 @@ export default function Item(props) {
               );
             })}
         </select>
-        {/* <Select
-          options={options}
-          defaultValue={defaultValue}
-          name={name}
-          id={id}
-          ref={register}
-          onChange={(e) => {
-            handleSelectChange(e);
-            handleOnChange(e);
-          }}
-          value={selected}
-        /> */}
+
         <div className="item-buttons">
           <button
             title="Delete"

@@ -50,7 +50,6 @@ export default function Creator() {
   const [visibleItems, setVisibleItems] = useStickyState("@visibleItems", []);
 
   const jsonResult = useStore((state) => state.jsonResult);
-  const setGlobalJson = useStore((state) => state.setGlobalJson);
 
   const updateVariablesResult = useStore(
     (state) => state.updateVariablesResult,
@@ -91,10 +90,10 @@ export default function Creator() {
       ],
     );
 
-    setTimeout(() => {
-      const json = generateJSONSchema();
-      setGlobalJson(json);
-    }, 50);
+    // setTimeout(() => {
+    //   const json = generateJSONSchema();
+    //   setGlobalJson(json);
+    // }, 50);
   };
 
   useEffect(() => {
@@ -142,10 +141,10 @@ export default function Creator() {
     updateItems(updated);
     handleUpdateTextarea();
 
-    setTimeout(() => {
-      const json = generateJSONSchema();
-      setGlobalJson(json);
-    }, 50);
+    // setTimeout(() => {
+    //   const json = generateJSONSchema();
+    //   setGlobalJson(json);
+    // }, 50);
   };
 
   const handleOnChange = (e) => {
@@ -166,27 +165,6 @@ export default function Creator() {
     updateItems(updated);
 
     handleUpdateTextarea();
-
-    const num = e.target.closest(`.item`).getAttribute("data-item-count");
-    focusFirstInputWhenDropdownChanges(num);
-    setTimeout(() => {
-      const json = generateJSONSchema();
-      setGlobalJson(json);
-    }, 50);
-  };
-
-  const focusFirstInputWhenDropdownChanges = (num) => {
-    setTimeout(() => {
-      const $el = document.querySelector(
-        `[data-item-count*='${num}'] .FormItem-attr:nth-child(1) input`,
-      );
-
-      if (!$el) {
-        return;
-      }
-
-      $el.focus();
-    }, 50);
   };
 
   const onSortEnd = async ({ oldIndex, newIndex }) => {
@@ -196,10 +174,10 @@ export default function Creator() {
 
     updateJSONAndVariables();
 
-    setTimeout(() => {
-      const json = generateJSONSchema();
-      setGlobalJson(json);
-    }, 50);
+    // setTimeout(() => {
+    //   const json = generateJSONSchema();
+    //   setGlobalJson(json);
+    // }, 50);
   };
 
   const handleToggle = (e, id) => {

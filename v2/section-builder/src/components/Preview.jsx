@@ -5,9 +5,12 @@ import "./Preview.scss";
 import { useStatePersist as useStickyState } from "use-state-persist";
 import { Select, RangeSlider, TextField, Button } from "@shopify/polaris";
 
+import Sortable, { MultiDrag } from "sortablejs";
+Sortable.mount(new MultiDrag());
+
 import useStore from "../store/store";
 import short from "short-uuid";
-import { generateJSONSchema, schema } from "../utils";
+import { createEmptyCopyOfObject, generateJSONSchema, schema } from "../utils";
 import Editor from "./Editor";
 
 const RenderTextPreview = (data) => {
@@ -661,7 +664,7 @@ const RenderUrlPreview = (data) => {
 const RenderVideoUrlPreview = (data) => {
   return (
     <>
-      <div className="Preview-url">
+      <div className="Preview-video">
         <TextField
           label={data.label}
           helpText={data.info}
@@ -674,79 +677,164 @@ const RenderVideoUrlPreview = (data) => {
 };
 
 export default function Preview() {
-  const globalJson = useStore((state) => state.globalJson);
   const addItem = useStore((state) => state.addItem);
+  const setItems = useStore((state) => state.setItems);
   const items = useStore((state) => state.items);
   const [type, setType] = useStickyState("@type", "text");
+  const [mustUpdate, setMustUpdate] = useStickyState("@mustUpdate", false);
+
+  useEffect(() => {
+    if (mustUpdate) {
+      setTimeout(() => {
+        console.log("Updating items after sort", items);
+
+        setItems([...items]);
+        setMustUpdate(false);
+      }, 100);
+    }
+  }, [mustUpdate]);
+
+  useEffect(() => {
+    console.log("preview js updating", items);
+  }, [items]);
+
+  useEffect(() => {
+    var $items = window.document.querySelector(`.Preview-sortable `);
+
+    if (!$items) {
+      return;
+    }
+
+    var sortable = Sortable.create($items, {
+      animation: 150,
+      handle: `.Preview-handle`,
+      multiDrag: true, // Enable the plugin
+      selectedClass: "sortable-selected", // Class name for selected item
+      avoidImplicitDeselect: false, // true - if you don't want to deselect items on outside click
+
+      // Called when an item is selected
+      onSelect: function (/**Event*/ evt) {
+        console.log("SELECT");
+      },
+
+      // Called when an item is deselected
+      onDeselect: function (/**Event*/ evt) {
+        console.log("DESELECT");
+      },
+      onEnd: function (e) {
+        const _items = useStore.getState().items;
+
+        console.log("END", _items);
+
+        let newOrder = [];
+        const $items = document.querySelectorAll(
+          `.Preview-sortable [data-item-id]`,
+        );
+
+        for (var [i, each] of $items.entries()) {
+          /* add item to updated object */
+          const id = each.getAttribute(`data-item-id`);
+          newOrder.push(id);
+
+          /* Update count (order) of items */
+          const index = i + 1;
+          each.setAttribute(`data-item-order`, index);
+        }
+
+        let sorted = _items
+          .sort((a, b) => newOrder.indexOf(a.__id) - newOrder.indexOf(b.__id))
+          .map((e, i) => {
+            e.order = i + 1;
+            return e;
+          });
+
+        console.log("Sorted: ", sorted);
+
+        useStore.setState({
+          items: _items,
+        });
+
+        setTimeout(() => {
+          localStorage.setItem(`items`, JSON.stringify(JSON.stringify(sorted)));
+        }, 100);
+
+        setMustUpdate(true);
+      },
+    });
+  }, []);
 
   return (
     <div className="Preview">
       <h2 className="Preview-title">
-        Previewing{" "}
-        {globalJson && globalJson.length >= 1 && JSON.parse(globalJson).length}{" "}
-        item(s)
+        Previewing {items && items.length >= 1 && items.length} item(s)
       </h2>
+      <h2>must update? {mustUpdate ? "yes" : "no"}</h2>
       <div className="Preview-sortable">
         {items &&
-          Array.from(items).map((e, i) => {
-            const index = i + 1;
+          items
+            .sort((a, b) => a.order - b.order)
+            .map((e, i) => {
+              const index = i + 1;
 
-            const props = {
-              ...e,
-              itemCount: index,
-            };
+              const props = {
+                ...e,
+                itemCount: index,
+              };
 
-            return (
-              <div
-                data-item-id={e.__id}
-                data-item-count={index}
-                className={`Preview-item Preview-item--${e.type}`}>
-                {(() => {
-                  if (e.type === "text") {
-                    return <RenderTextPreview {...props} />;
-                  } else if (e.type === "blog") {
-                    return <RenderBlogPreview {...props} />;
-                  } else if (e.type === "checkbox") {
-                    return <RenderCheckboxPreview {...props} />;
-                  } else if (e.type === "color") {
-                    return <RenderColorPreview {...props} />;
-                  } else if (e.type === "font_picker") {
-                    return <RenderFontPreview {...props} />;
-                  } else if (e.type === "header") {
-                    return <RenderHeaderPreview {...props} />;
-                  } else if (e.type === "image_picker") {
-                    return <RenderImagePickerPreview {...props} />;
-                  } else if (e.type === "collection") {
-                    return <RenderCollectionPreview {...props} />;
-                  } else if (e.type === "link_list") {
-                    return <RenderLinkListPreview {...props} />;
-                  } else if (e.type === "number") {
-                    return <RenderNumberPreview {...props} />;
-                  } else if (e.type === "page") {
-                    return <RenderPagePreview {...props} />;
-                  } else if (e.type === "paragraph") {
-                    return <RenderParagraphPreview {...props} />;
-                  } else if (e.type === "product") {
-                    return <RenderProductPreview {...props} />;
-                  } else if (e.type === "radio") {
-                    return <RenderRadioPreview {...props} />;
-                  } else if (e.type === "range") {
-                    return <RenderRangePreview {...props} />;
-                  } else if (e.type === "richtext") {
-                    return <RenderRichTextPreview {...props} />;
-                  } else if (e.type === "select") {
-                    return <RenderSelectPreview {...props} />;
-                  } else if (e.type === "textarea") {
-                    return <RenderTextareaPreview {...props} />;
-                  } else if (e.type === "url") {
-                    return <RenderUrlPreview {...props} />;
-                  } else if (e.type === "video_url") {
-                    return <RenderVideoUrlPreview {...props} />;
-                  }
-                })()}
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={e.__id}
+                  data-item-id={e.__id}
+                  data-item-count={index}
+                  className={`Preview-item Preview-item--${e.type}`}>
+                  <button className="Preview-handle">Drag me</button>
+
+                  {(() => {
+                    if (e.type === "text") {
+                      return <RenderTextPreview {...props} />;
+                    } else if (e.type === "blog") {
+                      return <RenderBlogPreview {...props} />;
+                    } else if (e.type === "checkbox") {
+                      return <RenderCheckboxPreview {...props} />;
+                    } else if (e.type === "color") {
+                      return <RenderColorPreview {...props} />;
+                    } else if (e.type === "font_picker") {
+                      return <RenderFontPreview {...props} />;
+                    } else if (e.type === "header") {
+                      return <RenderHeaderPreview {...props} />;
+                    } else if (e.type === "image_picker") {
+                      return <RenderImagePickerPreview {...props} />;
+                    } else if (e.type === "collection") {
+                      return <RenderCollectionPreview {...props} />;
+                    } else if (e.type === "link_list") {
+                      return <RenderLinkListPreview {...props} />;
+                    } else if (e.type === "number") {
+                      return <RenderNumberPreview {...props} />;
+                    } else if (e.type === "page") {
+                      return <RenderPagePreview {...props} />;
+                    } else if (e.type === "paragraph") {
+                      return <RenderParagraphPreview {...props} />;
+                    } else if (e.type === "product") {
+                      return <RenderProductPreview {...props} />;
+                    } else if (e.type === "radio") {
+                      return <RenderRadioPreview {...props} />;
+                    } else if (e.type === "range") {
+                      return <RenderRangePreview {...props} />;
+                    } else if (e.type === "richtext") {
+                      return <RenderRichTextPreview {...props} />;
+                    } else if (e.type === "select") {
+                      return <RenderSelectPreview {...props} />;
+                    } else if (e.type === "textarea") {
+                      return <RenderTextareaPreview {...props} />;
+                    } else if (e.type === "url") {
+                      return <RenderUrlPreview {...props} />;
+                    } else if (e.type === "video_url") {
+                      return <RenderVideoUrlPreview {...props} />;
+                    }
+                  })()}
+                </div>
+              );
+            })}
       </div>
 
       <div style={{ display: "flex" }}>
@@ -762,6 +850,7 @@ export default function Preview() {
                   label: `${type} ${index}`,
                   id: `${type}_${index}`,
                   content: `${type}`,
+                  order: index,
                 },
               ],
             );

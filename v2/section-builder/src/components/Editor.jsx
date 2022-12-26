@@ -8,10 +8,11 @@ import ItemCopy from "./ItemCopy";
 
 export default function Editor(props) {
   const data = props.data;
-  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, true);
+  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, false);
   const items = useStore((state) => state.items);
+
   const updateItems = useStore((state) => state.updateItems);
-  const values = useStore((state) => state.values);
+
   const removeItem = useStore((state) => state.removeItem);
 
   const handleDeleteItem = (id) => {
@@ -39,12 +40,11 @@ export default function Editor(props) {
   };
 
   useEffect(() => {
-    console.log("Editor.JS - updating ", items);
+    // console.log("EDITOR.JSX -- items", items)
   }, [items]);
 
   return (
     <div className="Editor">
-      <button className="Editor-handle">HANDLE</button>
       <button
         data-is-editing={isEditing}
         data-is-editing-id={data.__id}
@@ -65,7 +65,7 @@ export default function Editor(props) {
           {/* {JSON.stringify(
             Array.from(items).filter((e) => e.__id === data.__id),
           )} */}
-          {/* TODO consider using MEMO here */}
+
           <ItemCopy
             isEditing={isEditing}
             handleDeleteItem={handleDeleteItem}

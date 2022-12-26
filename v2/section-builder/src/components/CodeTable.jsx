@@ -61,7 +61,11 @@ export default function CodeTable() {
   };
 
   const copyJSONToClipboard = () => {
-    const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
+    const items = useStore.getState().items;
+
+    if (!items) {
+      alert("no items.");
+    }
     var _json = JSON.stringify(items, null, 2);
     var json = cleanJSONSchema(JSON.parse(_json));
 
@@ -79,7 +83,7 @@ export default function CodeTable() {
   return (
     <div className="CodeTable">
       <div className="CodeTable-wrapper">
-        <div className="CodeTable-checkbox">
+        <div className="CodeTable-box">
           <input
             checked={sectionText}
             onClick={() => {
@@ -106,10 +110,7 @@ export default function CodeTable() {
 
         <div className="CodeTable-tables">
           <div className="CodeTable-tables-result">
-            <textarea
-              defaultValue={""}
-              value={JSON.stringify(items)}
-              readOnly={false}></textarea>
+            <textarea value={JSON.stringify(items)} readOnly={false}></textarea>
           </div>
         </div>
 
