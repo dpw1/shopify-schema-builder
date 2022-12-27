@@ -9,7 +9,7 @@ import { EditMajor, CancelMajor, HideMinor } from "@shopify/polaris-icons";
 
 export default function Editor(props) {
   const data = props.data;
-  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, false);
+  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, true);
   const items = useStore((state) => state.items);
 
   const updateItems = useStore((state) => state.updateItems);

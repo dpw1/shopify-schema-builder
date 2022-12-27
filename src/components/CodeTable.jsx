@@ -14,6 +14,7 @@ import {
   generateLiquidVariables,
   generateCSSVariables,
 } from "../utils";
+import { useStatePersist as useStickyState } from "use-state-persist";
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
@@ -32,7 +33,7 @@ export default function CodeTable() {
   const [variables, setVariables] = useState(JSON.stringify(items));
   const [cssVariables, setCssVariables] = useState("");
 
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useStickyState("@tabs", 0);
 
   const handleTabChange = useCallback(
     (selectedTabIndex) => setSelectedTab(selectedTabIndex),
@@ -103,7 +104,6 @@ export default function CodeTable() {
       component: (
         <>
           <TextField
-            label={"Import section"}
             value={cssVariables}
             maxHeight={100}
             multiline={4}></TextField>
@@ -187,19 +187,11 @@ export default function CodeTable() {
 
   return (
     <div className="CodeTable">
-      <div className="CodeTable-wrapper">
-        <div className="CodeTable-box">
-          <Card>
-            <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
-              <Card.Section>{tabs[selectedTab].component}</Card.Section>
-            </Tabs>
-          </Card>
-        </div>
-
-        <div className="CodeTable-tables">
-          <div className="CodeTable-tables-result"></div>
-        </div>
-      </div>
+      <Card>
+        <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
+          <Card.Section>{tabs[selectedTab].component}</Card.Section>
+        </Tabs>
+      </Card>
     </div>
   );
 }

@@ -133,29 +133,9 @@ export const transformDOMIntoJSON = (each) => {
       .querySelector(`[data-label-name]`)
       .getAttribute(`data-label-name`);
 
-    const __id = attribute
-      .querySelector(`[data-label-name] + input`)
-      .getAttribute("name")
-      .split("_")[0];
-
     let value = attribute.querySelector(`input`).value;
 
     /* Clean and format based on Shopify section rules for JSON. */
-
-    /* If there is no property 'info', ignore */
-    if (name === "info" && (value === "" || !value)) {
-      continue;
-    }
-
-    /* If there is no property 'default', ignore */
-    if (name === "default" && (value === "" || !value)) {
-      continue;
-    }
-
-    /* If there is no property 'default', ignore */
-    if (name === "placeholder" && (value === "" || !value)) {
-      continue;
-    }
 
     /* type is 'richtext' and contains 'default', add <p> to it. */
     if (type === "richtext" && name === "default" && value !== "") {
@@ -168,8 +148,12 @@ export const transformDOMIntoJSON = (each) => {
     }
 
     /* type is "checkbox" and there is a "default", convert it to boolean */
-    if (type === "checkbox" && name === "default" && value !== "") {
-      value = value.toLowerCase() === "true" ? true : false;
+    if (type === "checkbox" && name === "default") {
+      const $checkbox = each.querySelector(
+        `[label='default'][type="checkbox"]`,
+      );
+
+      value = $checkbox.checked ? "true" : "false";
     }
 
     /* type is "number" and there is a "default", convert it to integer */
@@ -187,6 +171,21 @@ export const transformDOMIntoJSON = (each) => {
         name === "step")
     ) {
       value = parseInt(value);
+    }
+
+    /* If there is no property 'info', ignore */
+    if (name === "info" && (value === "" || !value)) {
+      continue;
+    }
+
+    /* If there is no property 'default', ignore */
+    if (name === "default" && (value === "" || !value)) {
+      continue;
+    }
+
+    /* If there is no property 'placeholder', ignore */
+    if (name === "placeholder" && (value === "" || !value)) {
+      continue;
     }
 
     _json[name] = value;
@@ -655,7 +654,7 @@ export function generateLiquidVariables() {
   return variables.join("\n");
 }
 
-/* clean the schema JSON to remove all of the __id.
+/* clean the JSON to remove all of the __id.
 
 Returns a JSON.stringify-ed string.
 
@@ -686,6 +685,11 @@ export const cleanJSONSchema = (_json) => {
       delete e.order;
     }
 
+    /* If checkbox has a default, convert it to boolean */
+    if (e.type === "checkbox") {
+      e.default = convertStringToBoolean(e.default);
+    }
+
     /* Remove 'order' from the sub options **/
     if (e.hasOwnProperty("options")) {
       e.options = e.options.map((e) => {
@@ -702,6 +706,10 @@ export const cleanJSONSchema = (_json) => {
 
   return result;
 };
+
+export function convertStringToBoolean(string) {
+  return string === "false" ? false : !!string;
+}
 
 export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

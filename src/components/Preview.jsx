@@ -47,6 +47,9 @@ const RenderBlogPreview = (data) => {
 };
 
 const RenderCheckboxPreview = (data) => {
+  const value = data.default === "false" ? false : !!data.default;
+
+  console.log("axes", value);
   return (
     <>
       <label className="Preview-checkbox-label" htmlFor={data.id}>
@@ -56,7 +59,7 @@ const RenderCheckboxPreview = (data) => {
               id={data.id}
               type="checkbox"
               className="Preview-checkbox-input"
-              checked={data.default}
+              checked={value}
             />
             <span className="Preview-checkbox-tick" />
             <span className="Preview-checkbox-tick-siblings">
@@ -695,9 +698,25 @@ export default function Preview() {
     }
   }, [mustUpdate]);
 
-  useEffect(() => {
-    console.log("preview js updating", items);
-  }, [items]);
+  function addItemToList(_item = null) {
+    const __id = short.generate();
+    const index = items.length + 1;
+
+    const item = _item ? _item : type;
+
+    addItem(
+      ...[
+        {
+          __id,
+          type: item.toLowerCase(),
+          label: `${item} ${index}`,
+          id: `${item}_${index}`,
+          content: `${item}`,
+          order: index,
+        },
+      ],
+    );
+  }
 
   useEffect(() => {
     var $items = window.document.querySelector(`.Preview-sortable `);
@@ -709,16 +728,14 @@ export default function Preview() {
     var sortable = Sortable.create($items, {
       animation: 150,
       handle: `.Preview-handle`,
-      multiDrag: true, // Enable the plugin
-      selectedClass: "sortable-selected", // Class name for selected item
-      avoidImplicitDeselect: false, // true - if you don't want to deselect items on outside click
+      multiDrag: true,
+      selectedClass: "sortable-selected",
+      avoidImplicitDeselect: false,
 
-      // Called when an item is selected
       onSelect: function (/**Event*/ evt) {
         console.log("SELECT");
       },
 
-      // Called when an item is deselected
       onDeselect: function (/**Event*/ evt) {
         console.log("DESELECT");
       },
@@ -839,23 +856,10 @@ export default function Preview() {
             })}
       </div>
 
-      <div style={{ display: "flex" }}>
+      <div className="Preview-buttons" style={{ display: "flex" }}>
         <Button
           onClick={() => {
-            const __id = short.generate();
-            const index = items.length + 1;
-            addItem(
-              ...[
-                {
-                  __id,
-                  type: type.toLowerCase(),
-                  label: `${type} ${index}`,
-                  id: `${type}_${index}`,
-                  content: `${type}`,
-                  order: index,
-                },
-              ],
-            );
+            addItemToList();
           }}>
           Add
         </Button>
@@ -870,7 +874,13 @@ export default function Preview() {
                 value: e,
               };
             })}
-          onChange={React.useCallback((value) => setType(value), [])}></Select>
+          onChange={(value) => {
+            if (type !== value) {
+              setType(value);
+
+              addItemToList(value);
+            }
+          }}></Select>
       </div>
     </div>
   );

@@ -67,3 +67,16 @@
     background: lightblue;
   }
 }
+
+.FormItem--checkbox {
+  .FormItem-attr--default {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+
+    input {
+      width: 50px;
+      height: 25px;
+    }
+  }
+}

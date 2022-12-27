@@ -17,8 +17,6 @@
     transition: all var(--ezfy-transition-fast);
 
     &:hover {
-      border: 2px solid lightblue;
-
       .Preview-icon-button {
         opacity: 1;
       }
@@ -29,9 +27,14 @@
     }
   }
 
+  /* Sortable options [start] 
+  ==================================== */
+  .sortable-chosen,
   .sortable-ghost {
     opacity: 0.3;
   }
+  /* Sortable options [end]
+  ==================================== */
 
   /* Icons [start] 
   ==================================== */

@@ -5,8 +5,9 @@ import short from "short-uuid";
 import "./FormItem.scss";
 
 import Sortable from "sortablejs";
+import { Checkbox } from "@shopify/polaris";
 
-import { transformDOMIntoJSON } from "../utils";
+import { convertStringToBoolean, transformDOMIntoJSON } from "../utils";
 import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
@@ -102,10 +103,13 @@ function FormItem(props) {
 
   /* Detects input changes (typing) and update the JSON store's accordingly */
   const handleInputChange = (e) => {
-    const $item = e.target.closest(`.item`);
+    let $item;
 
-    if (!$item) {
-      return;
+    try {
+      $item = e.target.closest(`.item`);
+    } catch (err) {
+      const $aux = document.querySelector(`#${e}`);
+      $item = $aux.closest(`.item`);
     }
 
     const json = transformDOMIntoJSON($item);
@@ -119,6 +123,12 @@ function FormItem(props) {
 
   const setDefaultValue = (labelName) => {
     if (defaultOptions[labelName]) {
+      if (type === "checkbox" && labelName === "default") {
+        const result = defaultOptions[labelName] === "true" ? true : false;
+        console.log(type, labelName, defaultOptions[labelName]);
+        return result;
+      }
+
       if (typeof defaultOptions[labelName] !== "function") {
         return defaultOptions[labelName];
       } else {
@@ -155,33 +165,54 @@ function FormItem(props) {
     setTimeout(() => {
       const json = transformDOMIntoJSON($item);
 
-      console.log("updated json (formitem.js): ", json);
-
       updateItem(json);
     }, 50);
   }
 
   return (
-    <fieldset className="FormItem">
+    <fieldset className={`FormItem FormItem--${type}`}>
       {options.map((e, i) => {
         const _value = items.filter((x) => x.__id === itemId)[0];
         const value = _value[e];
 
-        return (
-          <React.Fragment>
-            <div key={e + i} className="FormItem-attr">
-              <label data-label-name={e}>{e}:</label>
+        function renderInput(value, itemId, type) {
+          if (type === "checkbox" && e === "default") {
+            return (
               <input
-                value={value}
+                type="checkbox"
+                defaultChecked={convertStringToBoolean(value)}
                 onChange={(e) => {
                   handleInputChange(e);
                 }}
                 name={`${itemId}_${e}`}
                 label={e}
-                defaultValue={setDefaultValue(e)}
                 placeholder={e}
                 autoComplete={"off"}
               />
+            );
+          }
+
+          return (
+            <input
+              value={value}
+              onChange={(e) => {
+                handleInputChange(e);
+              }}
+              name={`${itemId}_${e}`}
+              label={e}
+              defaultValue={setDefaultValue(e)}
+              placeholder={e}
+              autoComplete={"off"}
+            />
+          );
+        }
+
+        return (
+          <React.Fragment>
+            <div key={e + i} className={`FormItem-attr FormItem-attr--${e}`}>
+              <label data-label-name={e}>{e}:</label>
+
+              {renderInput(value, itemId, type)}
 
               <span className="FormItem-error">
                 {errors &&

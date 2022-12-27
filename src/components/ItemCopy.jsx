@@ -36,7 +36,6 @@ const renderElement = (
   /* 
 Options = editable elements. (id, label, info, etc)
 */
-
   const duplicatedOptions = _duplicatedOptions
     ? _duplicatedOptions
     : defaultOptions;
