@@ -10,44 +10,35 @@ import Header from "./components/Header";
 import { initialState } from "./utils";
 import Preview from "./components/Preview";
 import "./assets/Polaris.scss";
-import { AppProvider } from "@shopify/polaris";
+import { AppProvider, Text } from "@shopify/polaris";
 
 function App() {
   return (
     <div className="App">
       <div className="container">
-        <h1 style={{ textAlign: "center", marginBottom: 40 }}>
-          EZFY Shopify Section Creator
-        </h1>
-        <h2 style={{ textAlign: "center", marginTop: -30, marginBottom: 40 }}>
-          Coded by{" "}
-          <a target="_blank" href="https://ezfycode.com">
-            ezfycode.com.
-          </a>
-        </h2>
-        <h3
-          style={{
-            textAlign: "center",
-            fontWeight: "normal",
-            marginTop: -30,
-            marginBottom: 60,
-          }}>
-          Copy & paste pre-made sections{" "}
-          <a
-            target="_blank"
-            href="https://ezfycode.com/shop?source=section-builder">
-            available here
-          </a>
-          .
-        </h3>
-        <div className="App-wrapper">
-          {/* <>
-        
-            <Sidebar>
-              <Section />
-            </Sidebar>
-          </> */}
+        <div className="App-intro">
+          {" "}
+          <Text variant="heading4xl" as="h1">
+            EZFY Shopify Section Builder
+          </Text>
+          <Text variant="heading2xl" as="h2">
+            Coded by{" "}
+            <a target="_blank" href="https://ezfycode.com">
+              ezfycode.com
+            </a>
+          </Text>{" "}
+          <Text variant="headingMd" as="h3">
+            Copy & paste pre-made sections{" "}
+            <a
+              target="_blank"
+              href="https://ezfycode.com/shop?source=section-builder">
+              available here
+            </a>
+            .
+          </Text>{" "}
+        </div>
 
+        <div className="App-wrapper">
           <AppProvider>
             <Preview />
             {/* <Creator /> */}
