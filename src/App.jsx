@@ -42,7 +42,7 @@ function App() {
         </h3>
         <div className="App-wrapper">
           {/* <>
-            <Header></Header>
+        
             <Sidebar>
               <Section />
             </Sidebar>

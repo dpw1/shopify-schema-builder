@@ -11,8 +11,14 @@ Sortable.mount(new MultiDrag());
 
 import useStore from "../store/store";
 import short from "short-uuid";
-import { createEmptyCopyOfObject, generateJSONSchema, schema } from "../utils";
+import {
+  convertStringToBoolean,
+  createEmptyCopyOfObject,
+  generateJSONSchema,
+  schema,
+} from "../utils";
 import Editor from "./Editor";
+import Header from "./Header";
 
 const RenderTextPreview = (data) => {
   return (
@@ -47,9 +53,8 @@ const RenderBlogPreview = (data) => {
 };
 
 const RenderCheckboxPreview = (data) => {
-  const value = data.default === "false" ? false : !!data.default;
+  const value = convertStringToBoolean(data.default);
 
-  console.log("axes", value);
   return (
     <>
       <label className="Preview-checkbox-label" htmlFor={data.id}>
@@ -782,106 +787,110 @@ export default function Preview() {
   }, []);
 
   return (
-    <div className="Preview">
-      <h2 className="Preview-title">
-        Previewing {items && items.length >= 1 && items.length} item(s)
-      </h2>
-      <div className="Preview-sortable">
-        {items &&
-          items
-            .sort((a, b) => a.order - b.order)
-            .map((e, i) => {
-              const index = i + 1;
+    <>
+      <div className="Preview">
+        <Header></Header>
+        <h2 className="Preview-title">
+          Previewing {items && items.length >= 1 && items.length} item(s)
+        </h2>
 
-              const props = {
-                ...e,
-                itemCount: index,
-              };
+        <div className="Preview-sortable">
+          {items &&
+            items
+              .sort((a, b) => a.order - b.order)
+              .map((e, i) => {
+                const index = i + 1;
 
-              return (
-                <div
-                  key={e.__id}
-                  data-item-id={e.__id}
-                  data-item-count={index}
-                  className={`Preview-item Preview-item--${e.type}`}>
-                  <button className="Preview-handle Preview-icon-button">
-                    <DragHandleMinor></DragHandleMinor>
-                  </button>
+                const props = {
+                  ...e,
+                  itemCount: index,
+                };
 
-                  {(() => {
-                    if (e.type === "text") {
-                      return <RenderTextPreview {...props} />;
-                    } else if (e.type === "blog") {
-                      return <RenderBlogPreview {...props} />;
-                    } else if (e.type === "checkbox") {
-                      return <RenderCheckboxPreview {...props} />;
-                    } else if (e.type === "color") {
-                      return <RenderColorPreview {...props} />;
-                    } else if (e.type === "font_picker") {
-                      return <RenderFontPreview {...props} />;
-                    } else if (e.type === "header") {
-                      return <RenderHeaderPreview {...props} />;
-                    } else if (e.type === "image_picker") {
-                      return <RenderImagePickerPreview {...props} />;
-                    } else if (e.type === "collection") {
-                      return <RenderCollectionPreview {...props} />;
-                    } else if (e.type === "link_list") {
-                      return <RenderLinkListPreview {...props} />;
-                    } else if (e.type === "number") {
-                      return <RenderNumberPreview {...props} />;
-                    } else if (e.type === "page") {
-                      return <RenderPagePreview {...props} />;
-                    } else if (e.type === "paragraph") {
-                      return <RenderParagraphPreview {...props} />;
-                    } else if (e.type === "product") {
-                      return <RenderProductPreview {...props} />;
-                    } else if (e.type === "radio") {
-                      return <RenderRadioPreview {...props} />;
-                    } else if (e.type === "range") {
-                      return <RenderRangePreview {...props} />;
-                    } else if (e.type === "richtext") {
-                      return <RenderRichTextPreview {...props} />;
-                    } else if (e.type === "select") {
-                      return <RenderSelectPreview {...props} />;
-                    } else if (e.type === "textarea") {
-                      return <RenderTextareaPreview {...props} />;
-                    } else if (e.type === "url") {
-                      return <RenderUrlPreview {...props} />;
-                    } else if (e.type === "video_url") {
-                      return <RenderVideoUrlPreview {...props} />;
-                    }
-                  })()}
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={e.__id}
+                    data-item-id={e.__id}
+                    data-item-count={index}
+                    className={`Preview-item Preview-item--${e.type}`}>
+                    <button className="Preview-handle Preview-icon-button">
+                      <DragHandleMinor></DragHandleMinor>
+                    </button>
+
+                    {(() => {
+                      if (e.type === "text") {
+                        return <RenderTextPreview {...props} />;
+                      } else if (e.type === "blog") {
+                        return <RenderBlogPreview {...props} />;
+                      } else if (e.type === "checkbox") {
+                        return <RenderCheckboxPreview {...props} />;
+                      } else if (e.type === "color") {
+                        return <RenderColorPreview {...props} />;
+                      } else if (e.type === "font_picker") {
+                        return <RenderFontPreview {...props} />;
+                      } else if (e.type === "header") {
+                        return <RenderHeaderPreview {...props} />;
+                      } else if (e.type === "image_picker") {
+                        return <RenderImagePickerPreview {...props} />;
+                      } else if (e.type === "collection") {
+                        return <RenderCollectionPreview {...props} />;
+                      } else if (e.type === "link_list") {
+                        return <RenderLinkListPreview {...props} />;
+                      } else if (e.type === "number") {
+                        return <RenderNumberPreview {...props} />;
+                      } else if (e.type === "page") {
+                        return <RenderPagePreview {...props} />;
+                      } else if (e.type === "paragraph") {
+                        return <RenderParagraphPreview {...props} />;
+                      } else if (e.type === "product") {
+                        return <RenderProductPreview {...props} />;
+                      } else if (e.type === "radio") {
+                        return <RenderRadioPreview {...props} />;
+                      } else if (e.type === "range") {
+                        return <RenderRangePreview {...props} />;
+                      } else if (e.type === "richtext") {
+                        return <RenderRichTextPreview {...props} />;
+                      } else if (e.type === "select") {
+                        return <RenderSelectPreview {...props} />;
+                      } else if (e.type === "textarea") {
+                        return <RenderTextareaPreview {...props} />;
+                      } else if (e.type === "url") {
+                        return <RenderUrlPreview {...props} />;
+                      } else if (e.type === "video_url") {
+                        return <RenderVideoUrlPreview {...props} />;
+                      }
+                    })()}
+                  </div>
+                );
+              })}
+        </div>
+
+        <div className="Preview-buttons" style={{ display: "flex" }}>
+          <Button
+            onClick={() => {
+              addItemToList();
+            }}>
+            Add
+          </Button>
+          <Select
+            value={type}
+            options={Object.values(schema)
+              .map((e) => e.id)
+              .sort()
+              .map((e) => {
+                return {
+                  label: e,
+                  value: e,
+                };
+              })}
+            onChange={(value) => {
+              if (type !== value) {
+                setType(value);
+
+                addItemToList(value);
+              }
+            }}></Select>
+        </div>
       </div>
-
-      <div className="Preview-buttons" style={{ display: "flex" }}>
-        <Button
-          onClick={() => {
-            addItemToList();
-          }}>
-          Add
-        </Button>
-        <Select
-          value={type}
-          options={Object.values(schema)
-            .map((e) => e.id)
-            .sort()
-            .map((e) => {
-              return {
-                label: e,
-                value: e,
-              };
-            })}
-          onChange={(value) => {
-            if (type !== value) {
-              setType(value);
-
-              addItemToList(value);
-            }
-          }}></Select>
-      </div>
-    </div>
+    </>
   );
 }

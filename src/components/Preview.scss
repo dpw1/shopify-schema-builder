@@ -25,11 +25,14 @@
     & + .Preview-item {
       margin-top: 10px;
     }
+
+    &.chosen {
+      opacity: 0.3;
+    }
   }
 
   /* Sortable options [start] 
   ==================================== */
-  .sortable-chosen,
   .sortable-ghost {
     opacity: 0.3;
   }
