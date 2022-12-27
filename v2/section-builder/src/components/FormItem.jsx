@@ -164,14 +164,15 @@ function FormItem(props) {
   return (
     <fieldset className="FormItem">
       {options.map((e, i) => {
-        const value = items.filter((x) => x.__id === itemId)[0];
+        const _value = items.filter((x) => x.__id === itemId)[0];
+        const value = _value[e];
 
         return (
           <React.Fragment>
             <div key={e + i} className="FormItem-attr">
               <label data-label-name={e}>{e}:</label>
               <input
-                value={value[e]}
+                value={value}
                 onChange={(e) => {
                   handleInputChange(e);
                 }}
