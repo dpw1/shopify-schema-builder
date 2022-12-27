@@ -18,17 +18,16 @@ import { useStatePersist as useStickyState } from "use-state-persist";
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
-import { Button, TextField, Card, Tabs } from "@shopify/polaris";
+import { Button, TextField, Card, Tabs, Checkbox } from "@shopify/polaris";
 
 export default function CodeTable() {
   const [importedSection, setImportedSection] = useState("");
 
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
-  const sectionText = useStore((state) => state.sectionText);
-  const setSectionText = useStore((state) => state.setSectionText);
   const addSection = useStore((state) => state.addSection);
   const items = useStore((state) => state.items);
+  const [removeSectionText, setRemoveSectionText] = useState(false);
 
   const [variables, setVariables] = useState(JSON.stringify(items));
   const [cssVariables, setCssVariables] = useState("");
@@ -69,23 +68,23 @@ export default function CodeTable() {
       panelID: "all-customers-content-1",
       component: (
         <>
-          <input
-            checked={sectionText}
-            onClick={() => {
-              const update = !sectionText;
-              setSectionText(update);
+          <Checkbox
+            label={
+              <span>
+                Remove <b>"sections."</b> from the variables
+              </span>
+            }
+            checked={removeSectionText}
+            onChange={() => {
+              const update = !removeSectionText;
+              setRemoveSectionText(update);
 
-              setTimeout(() => {
-                updateJSONAndVariables();
-              }, 50);
-            }}
-            id="showSettings"
-            type="checkbox"
-          />
-          <label htmlFor="showSettings">
-            <b>TODO - not working</b>
-            Remove <b>"sections."</b> from the variables
-          </label>
+              const updated = generateLiquidVariables({
+                removeSectionText: update,
+              });
+
+              setVariables(updated);
+            }}></Checkbox>
           <TextField
             value={variables}
             readOnly={true}

@@ -626,7 +626,15 @@ function removeLastCharacter(str, char) {
     .join("");
 }
 
-export function generateLiquidVariables() {
+/* Settings 
+
+# removeSectionText = remove the text "section." from the settings.
+
+removeSectionText = true => {% assign variable = settings.variable %}
+
+
+*/
+export function generateLiquidVariables(settings) {
   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
   var __json = JSON.stringify(items, null, 2);
   var _json = cleanJSONSchema(JSON.parse(__json));
@@ -646,7 +654,9 @@ export function generateLiquidVariables() {
     const id = each.id;
 
     if (id) {
-      const variable = `{% assign ${id} = section.settings.${id} %}`;
+      const variable = `{% assign ${id} = ${
+        settings?.removeSectionText ? "" : "section."
+      }settings.${id} %}`;
       variables.push(variable);
     }
   }
