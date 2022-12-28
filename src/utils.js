@@ -662,7 +662,7 @@ export function generateLiquidVariables(settings) {
   return variables.join("\n");
 }
 
-/* clean the JSON to remove all of the __id.
+/* clean the JSON schema "settings" to remove all of the __id.
 
 Returns a JSON.stringify-ed string.
 
@@ -730,11 +730,7 @@ export function extractSchemaJSONFromCodeString(code = "") {
     throw new Error("There is no 'schema' in the code string.");
   }
 
-  const json = extractTextBetween(
-    importedSection,
-    `{% schema %}`,
-    `{% endschema %}`,
-  );
+  const json = extractTextBetween(code, `{% schema %}`, `{% endschema %}`);
 
   return JSON.parse(json);
 }

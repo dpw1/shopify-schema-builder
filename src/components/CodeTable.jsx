@@ -15,6 +15,7 @@ import {
   extractTextBetween,
   generateLiquidVariables,
   generateCSSVariables,
+  replaceTextBetween,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -127,12 +128,6 @@ export default function CodeTable() {
             multiline={4}></TextField>
           <Button
             onClick={() => {
-              const _json = extractTextBetween(
-                importedSection,
-                `{% schema %}`,
-                `{% endschema %}`,
-              );
-
               const json =
                 extractSchemaJSONFromCodeString(importedSection).settings;
 
@@ -184,9 +179,21 @@ export default function CodeTable() {
           </Button>
           <Button
             onClick={() => {
-              const items = useStore.getState().items;
+              const updatedSettings = useStore.getState().items;
+              const original = extractSchemaJSONFromCodeString(importedSection);
 
-              debugger;
+              original.settings = JSON.parse(
+                `[${cleanJSONSchema(updatedSettings)}]`,
+              );
+
+              const updated = replaceTextBetween(
+                importedSection,
+                `{% schema %}`,
+                `{% endschema %}`,
+                JSON.stringify(original, null, 2),
+              );
+
+              copyToClipboard(updated);
             }}>
             Copy updated code
           </Button>
