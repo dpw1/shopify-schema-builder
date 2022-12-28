@@ -5,11 +5,11 @@ import useStore from "../store/store";
 import "./Editor.scss";
 import Item from "./Item";
 import ItemCopy from "./ItemCopy";
-import { EditMajor, CancelMajor, HideMinor } from "@shopify/polaris-icons";
+import { EditMajor, HideMinor } from "@shopify/polaris-icons";
 
 export default function Editor(props) {
   const data = props.data;
-  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, true);
+  const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, false);
   const items = useStore((state) => state.items);
 
   const updateItems = useStore((state) => state.updateItems);

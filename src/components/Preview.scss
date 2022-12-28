@@ -1,10 +1,41 @@
 .Preview {
   max-width: 300px;
   width: 100%;
-  padding-left: 10px;
-  padding-right: 10px;
+
   margin-right: 50px;
   background-color: #fff;
+
+  .Preview-top {
+    display: flex;
+    align-items: center;
+
+    border-bottom: 0.0625rem solid var(--p-divider);
+    height: 64px;
+    padding-left: 20px;
+  }
+
+  .Preview-return {
+    margin-right: 10px;
+    position: relative;
+    top: 2px;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .Preview-title {
+    font-weight: 300;
+  }
+
+  .Preview-sortable {
+    max-height: 90vh;
+    overflow-y: scroll;
+    padding-bottom: 40px;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
   .Preview-sortable > *:nth-child(1) {
     border-top: unset;
@@ -107,8 +138,11 @@
   /* Icons [end] 
   ==================================== */
 
-  .Preview-title {
-    margin-bottom: 20px;
+  .Preview-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 100px);
   }
 
   .Preview-content {
@@ -117,6 +151,17 @@
     line-height: var(--p-font-line-height-1);
     margin: 0;
     text-transform: uppercase;
+  }
+
+  .Preview-buttons {
+    // display: flex;
+    // position: absolute;
+    // bottom: 0;
+    // width: 100%;
+    // left: 0;
+    // right: 0;
+    // z-index: 9;
+    // background: lightblue;
   }
 
   .Preview-button {

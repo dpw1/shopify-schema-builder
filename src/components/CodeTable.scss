@@ -1,6 +1,16 @@
 .CodeTable {
   max-width: 100%;
   width: 100%;
+  position: sticky;
+  top: 40px;
+
+  .CodeTable-buttons {
+    padding: 20px;
+
+    .Polaris-Button + .Polaris-Button {
+      margin-left: 10px;
+    }
+  }
 
   &-wrapper {
     @media (min-width: 767px) {

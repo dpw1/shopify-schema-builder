@@ -160,23 +160,6 @@ const useStore = create((set, get) => ({
       };
     });
   },
-
-  /* Global JSON is the "ugly" JSON containing the __id. All available schemas are found here.
-  It's used for programatic purposes and not used on the actual Shopify section.
-
-  This one is mostly used for the UI. There is redundancy with the "items".
-  ======================================= */
-  //   globalJson: getLocalStorage("globalJson")
-  //     ? JSON.parse(getLocalStorage("globalJson"))
-  //     : [],
-  //   setGlobalJson: (json) => {
-  //     set((_) => {
-  //       setLocalStorage("globalJson", JSON.stringify(json));
-  //       return {
-  //         globalJson: json,
-  //       };
-  //     });
-  //   },
 }));
 
 export default useStore;

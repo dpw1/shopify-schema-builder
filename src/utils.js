@@ -290,8 +290,6 @@ export const convertSchemaJSONToItems = (json) => {
 export function generateCSSVariables() {
   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
 
-  console.log("xxx store", items);
-
   let variables = ``;
   let i = 0;
 
@@ -708,6 +706,7 @@ export const cleanJSONSchema = (_json) => {
       });
     }
 
+    /* TODO - if range && if unit is empty, remove unit */
     return e;
   });
 

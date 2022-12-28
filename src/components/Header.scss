@@ -1,8 +1,9 @@
 .Header {
   display: block;
   width: 100%;
-  background-color: var(--osui_color-frame-surface-bg);
-
+  background-color: white;
+  box-shadow: 0 2px 1px #0000000d, 0 0 1px #42474c73;
+  position: relative;
   &-left {
     height: 56px;
     width: 55px;
@@ -10,6 +11,7 @@
     align-items: center;
     justify-content: center;
     border: 1px solid #c9cbcf;
+    border-bottom: unset;
   }
   svg {
     width: 20px;

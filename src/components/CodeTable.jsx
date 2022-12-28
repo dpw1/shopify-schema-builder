@@ -51,14 +51,6 @@ export default function CodeTable() {
             value={JSON.stringify(items)}
             maxHeight={100}
             multiline={4}></TextField>{" "}
-          <Button onClick={() => copyJSONToClipboard()}>Copy JSON</Button>
-          <Button
-            onClick={() => {
-              localStorage.clear();
-              window.location.reload();
-            }}>
-            Clear
-          </Button>
         </>
       ),
     },
@@ -168,8 +160,6 @@ export default function CodeTable() {
       alert("no items.");
     }
 
-    /* TODO 
-	Json is copying wrong data (including  __id, etc) */
     var _json = JSON.stringify(items, null, 2);
     var json = cleanJSONSchema(JSON.parse(_json));
 
@@ -190,6 +180,41 @@ export default function CodeTable() {
         <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
           <Card.Section>{tabs[selectedTab].component}</Card.Section>
         </Tabs>
+      </Card>
+
+      <Card>
+        <div className="CodeTable-buttons">
+          <Button onClick={() => copyJSONToClipboard()}>
+            Copy Schema Settings
+          </Button>
+          <Button disabled onClick={() => alert()}>
+            Copy updated code
+          </Button>
+
+          <Button disabled onClick={() => alert()}>
+            Copy Liquid variables
+          </Button>
+          <Button disabled onClick={() => alert()}>
+            Copy CSS variables
+          </Button>
+          <Button disabled onClick={() => alert()}>
+            Copy JS variables
+          </Button>
+          <Button
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}>
+            Clear
+          </Button>
+        </div>
+      </Card>
+
+      <Card>
+        <h4>Settings</h4>
+        <input type="checkbox" name="" id="" />
+        <label htmlFor="">Order variables A-Z</label>
+        <input placeholder="Prefix" type="text" />
       </Card>
     </div>
   );
