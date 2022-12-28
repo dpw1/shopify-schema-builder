@@ -38,7 +38,7 @@ null = default order
 */
 
 export function convertToLiquidVariables(_json, order = "default") {
-  let json = JSON.parse(_json);
+  let json = [...JSON.parse(_json)];
 
   if (order === "a-z") {
     json.sort((a, b) => {
@@ -320,8 +320,31 @@ export const convertSchemaJSONToItems = (json) => {
   });
 };
 
-export function generateCSSVariables() {
-  const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
+export function generateCSSVariables(_items, order = "default") {
+  const items = [..._items];
+  if (order === "a-z") {
+    items.sort((a, b) => {
+      if (a.id < b.id) {
+        return -1;
+      }
+      if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  if (order === "z-a") {
+    items.sort((a, b) => {
+      if (a.id < b.id) {
+        return 1;
+      }
+      if (a.id > b.id) {
+        return -1;
+      }
+      return 0;
+    });
+  }
 
   let variables = ``;
   let i = 0;
@@ -335,7 +358,7 @@ export function generateCSSVariables() {
   }
 
   const result = `
-<style data-custom-variables="https://ezfycode.com">
+<style data-ezfy-custom-variables="https://ezfycode.com">
 \t[id*='{{ section.id }}']{
 \t${variables.trim()}
 \t}
@@ -657,13 +680,11 @@ function removeLastCharacter(str, char) {
     .join("");
 }
 
-/* Settings 
+/* 
 
-# removeSectionText = remove the text "section." from the settings.
+THIS IS OUTDATED.
 
-removeSectionText = true => {% assign variable = settings.variable %}
-
-
+Use "convertToLiquidVariables" instead
 */
 export function generateLiquidVariables(settings) {
   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));

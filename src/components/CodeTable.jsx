@@ -208,9 +208,6 @@ export default function CodeTable() {
           <Button
             onClick={() => {
               const json = useStore.getState().items;
-              const settings = useStore.getState().settings;
-
-              console.log("settings", settings);
 
               const variables = convertToLiquidVariables(
                 JSON.stringify(json),
@@ -224,7 +221,13 @@ export default function CodeTable() {
             Copy Liquid variables
           </Button>
 
-          <Button disabled onClick={() => {}}>
+          <Button
+            onClick={() => {
+              const json = useStore.getState().items;
+              const css = generateCSSVariables(json, settings.variablesOrder);
+
+              copyToClipboard(css);
+            }}>
             Copy CSS variables
           </Button>
           <Button disabled onClick={() => alert()}>
