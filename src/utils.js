@@ -716,6 +716,29 @@ export const cleanJSONSchema = (_json) => {
   return result;
 };
 
+export function extractTextBetween(text, start, end) {
+  if (!start || !end) {
+    throw new Error(`Please add a "start" and "end" parameter`);
+  }
+
+  return text.split(start)[1].split(end)[0];
+}
+
+/* Extract the {% schema %} JSON from string */
+export function extractSchemaJSONFromCodeString(code = "") {
+  if (!code.includes("{% schema %}")) {
+    throw new Error("There is no 'schema' in the code string.");
+  }
+
+  const json = extractTextBetween(
+    importedSection,
+    `{% schema %}`,
+    `{% endschema %}`,
+  );
+
+  return JSON.parse(json);
+}
+
 export function convertStringToBoolean(string) {
   return string === "false" ? false : !!string;
 }

@@ -19,6 +19,7 @@ import {
 } from "../utils";
 import Editor from "./Editor";
 import Header from "./Header";
+import SidebarOptions from "./SidebarOptions";
 
 const RenderTextPreview = (data) => {
   return (
@@ -788,6 +789,7 @@ export default function Preview() {
 
   return (
     <>
+      <SidebarOptions></SidebarOptions>
       <div className="Preview">
         <div className="Preview-top">
           <div className="Preview-return">

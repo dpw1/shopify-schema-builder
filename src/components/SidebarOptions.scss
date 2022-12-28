@@ -1,0 +1,30 @@
+.SidebarOptions {
+  overflow: hidden;
+  background: white;
+  min-width: 55px;
+  overflow: hidden;
+  border-right: 1px solid #c9cbcf;
+  height: 100vh;
+
+  .SidebarOptions-buttons {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+
+    & > span,
+    button {
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    & > span {
+      margin-top: 20px;
+    }
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+  }
+}

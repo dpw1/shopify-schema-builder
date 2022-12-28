@@ -10,7 +10,9 @@ import {
   clearResultsTextarea,
   cleanSectionCode,
   cleanJSONSchema,
+  extractSchemaJSONFromCodeString,
   updateJSONAndVariables,
+  extractTextBetween,
   generateLiquidVariables,
   generateCSSVariables,
 } from "../utils";
@@ -125,21 +127,14 @@ export default function CodeTable() {
             multiline={4}></TextField>
           <Button
             onClick={() => {
-              function _extractTextBetween(text, start, end) {
-                if (!start || !end) {
-                  throw new Error(`Please add a "start" and "end" parameter`);
-                }
-
-                return text.split(start)[1].split(end)[0];
-              }
-
-              const _json = _extractTextBetween(
+              const _json = extractTextBetween(
                 importedSection,
                 `{% schema %}`,
                 `{% endschema %}`,
               );
 
-              const json = JSON.parse(_json).settings;
+              const json =
+                extractSchemaJSONFromCodeString(importedSection).settings;
 
               const extractedJson = convertSchemaJSONToItems(json);
 
@@ -187,7 +182,12 @@ export default function CodeTable() {
           <Button onClick={() => copyJSONToClipboard()}>
             Copy Schema Settings
           </Button>
-          <Button disabled onClick={() => alert()}>
+          <Button
+            onClick={() => {
+              const items = useStore.getState().items;
+
+              debugger;
+            }}>
             Copy updated code
           </Button>
 
