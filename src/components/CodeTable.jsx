@@ -12,6 +12,7 @@ import {
   cleanJSONSchema,
   extractSchemaJSONFromCodeString,
   updateJSONAndVariables,
+  generateJavascriptVariables,
   extractTextBetween,
   generateLiquidVariables,
   generateCSSVariables,
@@ -186,12 +187,9 @@ export default function CodeTable() {
 
           <Button
             onClick={() => {
-              const updatedSettings = useStore.getState().items;
-              const original = extractSchemaJSONFromCodeString(importedSection);
+              const original = extractSchemaJSONFromCodeString(items);
 
-              original.settings = JSON.parse(
-                `[${cleanJSONSchema(updatedSettings)}]`,
-              );
+              original.settings = JSON.parse(`[${cleanJSONSchema(items)}]`);
 
               const updated = replaceTextBetween(
                 importedSection,
@@ -223,14 +221,21 @@ export default function CodeTable() {
 
           <Button
             onClick={() => {
-              const json = useStore.getState().items;
-              const css = generateCSSVariables(json, settings.variablesOrder);
+              const css = generateCSSVariables(items, settings.variablesOrder);
 
               copyToClipboard(css);
             }}>
             Copy CSS variables
           </Button>
-          <Button disabled onClick={() => alert()}>
+          <Button
+            onClick={() => {
+              const js = generateJavascriptVariables(
+                items,
+                settings.variablesOrder,
+              );
+
+              copyToClipboard(js);
+            }}>
             Copy JS variables
           </Button>
           <Button

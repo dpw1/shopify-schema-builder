@@ -38,31 +38,10 @@ null = default order
 */
 
 export function convertToLiquidVariables(_json, order = "default") {
-  let json = [...JSON.parse(_json)];
-
-  if (order === "a-z") {
-    json.sort((a, b) => {
-      if (a.id < b.id) {
-        return -1;
-      }
-      if (a.id > b.id) {
-        return 1;
-      }
-      return 0;
-    });
-  }
-
-  if (order === "z-a") {
-    json.sort((a, b) => {
-      if (a.id < b.id) {
-        return 1;
-      }
-      if (a.id > b.id) {
-        return -1;
-      }
-      return 0;
-    });
-  }
+  let json = sortSchemaJSONSettingsAlphabetically(
+    [...JSON.parse(_json)],
+    order,
+  );
 
   let variables = [];
   for (var each of json) {
@@ -320,8 +299,13 @@ export const convertSchemaJSONToItems = (json) => {
   });
 };
 
-export function generateCSSVariables(_items, order = "default") {
+function sortSchemaJSONSettingsAlphabetically(_items, order = "default") {
+  if (!_items || _items.length <= 0) {
+    throw new Error("Invalid array of items");
+  }
+
   const items = [..._items];
+
   if (order === "a-z") {
     items.sort((a, b) => {
       if (a.id < b.id) {
@@ -346,6 +330,12 @@ export function generateCSSVariables(_items, order = "default") {
     });
   }
 
+  return items;
+}
+
+export function generateCSSVariables(_items, order = "default") {
+  const items = sortSchemaJSONSettingsAlphabetically([..._items], order);
+
   let variables = ``;
   let i = 0;
 
@@ -363,6 +353,35 @@ export function generateCSSVariables(_items, order = "default") {
 \t${variables.trim()}
 \t}
 </style>`.trim();
+
+  return result;
+}
+
+export function generateJavascriptVariables(_items, order = "default") {
+  const items = sortSchemaJSONSettingsAlphabetically([..._items], order);
+
+  const backTickReplace = "|ezfyezfy|";
+  let variables = ``;
+  let i = 0;
+
+  for (var [index, each] of items.entries()) {
+    if (each.hasOwnProperty("id")) {
+      variables +=
+        `\t${each.id}: ${backTickReplace}{{ ${each.id} }}${backTickReplace},\n`.replaceAll(
+          backTickReplace,
+          "`",
+        );
+    }
+
+    i += 1;
+  }
+
+  const result = `
+  <script data-ezfy-custom-variables="https://ezfycode.com">
+  window['{{ section.id }}--variables'] = {
+  \t${variables.trim()}
+  }
+</script>`.trim();
 
   return result;
 }
