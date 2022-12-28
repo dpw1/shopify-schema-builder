@@ -745,7 +745,7 @@ export const cleanJSONSchema = (_json) => {
     throw new Error(`cleanJSONSchema - JSON doesn't exist`);
   }
 
-  const json = _json.map((e, i) => {
+  const json = _json.slice().map((e, i) => {
     const index = i + 1;
 
     /* For all non "header" or "paragraphs" */
@@ -759,11 +759,6 @@ export const cleanJSONSchema = (_json) => {
       if (!e.hasOwnProperty("id")) {
         e.id = `${e.type}_${index}`;
       }
-
-      /* Remove unnecessary items */
-      delete e.content;
-      delete e.__id;
-      delete e.order;
     }
 
     /* If checkbox has a default, convert it to boolean */
@@ -774,10 +769,15 @@ export const cleanJSONSchema = (_json) => {
     /* Remove 'order' from the sub options **/
     if (e.hasOwnProperty("options")) {
       e.options = e.options.map((e) => {
-        delete e.order;
+        // delete e.order;
         return e;
       });
     }
+
+    /* Remove unnecessary keys */
+    delete e.content;
+    delete e.__id;
+    delete e.order;
 
     /* TODO - if range && if unit is empty, remove unit */
     return e;
@@ -797,7 +797,7 @@ export function extractTextBetween(text, start, end) {
   return text.split(start)[1].split(end)[0];
 }
 
-/* Extract the {% schema %} JSON from string */
+/* Extract the {% schema %} JSON from code string */
 export function extractSchemaJSONFromCodeString(code = "") {
   if (!code.includes("{% schema %}")) {
     throw new Error("There is no 'schema' in the code string.");
@@ -829,10 +829,12 @@ export function _extractTextBetween(text, start, end) {
   return text.split(start)[1].split(end)[0];
 }
 
-export function replaceTextBetween(text, start, end, newText) {
+export function replaceTextBetween(_text, start, end, newText) {
   if (!start || !end) {
     throw new Error(`Please add a "start" and "end" parameter`);
   }
+
+  const text = _text;
 
   const result = `${text.split(start)[0]}${start}${newText}${end}${
     text.split(end)[1]

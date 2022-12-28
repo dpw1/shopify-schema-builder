@@ -187,28 +187,40 @@ export default function CodeTable() {
 
           <Button
             onClick={() => {
-              const original = extractSchemaJSONFromCodeString(items);
+              let __items = useStore.getState().items;
+              let _items = __items.slice();
+              let original = extractSchemaJSONFromCodeString(importedSection);
+              let update = _items;
+              original.settings = update;
 
-              original.settings = JSON.parse(`[${cleanJSONSchema(items)}]`);
-
-              const updated = replaceTextBetween(
+              const _updated = replaceTextBetween(
                 importedSection,
                 `{% schema %}`,
                 `{% endschema %}`,
                 JSON.stringify(original, null, 2),
               );
 
+              const schema = extractSchemaJSONFromCodeString(_updated);
+              const clean = cleanJSONSchema(schema.settings);
+
+              const updated = replaceTextBetween(
+                importedSection,
+                `{% schema %}`,
+                `{% endschema %}`,
+                clean,
+              );
+
               copyToClipboard(updated);
+
+              return;
             }}>
             Copy updated code
           </Button>
 
           <Button
             onClick={() => {
-              const json = useStore.getState().items;
-
               const variables = convertToLiquidVariables(
-                JSON.stringify(json),
+                items,
                 settings.variablesOrder,
               );
 
