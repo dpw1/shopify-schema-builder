@@ -16,18 +16,24 @@ import {
   generateLiquidVariables,
   generateCSSVariables,
   replaceTextBetween,
+  convertToLiquidVariables,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
 import { Button, TextField, Card, Tabs, Checkbox } from "@shopify/polaris";
+import Settings from "./Settings";
 
 export default function CodeTable() {
-  const [importedSection, setImportedSection] = useState("");
+  const [importedSection, setImportedSection] = useStickyState(
+    "@importedSection",
+    "",
+  );
 
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
+  const settings = useStore((state) => state.settings);
   const addSection = useStore((state) => state.addSection);
   const items = useStore((state) => state.items);
   const [removeSectionText, setRemoveSectionText] = useState(false);
@@ -177,6 +183,7 @@ export default function CodeTable() {
           <Button onClick={() => copyJSONToClipboard()}>
             Copy Schema Settings
           </Button>
+
           <Button
             onClick={() => {
               const updatedSettings = useStore.getState().items;
@@ -198,10 +205,26 @@ export default function CodeTable() {
             Copy updated code
           </Button>
 
-          <Button disabled onClick={() => alert()}>
+          <Button
+            onClick={() => {
+              const json = useStore.getState().items;
+              const settings = useStore.getState().settings;
+
+              console.log("settings", settings);
+
+              const variables = convertToLiquidVariables(
+                JSON.stringify(json),
+                settings.variablesOrder,
+              );
+
+              copyToClipboard(variables);
+
+              return;
+            }}>
             Copy Liquid variables
           </Button>
-          <Button disabled onClick={() => alert()}>
+
+          <Button disabled onClick={() => {}}>
             Copy CSS variables
           </Button>
           <Button disabled onClick={() => alert()}>
@@ -217,12 +240,7 @@ export default function CodeTable() {
         </div>
       </Card>
 
-      <Card>
-        <h4>Settings</h4>
-        <input type="checkbox" name="" id="" />
-        <label htmlFor="">Order variables A-Z</label>
-        <input placeholder="Prefix" type="text" />
-      </Card>
+      <Settings></Settings>
     </div>
   );
 }

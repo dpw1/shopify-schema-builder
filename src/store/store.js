@@ -1,5 +1,9 @@
 import create from "zustand";
 
+const defaultSettings = {
+  variablesOrder: "a-z", // a-z | z-a | default
+};
+
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
 const setLocalStorage = (key, value) =>
   window.localStorage.setItem(key, JSON.stringify(value));
@@ -92,6 +96,44 @@ const useStore = create((set, get) => ({
       setLocalStorage("items", JSON.stringify(items));
       return {
         items,
+      };
+    });
+  },
+
+  /* Global settings for the app 
+   ======================================= */
+  settings: getLocalStorage("settings") || defaultSettings,
+
+  setSettings: (settings) => {
+    if (!settings) {
+      return;
+    }
+
+    localStorage.removeItem(`settings`);
+
+    set((_) => {
+      setLocalStorage("settings", settings);
+      return {
+        settings,
+      };
+    });
+  },
+
+  updateSettings: (updated = null) => {
+    if (!updated) {
+      throw new Error("no value");
+    }
+    const _settings = get().settings;
+
+    const settings = {
+      ..._settings,
+      ...updated,
+    };
+
+    set((_) => {
+      setLocalStorage("settings", settings);
+      return {
+        settings,
       };
     });
   },

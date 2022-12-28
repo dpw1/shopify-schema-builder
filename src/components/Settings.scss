@@ -1,0 +1,11 @@
+.Settings {
+  margin-top: 20px;
+  .Settings-wrapper {
+    padding: 20px;
+  }
+
+  .Settings-options {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -31,12 +31,41 @@ export const schema = [
   { id: "radio" },
 ];
 
-export function convertToLiquidVariables(json) {
-  let result = [];
-  result.push(JSON.parse(json));
+/* order
+null = default order
+"a-z" => sort variables from a to z
+"z-a" => sort variables from z to a
+*/
+
+export function convertToLiquidVariables(_json, order = "default") {
+  let json = JSON.parse(_json);
+
+  if (order === "a-z") {
+    json.sort((a, b) => {
+      if (a.id < b.id) {
+        return -1;
+      }
+      if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  if (order === "z-a") {
+    json.sort((a, b) => {
+      if (a.id < b.id) {
+        return 1;
+      }
+      if (a.id > b.id) {
+        return -1;
+      }
+      return 0;
+    });
+  }
 
   let variables = [];
-  for (var each of result[0]) {
+  for (var each of json) {
     const id = each.id;
 
     if (id) {
@@ -45,7 +74,11 @@ export function convertToLiquidVariables(json) {
     }
   }
 
-  return variables.join("\n");
+  const result = `{% comment %}EZFY Variables [start]{% endcomment %}
+\t${variables.join("\n\t")}
+{% comment %}EZFY Variables [end]{% endcomment %}`;
+
+  return result.trim();
 }
 
 export function updateLiquidVariablesDOM(variables) {
@@ -664,7 +697,7 @@ export function generateLiquidVariables(settings) {
 
 /* clean the JSON schema "settings" to remove all of the __id.
 
-Returns a JSON.stringify-ed string.
+Returns a JSON.stringify-ed string, without the brackets.
 
 */
 export const cleanJSONSchema = (_json) => {
