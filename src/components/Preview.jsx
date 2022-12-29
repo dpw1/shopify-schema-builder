@@ -738,17 +738,8 @@ export default function Preview() {
       selectedClass: "sortable-selected",
       avoidImplicitDeselect: false,
 
-      onSelect: function (/**Event*/ evt) {
-        console.log("SELECT");
-      },
-
-      onDeselect: function (/**Event*/ evt) {
-        console.log("DESELECT");
-      },
       onEnd: function (e) {
         const _items = useStore.getState().items;
-
-        console.log("END", _items);
 
         let newOrder = [];
         const $items = document.querySelectorAll(
@@ -771,8 +762,6 @@ export default function Preview() {
             e.order = i + 1;
             return e;
           });
-
-        console.log("Sorted: ", sorted);
 
         useStore.setState({
           items: _items,

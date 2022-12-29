@@ -18,7 +18,7 @@ import {
   generateCSSVariables,
   replaceTextBetween,
   convertToLiquidVariables,
-  replaceLiquidVariablesInCode,
+  mergeEzfyVariablesToCode,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -53,7 +53,7 @@ export default function CodeTable() {
   const tabs = [
     {
       id: "tab-schema-settings-json",
-      content: "Schema's settings JSON",
+      content: "Sches settings JSON",
       panelID: "schema-settings-json",
       component: (
         <>
@@ -212,6 +212,7 @@ export default function CodeTable() {
           </Button>
 
           <Button
+            disabled={importedSection.trim().length <= 0}
             onClick={() => {
               const code = generateSectionCodeWithUpdatedSchema();
 
@@ -223,17 +224,14 @@ export default function CodeTable() {
                 settings.variablesOrder,
               );
 
-              var codeWithLiquidVariables = replaceLiquidVariablesInCode(
-                code,
-                variables,
-              );
+              var codeWithLiquidVariables = mergeEzfyVariablesToCode(code);
 
               //const result = `${variables}\n\n${code}`;
               copyToClipboard(codeWithLiquidVariables);
 
               return;
             }}>
-            Copy updated code
+            Copy updated imported code
           </Button>
 
           <Button

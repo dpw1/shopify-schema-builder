@@ -1,6 +1,7 @@
 import short from "short-uuid";
 import create from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import useStore from "./store/store";
 
 export const initialState = {
   activeSection: null,
@@ -50,9 +51,9 @@ export function convertToLiquidVariables(_json, order = "default") {
     }
   }
 
-  const result = `{% comment %}EZFY Variables [start]{% endcomment %}
+  const result = `{% comment %}EZFY Variables Liquid [start]{% endcomment %}
 \t${variables.join("\n\t")}
-{% comment %}EZFY Variables [end]{% endcomment %}`;
+{% comment %}EZFY Variables Liquid [end]{% endcomment %}`;
 
   return result.trim();
 }
@@ -345,11 +346,13 @@ export function generateCSSVariables(_items, order = "default") {
   }
 
   const result = `
+  {% comment %}EZFY Variables CSS [start]{% endcomment %}
 <style data-ezfy-custom-variables="https://ezfycode.com">
 \t[id*='{{ section.id }}']{
 \t${variables.trim()}
 \t}
-</style>`.trim();
+</style>
+{% comment %}EZFY Variables CSS [end]{% endcomment %}`.trim();
 
   return result;
 }
@@ -374,11 +377,13 @@ export function generateJavascriptVariables(_items, order = "default") {
   }
 
   const result = `
+  {% comment %}EZFY Variables Javascript [start]{% endcomment %}
   <script data-ezfy-custom-variables="https://ezfycode.com">
   window['{{ section.id }}--variables'] = {
   \t${variables.trim()}
   }
-</script>`.trim();
+</script>
+{% comment %}EZFY Variables Javascript [end]{% endcomment %}`.trim();
 
   return result;
 }
@@ -737,25 +742,80 @@ export function generateLiquidVariables(settings) {
 TODO
 All liquid variables generated with this app are between comments:
 
-{% comment %}EZFY Variables [start]{% endcomment %}
+{% comment %}EZFY Variables Liquid [start]{% endcomment %}
 
-{% comment %}EZFY Variables [end]{% endcomment %}
+{% comment %}EZFY Variables Liquid [end]{% endcomment %}
 */
-export function replaceLiquidVariablesInCode(code, liquidVariables) {
-  if (!code || !liquidVariables) {
+export function mergeEzfyVariablesToCode(
+  code,
+  include = ["liquid", "css", "js"],
+) {
+  if (!code) {
     throw new Error(`No "code" or "liquidVariables" parameters found.`);
   }
-  const hasEzfyLiquidVariables =
-    /{%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?\[start\]{%/gim.test(code);
 
-  if (hasEzfyLiquidVariables) {
-    code = code.replaceAll(
-      /({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?\[start\]{%\s?\-?endcomment\s?\-?%})([.|\s|\S]*)({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?\[end\]{%\s?\-?endcomment\s?\-?%})/gim,
-      liquidVariables,
-    );
+  let variables = "";
+  const items = useStore.getState().items;
+  const settings = useStore.getState().settings;
+
+  if (include.includes("liquid")) {
+    const liquid = convertToLiquidVariables(items, settings.variablesOrder);
+
+    const hasEzfyLiquidVariables =
+      /{%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?liquid\s?\[start\]{%/gim.test(
+        code,
+      );
+
+    /* Found previous ezfy variables, delete it */
+    if (hasEzfyLiquidVariables) {
+      code = code.replaceAll(
+        /({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?liquid\s?\[start\]{%\s?\-?endcomment\s?\-?%})([.|\s|\S]*)({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?liquid\s?\[end\]{%\s?\-?endcomment\s?\-?%})/gim,
+        "",
+      );
+    }
+
+    variables += liquid;
   }
 
-  return code;
+  if (include.includes("css")) {
+    const css = generateCSSVariables(items, settings.variablesOrder);
+
+    const hasEzfyCSSVariables =
+      /{%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?css\s?\[start\]{%/gim.test(
+        code,
+      );
+
+    /* Found previous ezfy variables, delete it */
+    if (hasEzfyCSSVariables) {
+      code = code.replaceAll(
+        /({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?css\s?\[start\]{%\s?\-?endcomment\s?\-?%})([.|\s|\S]*)({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?css\s?\[end\]{%\s?\-?endcomment\s?\-?%})/gim,
+        "",
+      );
+    }
+
+    variables += `\n\n${css}`;
+  }
+
+  if (include.includes("js")) {
+    const js = generateJavascriptVariables(items, settings.variablesOrder);
+
+    const hasEzfyJSVariables =
+      /{%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?javascript\s?\[start\]{%/gim.test(
+        code,
+      );
+
+    /* Found previous ezfy variables, delete it */
+    if (hasEzfyJSVariables) {
+      code = code.replaceAll(
+        /({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?javascript\s?\[start\]{%\s?\-?endcomment\s?\-?%})([.|\s|\S]*)({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?javascript\s?\[end\]{%\s?\-?endcomment\s?\-?%})/gim,
+        "",
+      );
+    }
+
+    variables += `\n\n${js}`;
+  }
+
+  return `${variables}\n${code}`;
 }
 
 /* clean the JSON schema "settings" to remove all of the __id.
