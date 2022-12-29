@@ -852,7 +852,7 @@ export const cleanJSONSchema = (_json) => {
     /* Remove 'order' from the sub options **/
     if (e.hasOwnProperty("options")) {
       e.options = e.options.map((e) => {
-        // delete e.order;
+        delete e.order;
         return e;
       });
     }
