@@ -6,6 +6,7 @@ import {
   TextField,
   Card,
   Tabs,
+  Text,
   Checkbox,
   RadioButton,
   Stack,
@@ -19,6 +20,8 @@ export default function Settings() {
   const [variablesOrder, setVariablesOrder] = useState(
     settings.variablesOrder || "default",
   );
+  const [checked, setChecked] = useState(false);
+  const handleChange = useCallback((newChecked) => setChecked(newChecked), []);
 
   const handleVariablesOrderChange = (newValue) => {
     setVariablesOrder(newValue);
@@ -31,8 +34,13 @@ export default function Settings() {
     <div className="Settings">
       <Card>
         <div className="Settings-wrapper">
-          <h4>Variables order</h4>
           <div className="Settings-options">
+            <span className="Settings-subtitle">
+              <Text variant="headingSm" as="h4">
+                Variables order
+              </Text>
+            </span>
+
             <Stack vertical>
               <RadioButton
                 label="Default"
@@ -59,6 +67,38 @@ export default function Settings() {
                 checked={variablesOrder === "z-a"}
                 onChange={(_, e) => {
                   return handleVariablesOrderChange(e);
+                }}
+              />
+            </Stack>
+          </div>
+
+          <div className="Settings-options">
+            <span className="Settings-subtitle">
+              <Text variant="headingSm" as="h4">
+                Include variables:
+              </Text>
+            </span>
+
+            <Stack vertical>
+              <Checkbox
+                label="Liquid"
+                checked={true}
+                onChange={() => {
+                  return alert();
+                }}
+              />
+              <Checkbox
+                label="CSS"
+                checked={true}
+                onChange={() => {
+                  return alert();
+                }}
+              />
+              <Checkbox
+                label="Javascript"
+                checked={true}
+                onChange={() => {
+                  return alert();
                 }}
               />
             </Stack>

@@ -732,6 +732,32 @@ export function generateLiquidVariables(settings) {
   return variables.join("\n");
 }
 
+/*
+
+TODO
+All liquid variables generated with this app are between comments:
+
+{% comment %}EZFY Variables [start]{% endcomment %}
+
+{% comment %}EZFY Variables [end]{% endcomment %}
+*/
+export function replaceLiquidVariablesInCode(code, liquidVariables) {
+  if (!code || !liquidVariables) {
+    throw new Error(`No "code" or "liquidVariables" parameters found.`);
+  }
+  const hasEzfyLiquidVariables =
+    /{%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?\[start\]{%/gim.test(code);
+
+  if (hasEzfyLiquidVariables) {
+    code = code.replaceAll(
+      /({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?\[start\]{%\s?\-?endcomment\s?\-?%})([.|\s|\S]*)({%\s?\-?comment\s?\-?%}\s?ezfy\s?Variables\s?\[end\]{%\s?\-?endcomment\s?\-?%})/gim,
+      liquidVariables,
+    );
+  }
+
+  return code;
+}
+
 /* clean the JSON schema "settings" to remove all of the __id.
 
 Returns a JSON.stringify-ed string, without the brackets.

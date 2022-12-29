@@ -1,1 +1,1 @@
-.Settings{margin-top:20px}.Settings .Settings-wrapper{padding:20px}.Settings .Settings-options{display:flex;flex-direction:column}
+.Settings{margin-top:20px}.Settings .Settings-wrapper{padding:20px;display:flex}.Settings .Settings-options{display:flex;flex-direction:column}.Settings .Settings-options+.Settings-options{margin-left:40px}.Settings .Settings-subtitle{margin-bottom:5px}

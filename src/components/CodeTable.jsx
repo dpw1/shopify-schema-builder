@@ -18,6 +18,7 @@ import {
   generateCSSVariables,
   replaceTextBetween,
   convertToLiquidVariables,
+  replaceLiquidVariablesInCode,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -222,8 +223,13 @@ export default function CodeTable() {
                 settings.variablesOrder,
               );
 
-              const result = `${variables}\n\n${code}`;
-              copyToClipboard(result);
+              var codeWithLiquidVariables = replaceLiquidVariablesInCode(
+                code,
+                variables,
+              );
+
+              //const result = `${variables}\n\n${code}`;
+              copyToClipboard(codeWithLiquidVariables);
 
               return;
             }}>

@@ -2,10 +2,19 @@
   margin-top: 20px;
   .Settings-wrapper {
     padding: 20px;
+    display: flex;
   }
 
   .Settings-options {
     display: flex;
     flex-direction: column;
+
+    & + .Settings-options {
+      margin-left: 40px;
+    }
+  }
+
+  .Settings-subtitle {
+    margin-bottom: 5px;
   }
 }
