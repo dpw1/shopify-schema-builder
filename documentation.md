@@ -9,10 +9,10 @@
 
 ## TODO
 
+- Fix page height (should be 100vh)
 - Scroll to bottom when clicking on "add" new section
 - Scroll to section when clicking on "duplicate"
-- Toggle all editors
-- Show popup when clicking on "clear"
+- Toggle open/close all editors
 - Create "settings" store variable
   - Add prefix with option to include {type}
 - Create tab to add section's schema settings
@@ -29,3 +29,4 @@
 - Copy JS [x]
 - Copy CSS [x]
 - Copy Liquid [x]
+- Show popup when clicking on "clear" [x]

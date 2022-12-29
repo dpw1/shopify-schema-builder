@@ -26,6 +26,7 @@ import "./CodeTable.scss";
 import useStore from "./../store/store";
 import { Button, TextField, Card, Tabs, Checkbox } from "@shopify/polaris";
 import Settings from "./Settings";
+import ConfirmDialog from "./ConfirmDialog";
 
 export default function CodeTable() {
   const [importedSection, setImportedSection] = useStickyState(
@@ -44,6 +45,7 @@ export default function CodeTable() {
   const [cssVariables, setCssVariables] = useState("");
 
   const [selectedTab, setSelectedTab] = useStickyState("@tabs", 0);
+  const [removeAll, setRemoveAll] = useState(false);
 
   const handleTabChange = useCallback(
     (selectedTabIndex) => setSelectedTab(selectedTabIndex),
@@ -210,7 +212,6 @@ export default function CodeTable() {
           <Button onClick={() => copyJSONToClipboard()}>
             Copy Schema Settings
           </Button>
-
           <Button
             disabled={importedSection.trim().length <= 0}
             onClick={() => {
@@ -238,7 +239,6 @@ export default function CodeTable() {
             }}>
             Copy Liquid variables
           </Button>
-
           <Button
             onClick={() => {
               const css = generateCSSVariables(items, settings.variablesOrder);
@@ -259,14 +259,27 @@ export default function CodeTable() {
             Copy JS variables
           </Button>
           <Button
-            onClick={() => {
-              localStorage.clear();
-              window.location.reload();
+            onClick={(_) => {
+              setRemoveAll(true);
             }}>
             Clear
           </Button>
         </div>
       </Card>
+
+      {removeAll && (
+        <ConfirmDialog
+          title={"Delete everything?"}
+          message={`Clicking "yes" will delete all the code you have in here and clear the cache.`}
+          handleConfirm={() => {
+            localStorage.clear();
+            window.location.reload();
+            setRemoveAll(false);
+          }}
+          handleDeny={() => {
+            setRemoveAll(false);
+          }}></ConfirmDialog>
+      )}
 
       <Settings></Settings>
     </div>

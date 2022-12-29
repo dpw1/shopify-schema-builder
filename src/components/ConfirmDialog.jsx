@@ -6,7 +6,7 @@ import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import "./ConfirmDialog.scss";
 
 export default function ConfirmDialog(props) {
-  const { title, message, confirm, deny } = props;
+  const { title, message, handleConfirm, handleDeny } = props;
 
   confirmAlert({
     title,
@@ -14,11 +14,11 @@ export default function ConfirmDialog(props) {
     buttons: [
       {
         label: "Yes",
-        onClick: confirm,
+        onClick: handleConfirm,
       },
       {
         label: "No",
-        onClick: deny,
+        onClick: handleDeny,
       },
     ],
   });
