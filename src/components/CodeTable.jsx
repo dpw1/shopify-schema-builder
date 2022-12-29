@@ -135,6 +135,10 @@ export default function CodeTable() {
             multiline={4}></TextField>
           <Button
             onClick={() => {
+              if (!importedSection) {
+                alert("no imported section;");
+              }
+
               const json =
                 extractSchemaJSONFromCodeString(importedSection).settings;
 
@@ -171,6 +175,27 @@ export default function CodeTable() {
     }
   }, [items]);
 
+  function generateSectionCodeWithUpdatedSchema() {
+    let _items = useStore.getState().items;
+
+    const originalImportSchema =
+      extractSchemaJSONFromCodeString(importedSection);
+    const updatedImportSchema = { ...originalImportSchema };
+
+    let updatedSettings = JSON.parse(`[${cleanJSONSchema(_items)}]`);
+
+    updatedImportSchema.settings = updatedSettings;
+
+    const _updated = replaceTextBetween(
+      importedSection,
+      `{% schema %}`,
+      `{% endschema %}`,
+      JSON.stringify(updatedImportSchema, null, 2),
+    );
+
+    return _updated;
+  }
+
   return (
     <div className="CodeTable">
       <Card>
@@ -187,30 +212,18 @@ export default function CodeTable() {
 
           <Button
             onClick={() => {
-              let __items = useStore.getState().items;
-              let _items = __items.slice();
-              let original = extractSchemaJSONFromCodeString(importedSection);
-              let update = _items;
-              original.settings = update;
+              const code = generateSectionCodeWithUpdatedSchema();
 
-              const _updated = replaceTextBetween(
-                importedSection,
-                `{% schema %}`,
-                `{% endschema %}`,
-                JSON.stringify(original, null, 2),
+              /* TODO 
+			 Replace liquid variables in finished code
+			  */
+              const variables = convertToLiquidVariables(
+                items,
+                settings.variablesOrder,
               );
 
-              const schema = extractSchemaJSONFromCodeString(_updated);
-              const clean = cleanJSONSchema(schema.settings);
-
-              const updated = replaceTextBetween(
-                importedSection,
-                `{% schema %}`,
-                `{% endschema %}`,
-                clean,
-              );
-
-              copyToClipboard(updated);
+              const result = `${variables}\n\n${code}`;
+              copyToClipboard(result);
 
               return;
             }}>

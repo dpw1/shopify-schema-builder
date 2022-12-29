@@ -38,10 +38,7 @@ null = default order
 */
 
 export function convertToLiquidVariables(_json, order = "default") {
-  let json = sortSchemaJSONSettingsAlphabetically(
-    [...JSON.parse(_json)],
-    order,
-  );
+  let json = sortSchemaJSONSettingsAlphabetically(_json, order);
 
   let variables = [];
   for (var each of json) {
@@ -745,7 +742,7 @@ export const cleanJSONSchema = (_json) => {
     throw new Error(`cleanJSONSchema - JSON doesn't exist`);
   }
 
-  const json = _json.slice().map((e, i) => {
+  const json = cloneObject(_json).map((e, i) => {
     const index = i + 1;
 
     /* For all non "header" or "paragraphs" */
@@ -789,6 +786,10 @@ export const cleanJSONSchema = (_json) => {
   return result;
 };
 
+export function cloneObject(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export function extractTextBetween(text, start, end) {
   if (!start || !end) {
     throw new Error(`Please add a "start" and "end" parameter`);
@@ -797,15 +798,24 @@ export function extractTextBetween(text, start, end) {
   return text.split(start)[1].split(end)[0];
 }
 
-/* Extract the {% schema %} JSON from code string */
+/* Extract the {% schema %} JSON from code string. */
 export function extractSchemaJSONFromCodeString(code = "") {
   if (!code.includes("{% schema %}")) {
     throw new Error("There is no 'schema' in the code string.");
   }
 
-  const json = extractTextBetween(code, `{% schema %}`, `{% endschema %}`);
+  const _json = extractTextBetween(code, `{% schema %}`, `{% endschema %}`);
 
-  return JSON.parse(json);
+  try {
+    const json = JSON.parse(_json);
+
+    if (!json.hasOwnProperty("name")) {
+      throw new Error(`Broken imported section: no "name" attribute`);
+    }
+    return json;
+  } catch (err) {
+    throw new Error(`There is something wrong with the section code.`);
+  }
 }
 
 export function convertStringToBoolean(string) {
