@@ -216,17 +216,8 @@ export default function CodeTable() {
             onClick={() => {
               const code = generateSectionCodeWithUpdatedSchema();
 
-              /* TODO 
-			 Replace liquid variables in finished code
-			  */
-              const variables = convertToLiquidVariables(
-                items,
-                settings.variablesOrder,
-              );
-
               var codeWithLiquidVariables = mergeEzfyVariablesToCode(code);
 
-              //const result = `${variables}\n\n${code}`;
               copyToClipboard(codeWithLiquidVariables);
 
               return;
