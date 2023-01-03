@@ -44,7 +44,7 @@ export default function CodeTable() {
   const [variables, setVariables] = useState(JSON.stringify(items));
   const [cssVariables, setCssVariables] = useState("");
 
-  const [selectedTab, setSelectedTab] = useStickyState("@tabs", 0);
+  const [selectedTab, setSelectedTab] = useStickyState("@tabs", 3);
   const [removeAll, setRemoveAll] = useState(false);
 
   const handleTabChange = useCallback(
