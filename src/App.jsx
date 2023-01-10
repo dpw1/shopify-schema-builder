@@ -10,6 +10,7 @@ import Header from "./components/Header";
 import { initialState } from "./utils";
 import Preview from "./components/Preview";
 import "./assets/Polaris.scss";
+import "./components/PopupConfirm.scss";
 import { AppProvider, Text } from "@shopify/polaris";
 
 function App() {

@@ -9,6 +9,10 @@
 
 ## TODO
 
+- Variables order not working after duplicating
+- Option to add/remove `{% comment %}` from variables
+- Focus on newly duplicated field
+- Bulk duplicate/delete
 - Detect duplicated ids
 - Liquid variables with or without ".section" must be a global setting
 - Fix page height (should be 100vh)

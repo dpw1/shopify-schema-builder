@@ -302,7 +302,7 @@ function sortSchemaJSONSettingsAlphabetically(_items, order = "default") {
     throw new Error("Invalid array of items");
   }
 
-  const items = [..._items];
+  const items = [..._items].filter((e) => e.hasOwnProperty("id"));
 
   if (order === "a-z") {
     items.sort((a, b) => {
