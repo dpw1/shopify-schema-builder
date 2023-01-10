@@ -9,6 +9,8 @@
 
 ## TODO
 
+- Detect duplicated ids
+- Liquid variables with or without ".section" must be a global setting
 - Fix page height (should be 100vh)
 - Scroll to bottom when clicking on "add" new section
 - Scroll to section when clicking on "duplicate"

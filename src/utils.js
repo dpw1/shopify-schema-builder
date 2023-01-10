@@ -842,6 +842,8 @@ export const cleanJSONSchema = (_json) => {
       if (!e.hasOwnProperty("id")) {
         e.id = `${e.type}_${index}`;
       }
+
+      delete e.content;
     }
 
     /* If checkbox has a default, convert it to boolean */
@@ -858,7 +860,7 @@ export const cleanJSONSchema = (_json) => {
     }
 
     /* Remove unnecessary keys */
-    delete e.content;
+
     delete e.__id;
     delete e.order;
 
