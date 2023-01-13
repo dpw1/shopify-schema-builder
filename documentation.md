@@ -9,11 +9,10 @@
 
 ## TODO
 
-- Variables order not working after duplicating
-- Option to add/remove `{% comment %}` from variables
 - Focus on newly duplicated field
 - Bulk duplicate/delete
 - Detect duplicated ids
+- Option to add/remove `{% comment %}` from variables
 - Liquid variables with or without ".section" must be a global setting
 - Fix page height (should be 100vh)
 - Scroll to bottom when clicking on "add" new section
@@ -30,6 +29,7 @@
 
 ## DONE
 
+- Variables order not working after duplicating [x]
 - Copy updated code [x]
   - New ezfy schema must replace the imported code's schema [x]
 - Copy JS [x]

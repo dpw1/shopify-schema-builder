@@ -2,6 +2,7 @@ import create from "zustand";
 
 const defaultSettings = {
   variablesOrder: "a-z", // a-z | z-a | default
+  includeVariables: ["liquid", "css"], // 'liquid', 'css', 'js'
 };
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
@@ -119,6 +120,40 @@ const useStore = create((set, get) => ({
     });
   },
 
+  /* Update a specific settings. 
+
+  Example: to update 'includeVariables', do this:
+
+  setSetting({
+	includeVariables: ['js', 'css']
+  })
+  */
+  setSetting: (setting) => {
+    if (!setting) {
+      return;
+    }
+
+    console.log("my setting", setting);
+
+    var settings = get().settings;
+
+    if (!settings.hasOwnProperty(Object.keys(setting))) {
+      throw new Error("This property does not exist");
+    }
+
+    settings[Object.keys(setting)] = Object.values(setting)[0];
+
+    console.log("settings", settings);
+    debugger;
+
+    set((_) => {
+      setLocalStorage("settings", settings);
+      return {
+        settings,
+      };
+    });
+  },
+
   updateSettings: (updated = null) => {
     if (!updated) {
       throw new Error("no value");
@@ -129,6 +164,8 @@ const useStore = create((set, get) => ({
       ..._settings,
       ...updated,
     };
+
+    debugger;
 
     set((_) => {
       setLocalStorage("settings", settings);

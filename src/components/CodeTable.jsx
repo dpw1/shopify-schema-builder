@@ -218,7 +218,6 @@ export default function CodeTable() {
               const code = generateSectionCodeWithUpdatedSchema();
 
               var codeWithLiquidVariables = mergeEzfyVariablesToCode(code);
-              debugger;
 
               copyToClipboard(codeWithLiquidVariables);
 

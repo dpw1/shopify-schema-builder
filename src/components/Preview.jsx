@@ -4,7 +4,12 @@ import "./Preview.scss";
 
 import { useStatePersist as useStickyState } from "use-state-persist";
 import { Select, RangeSlider, TextField, Button, Text } from "@shopify/polaris";
-import { DragHandleMinor, ChevronLeftMinor } from "@shopify/polaris-icons";
+import {
+  DragHandleMinor,
+  ChevronLeftMinor,
+  EditMajor,
+  HideMinor,
+} from "@shopify/polaris-icons";
 
 import Sortable, { MultiDrag } from "sortablejs";
 Sortable.mount(new MultiDrag());
@@ -30,7 +35,6 @@ const RenderTextPreview = (data) => {
         helpText={data.info}
         placeholder={data.placeholder}
         value={data.default}></TextField>
-      <Editor data={data} />
     </>
   );
 };
@@ -48,7 +52,6 @@ const RenderBlogPreview = (data) => {
       {data.info && data.info !== "" && (
         <div className="Preview-info">{data.info}</div>
       )}
-      <Editor data={data} />
     </>
   );
 };
@@ -90,7 +93,6 @@ const RenderCheckboxPreview = (data) => {
       {data.info && data.info !== "" && (
         <div className="Preview-info">{data.info}</div>
       )}
-      <Editor data={data} />
     </>
   );
 };
@@ -126,7 +128,6 @@ const RenderColorPreview = (data) => {
       {data.info && data.info !== "" && (
         <div className="Preview-info">{data.info}</div>
       )}
-      <Editor data={data} />
     </>
   );
 };
@@ -151,7 +152,6 @@ const RenderFontPreview = (data) => {
         </div>
       </div>
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -160,7 +160,6 @@ const RenderHeaderPreview = (data) => {
   return (
     <>
       <div className="Preview-content">{data.content}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -181,7 +180,6 @@ const RenderImagePickerPreview = (data) => {
         <div className="Preview-button">Select image</div>
       </div>
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -194,7 +192,6 @@ const RenderCollectionPreview = (data) => {
       <div className="Preview-button">Select collection</div>
 
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -207,7 +204,6 @@ const RenderLinkListPreview = (data) => {
       <div className="Preview-button">Select menu</div>
 
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -220,7 +216,6 @@ const RenderPagePreview = (data) => {
       <div className="Preview-button">Select page</div>
 
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -285,7 +280,6 @@ const RenderNumberPreview = (data) => {
         {data.info && data.info !== "" && (
           <div className="Preview-info">{data.info}</div>
         )}
-        <Editor data={data} />
       </>
     </>
   );
@@ -295,7 +289,6 @@ const RenderParagraphPreview = (data) => {
   return (
     <>
       <div className="Preview-info">{data.content}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -308,7 +301,6 @@ const RenderProductPreview = (data) => {
       <div className="Preview-button">Select product</div>
 
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -347,7 +339,6 @@ const RenderRadioPreview = (data) => {
       </div>
 
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -372,7 +363,6 @@ const RenderRangePreview = (data) => {
           }
         />
       </div>
-      <Editor data={data} />
     </>
   );
 };
@@ -605,7 +595,6 @@ const RenderRichTextPreview = (data) => {
       </div>
 
       <div className="Preview-info">{data.info}</div>
-      <Editor data={data} />
     </>
   );
 };
@@ -629,7 +618,6 @@ const RenderSelectPreview = (data) => {
           }
         />
       </div>
-      <Editor data={data} />
     </>
   );
 };
@@ -666,7 +654,6 @@ const RenderUrlPreview = (data) => {
           <path d="M10 9c3.866 0 7-1.343 7-3s-3.134-3-7-3-7 1.343-7 3 3.134 3 7 3Zm6.602 0c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Zm0 4c-.961 1.165-3.554 2-6.602 2-3.048 0-5.64-.835-6.602-2-.258.313-.398.65-.398 1 0 1.657 3.134 3 7 3s7-1.343 7-3c0-.35-.14-.687-.398-1Z" />
         </svg>
       </div>
-      <Editor data={data} />
     </>
   );
 };
@@ -681,7 +668,6 @@ const RenderVideoUrlPreview = (data) => {
           placeholder={data.placeholder}
           defaultValue={data.default}></TextField>
       </div>
-      <Editor data={data} />
     </>
   );
 };
@@ -689,9 +675,11 @@ const RenderVideoUrlPreview = (data) => {
 export default function Preview() {
   const addItem = useStore((state) => state.addItem);
   const setItems = useStore((state) => state.setItems);
+
   const items = useStore((state) => state.items);
   const [type, setType] = useStickyState("@type", "text");
   const [mustUpdate, setMustUpdate] = useStickyState("@mustUpdate", false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (mustUpdate) {
@@ -810,9 +798,6 @@ export default function Preview() {
                       data-item-id={e.__id}
                       data-item-count={index}
                       className={`Preview-item Preview-item--${e.type}`}>
-                      <button className="Preview-handle Preview-icon-button">
-                        <DragHandleMinor></DragHandleMinor>
-                      </button>
                       {(() => {
                         if (e.type === "text") {
                           return <RenderTextPreview {...props} />;
@@ -856,17 +841,35 @@ export default function Preview() {
                           return <RenderVideoUrlPreview {...props} />;
                         }
                       })()}
+
+                      <Editor data={props}></Editor>
+
+                      <div className="Preview-item-buttons">
+                        <button
+                          title="Edit"
+                          className="Preview-edit Preview-edit Preview-icon-button"
+                          onClick={() => {
+                            setTimeout(() => {
+                              const $button = document.querySelector(
+                                ` [data-is-editing-id='${props.__id}']`,
+                              );
+
+                              $button.click();
+
+                              setIsEditing(!isEditing);
+                            }, 10);
+                          }}>
+                          {isEditing ? <HideMinor /> : <EditMajor />}
+                        </button>
+                        <button className="Preview-handle Preview-icon-button">
+                          <DragHandleMinor></DragHandleMinor>
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
           </div>
           <div className="Preview-buttons" style={{ display: "flex" }}>
-            <Button
-              onClick={() => {
-                addItemToList();
-              }}>
-              Add
-            </Button>
             <Select
               value={type}
               options={Object.values(schema)
@@ -884,6 +887,12 @@ export default function Preview() {
                   addItemToList(value);
                 }
               }}></Select>
+            <Button
+              onClick={() => {
+                addItemToList();
+              }}>
+              Add
+            </Button>
           </div>
         </div>
       </div>

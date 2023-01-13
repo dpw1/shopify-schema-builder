@@ -334,6 +334,58 @@ export default function ItemCopy(props) {
 
   return (
     <li data-item-id={id} data-item-count={itemCount} className={`item`}>
+      <div className="item-buttons">
+        <button
+          title="Delete"
+          tabindex="-1"
+          onClick={async () => {
+            resetJsonResult();
+            handleDeleteItem(id);
+            await sleep(100);
+            const json = generateJSONSchema();
+            setJsonResult(json);
+          }}
+          className="item-delete item-button">
+          <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+            <path d="M8 3.994c0-1.101.895-1.994 2-1.994s2 .893 2 1.994h4c.552 0 1 .446 1 .997a1 1 0 0 1-1 .997h-12c-.552 0-1-.447-1-.997s.448-.997 1-.997h4zm-3 10.514v-6.508h2v6.508a.5.5 0 0 0 .5.498h1.5v-7.006h2v7.006h1.5a.5.5 0 0 0 .5-.498v-6.508h2v6.508a2.496 2.496 0 0 1-2.5 2.492h-5c-1.38 0-2.5-1.116-2.5-2.492z" />
+          </svg>
+        </button>
+        <button
+          title="Duplicate"
+          onClick={() => {
+            handleDuplicate();
+          }}
+          className="item-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 14 14"
+            height={32}
+            width={32}
+            strokeWidth={1}>
+            <g>
+              <rect
+                x={3}
+                y={3}
+                width="10.5"
+                height="10.5"
+                rx={1}
+                transform="translate(16.5 16.5) rotate(180)"
+                fill="none"
+                stroke="#000000"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M.5,10.5v-9a1,1,0,0,1,1-1h9"
+                fill="none"
+                stroke="#000000"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+          </svg>
+        </button>
+      </div>
       <div className="item-wrapper">
         <select
           onChange={(e) => handleOnChange(e)}
@@ -349,59 +401,6 @@ export default function ItemCopy(props) {
               );
             })}
         </select>
-
-        <div className="item-buttons">
-          <button
-            title="Delete"
-            tabindex="-1"
-            onClick={async () => {
-              resetJsonResult();
-              handleDeleteItem(id);
-              await sleep(100);
-              const json = generateJSONSchema();
-              setJsonResult(json);
-            }}
-            className="item-delete item-button">
-            <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true">
-              <path d="M8 3.994c0-1.101.895-1.994 2-1.994s2 .893 2 1.994h4c.552 0 1 .446 1 .997a1 1 0 0 1-1 .997h-12c-.552 0-1-.447-1-.997s.448-.997 1-.997h4zm-3 10.514v-6.508h2v6.508a.5.5 0 0 0 .5.498h1.5v-7.006h2v7.006h1.5a.5.5 0 0 0 .5-.498v-6.508h2v6.508a2.496 2.496 0 0 1-2.5 2.492h-5c-1.38 0-2.5-1.116-2.5-2.492z" />
-            </svg>
-          </button>
-          <button
-            title="Duplicate"
-            onClick={() => {
-              handleDuplicate();
-            }}
-            className="item-button">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 14 14"
-              height={32}
-              width={32}
-              strokeWidth={1}>
-              <g>
-                <rect
-                  x={3}
-                  y={3}
-                  width="10.5"
-                  height="10.5"
-                  rx={1}
-                  transform="translate(16.5 16.5) rotate(180)"
-                  fill="none"
-                  stroke="#000000"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M.5,10.5v-9a1,1,0,0,1,1-1h9"
-                  fill="none"
-                  stroke="#000000"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-            </svg>
-          </button>
-        </div>
       </div>
       <div className="item-content">
         {renderElement(

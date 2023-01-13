@@ -746,10 +746,7 @@ All liquid variables generated with this app are between comments:
 
 {% comment %}EZFY Variables Liquid [end]{% endcomment %}
 */
-export function mergeEzfyVariablesToCode(
-  code,
-  include = ["liquid", "css", "js"],
-) {
+export function mergeEzfyVariablesToCode(code) {
   if (!code) {
     throw new Error(`No "code" or "liquidVariables" parameters found.`);
   }
@@ -757,6 +754,9 @@ export function mergeEzfyVariablesToCode(
   let variables = "";
   const items = useStore.getState().items;
   const settings = useStore.getState().settings;
+  const include = settings.includeVariables;
+
+  debugger;
 
   if (include.includes("liquid")) {
     const liquid = convertToLiquidVariables(items, settings.variablesOrder);

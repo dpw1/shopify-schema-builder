@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useStatePersist as useStickyState } from "use-state-persist";
 import useStore from "./../store/store";
 import {
@@ -17,18 +17,59 @@ import "./Settings.scss";
 export default function Settings() {
   const settings = useStore((state) => state.settings);
   const updateSettings = useStore((state) => state.updateSettings);
+  const setSetting = useStore((state) => state.setSetting);
   const [variablesOrder, setVariablesOrder] = useState(
     settings.variablesOrder || "default",
   );
   const [checked, setChecked] = useState(false);
   const handleChange = useCallback((newChecked) => setChecked(newChecked), []);
 
+  const [includeVariablesLiquid, setIncludeVariablesLiquid] = useStickyState(
+    "@includeVariablesLiquid",
+    true,
+  );
+  const [includeVariablesCSS, setIncludeVariablesCSS] = useStickyState(
+    "@includeVariablesCSS",
+    true,
+  );
+  const [includeVariablesJS, setIncludeVariablesJS] = useStickyState(
+    "@includeVariablesJS",
+    true,
+  );
+
   const handleVariablesOrderChange = (newValue) => {
     setVariablesOrder(newValue);
-    updateSettings({
+    setSetting({
       variablesOrder: newValue,
     });
   };
+
+  useEffect(() => {
+    var variables = "";
+
+    console.log("variables order", settings.variablesOrder);
+
+    if (includeVariablesLiquid) {
+      variables += "liquid|";
+    }
+
+    if (includeVariablesCSS) {
+      variables += "css|";
+    }
+
+    if (includeVariablesJS) {
+      variables += "js|";
+    }
+
+    variables = variables.split("|").filter((e) => e !== "");
+
+    console.log(variables);
+    setSetting({
+      includeVariables: variables,
+    });
+  }, [includeVariablesLiquid, includeVariablesCSS, includeVariablesJS]);
+
+  const handleIncludeVariablesChange = () => {};
 
   return (
     <div className="Settings">
@@ -82,23 +123,24 @@ export default function Settings() {
             <Stack vertical>
               <Checkbox
                 label="Liquid"
-                checked={true}
+                checked={includeVariablesLiquid}
                 onChange={() => {
-                  return alert();
+                  const value = !includeVariablesLiquid;
+                  setIncludeVariablesLiquid(value);
                 }}
               />
               <Checkbox
                 label="CSS"
-                checked={true}
+                checked={includeVariablesCSS}
                 onChange={() => {
-                  return alert();
+                  setIncludeVariablesCSS(!includeVariablesCSS);
                 }}
               />
               <Checkbox
                 label="Javascript"
-                checked={true}
+                checked={includeVariablesJS}
                 onChange={() => {
-                  return alert();
+                  setIncludeVariablesJS(!includeVariablesJS);
                 }}
               />
             </Stack>

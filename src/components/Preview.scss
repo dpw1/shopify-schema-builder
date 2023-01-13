@@ -5,6 +5,12 @@
   margin-right: 50px;
   background-color: #fff;
 
+  .Polaris-Select {
+    width: 110px;
+    margin-right: 10px;
+    margin-left: 13px;
+  }
+
   .Preview-top {
     display: flex;
     align-items: center;
@@ -103,9 +109,9 @@
   }
 
   .Preview-edit {
-    position: absolute;
-    top: 0px;
-    right: 0;
+    // position: absolute;
+    // top: 0px;
+    // right: 0;
 
     svg {
       transition: all var(--ezfy-transition-normal);
@@ -114,10 +120,17 @@
     }
   }
 
-  .Preview-handle {
+  .Preview-item-buttons {
+    display: flex;
     position: absolute;
     top: 0;
-    right: 35px;
+    right: 0;
+  }
+
+  .Preview-handle {
+    // position: absolute;
+    // top: 0;
+    // right: 35px;
 
     cursor: move;
     cursor: -webkit-grab;
