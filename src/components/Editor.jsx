@@ -17,6 +17,7 @@ export default function Editor(props) {
   const removeItem = useStore((state) => state.removeItem);
 
   const handleDeleteItem = (id) => {
+    setIsEditing(false);
     removeItem(id);
   };
 
@@ -60,7 +61,11 @@ export default function Editor(props) {
             }
           }, 10);
         }}>
-        {isEditing ? <HideMinor /> : <EditMajor />}
+        {isEditing === true || isEditing === "true" ? (
+          <HideMinor />
+        ) : (
+          <EditMajor />
+        )}
       </button>
       {isEditing && (
         <div className={`Editor-panel  Editor-panel--${data.__id}`}>

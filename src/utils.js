@@ -756,8 +756,6 @@ export function mergeEzfyVariablesToCode(code) {
   const settings = useStore.getState().settings;
   const include = settings.includeVariables;
 
-  debugger;
-
   if (include.includes("liquid")) {
     const liquid = convertToLiquidVariables(items, settings.variablesOrder);
 

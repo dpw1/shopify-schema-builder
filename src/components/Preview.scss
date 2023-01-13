@@ -35,7 +35,7 @@
   }
 
   .Preview-sortable {
-    max-height: 90vh;
+    height: 100vh;
     overflow-y: scroll;
     padding-bottom: 40px;
     padding-top: 20px;
@@ -155,7 +155,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 121px);
   }
 
   .Preview-content {

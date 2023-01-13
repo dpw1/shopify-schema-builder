@@ -133,8 +133,6 @@ const useStore = create((set, get) => ({
       return;
     }
 
-    console.log("my setting", setting);
-
     var settings = get().settings;
 
     if (!settings.hasOwnProperty(Object.keys(setting))) {
@@ -142,9 +140,6 @@ const useStore = create((set, get) => ({
     }
 
     settings[Object.keys(setting)] = Object.values(setting)[0];
-
-    console.log("settings", settings);
-    debugger;
 
     set((_) => {
       setLocalStorage("settings", settings);
@@ -164,8 +159,6 @@ const useStore = create((set, get) => ({
       ..._settings,
       ...updated,
     };
-
-    debugger;
 
     set((_) => {
       setLocalStorage("settings", settings);

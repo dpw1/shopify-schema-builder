@@ -25,7 +25,13 @@ function App() {
               <Preview />
               {/* <Creator /> */}
 
-              <div style={{}}>
+              <div
+                className="Code"
+                style={{
+                  paddingBottom: 40,
+                  paddingRight: 40,
+                  overflowY: "scroll",
+                }}>
                 <div className="App-intro">
                   {" "}
                   <Text variant="heading4xl" as="h1">

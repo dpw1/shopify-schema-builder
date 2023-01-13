@@ -295,6 +295,11 @@
     display: flex;
     align-items: flex-start;
   }
+
+  .App-wrapper > * {
+    max-height: calc(100vh - 56px);
+  }
+
   .container {
     // max-width: 1200px;
     margin: 0 auto;
