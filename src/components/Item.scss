@@ -35,6 +35,7 @@
 
   .item-buttons {
     display: flex;
+    justify-content: flex-end;
   }
 
   .item-button + .item-button {

@@ -32,7 +32,6 @@
 ## DONE
 
 - Fix page height (should be 100vh)
-
 - Variables order not working after duplicating [x]
 - Copy updated code [x]
   - New ezfy schema must replace the imported code's schema [x]
