@@ -123,7 +123,14 @@ export const focusDropdown = (delay = 50) => {
   }, delay);
 };
 
-/* This function converts a DOM item to pretty, Shopify-section-friendly JSON.  */
+/* This function converts a DOM item to pretty, Shopify-section-friendly JSON. 
+
+The one like:
+
+{"id": "number", "label": "Quantity" ... etc}
+
+It will add an additional __id for local reference
+*/
 export const transformDOMIntoJSON = (each) => {
   let _json;
 

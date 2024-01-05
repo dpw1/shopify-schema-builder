@@ -21,6 +21,7 @@ import {
   createEmptyCopyOfObject,
   generateJSONSchema,
   schema,
+  sleep,
 } from "../utils";
 import Editor from "./Editor";
 import Header from "./Header";
@@ -678,6 +679,13 @@ export default function Preview() {
   const addItem = useStore((state) => state.addItem);
   const setItems = useStore((state) => state.setItems);
 
+  const selectedItems = useStore((state) => state.selectedItems);
+  const addSelectedItem = useStore((state) => state.addSelectedItem);
+  const removeSelectedItem = useStore((state) => state.removeSelectedItem);
+  const removeAllSelectedItems = useStore(
+    (state) => state.removeAllSelectedItems,
+  );
+
   const items = useStore((state) => state.items);
   const [type, setType] = useStickyState("@type", "text");
   const [mustUpdate, setMustUpdate] = useStickyState("@mustUpdate", false);
@@ -693,6 +701,9 @@ export default function Preview() {
       }, 100);
     }
   }, [mustUpdate]);
+  useEffect(() => {
+    console.log("selected", selectedItems);
+  }, [selectedItems]);
 
   function addItemToList(_item = null) {
     const __id = short.generate();
@@ -727,6 +738,26 @@ export default function Preview() {
       multiDrag: true,
       selectedClass: "sortable-selected",
       avoidImplicitDeselect: false,
+
+      onSelect: (e, i) => {
+        const id = e.item.getAttribute("data-item-id");
+        addSelectedItem(id);
+        console.log("adding!");
+      },
+
+      onDeselect: async (e) => {
+        await sleep(25);
+        const $item = document.querySelector(`.sortable-selected`);
+
+        // debugger;
+        if ($item) {
+          const id = e.item.getAttribute("data-item-id");
+          removeSelectedItem(id);
+          console.log("removing!");
+          return;
+        }
+        removeAllSelectedItems();
+      },
 
       onEnd: function (e) {
         const _items = useStore.getState().items;

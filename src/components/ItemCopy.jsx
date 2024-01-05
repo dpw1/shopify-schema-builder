@@ -320,16 +320,39 @@ export default function ItemCopy(props) {
 
   /** Responsible to duplicate items. */
   const handleDuplicate = async () => {
+    debugger;
+
+    const $selected = document.querySelectorAll(`.sortable-selected`);
+
+    if ($selected) {
+      for (var each of $selected) {
+        const id = each.getAttribute("data-item-id");
+
+        let _json = items.filter((e) => e.__id === id)[0];
+        _json.__id = short.generate();
+        const index = parseInt(itemCount) - 1;
+        console.log(items, index, _json);
+
+        const updatedItems = addToIndex(items, index, _json);
+        updateItems(updatedItems);
+      }
+
+      return;
+    }
+
     /* "$this" is modified once "setItems" is updated. */
-    let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
+    // let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
 
-    let _json = transformDOMIntoJSON($this, true);
-    _json.__id = short.generate();
-    const index = parseInt(itemCount) - 1;
+    // debugger;
+    // let _json = transformDOMIntoJSON($this, true);
+    // _json.__id = short.generate();
+    // const index = parseInt(itemCount) - 1;
 
-    const updatedItems = addToIndex(items, index, _json);
+    // console.log(items, index, _json);
+    // debugger;
+    // const updatedItems = addToIndex(items, index, _json);
 
-    updateItems(updatedItems);
+    // updateItems(updatedItems);
   };
 
   return (
@@ -357,7 +380,7 @@ export default function ItemCopy(props) {
           onClick={() => {
             handleDuplicate();
           }}
-          className="item-button">
+          className="item-duplicate item-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 14 14"

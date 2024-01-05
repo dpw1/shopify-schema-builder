@@ -27,7 +27,7 @@ import {
 } from "./../utils";
 
 import ConfirmDialog from "./ConfirmDialog";
-import Item from "./Item";
+// import Item from "./Item";
 import useStore from "../store/store";
 
 const SortableItem = sortableElement(({ value }) => (
@@ -235,7 +235,7 @@ export default function Creator() {
           .map((props, i) => {
             return (
               <React.Fragment>
-                <SortableItem
+                {/* <SortableItem
                   key={`item-${short.generate()}`}
                   index={i}
                   value={
@@ -257,7 +257,7 @@ export default function Creator() {
                       name={`name-${i}`}
                       sortableHandle={sortableHandle}></Item>
                   }
-                />
+                /> */}
               </React.Fragment>
             );
           })}

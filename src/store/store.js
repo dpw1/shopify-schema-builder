@@ -10,7 +10,7 @@ const setLocalStorage = (key, value) =>
   window.localStorage.setItem(key, JSON.stringify(value));
 
 const useStore = create((set, get) => ({
-  /* All the items from the section "Item.jsx".
+  /* All the items from the section "ItemCopy.jsx".
   This is the "ugly" JSON with __id.
   ======================================= */
   items: getLocalStorage("items") ? JSON.parse(getLocalStorage("items")) : [],
@@ -101,6 +101,43 @@ const useStore = create((set, get) => ({
     });
   },
 
+  /* Selected items (for cloning and mass delete)
+   ======================================= */
+  selectedItems: getLocalStorage("selectedItems")
+    ? JSON.parse(getLocalStorage("selectedItems"))
+    : [],
+  addSelectedItem: (item) => {
+    const items = get().selectedItems;
+
+    const updated = [...items, item];
+
+    set((_) => {
+      setLocalStorage("selectedItems", JSON.stringify(updated));
+      return {
+        selectedItems: updated,
+      };
+    });
+  },
+  removeSelectedItem: (__id) => {
+    const items = get().selectedItems;
+
+    const updated = items.filter((e) => e !== __id);
+
+    set((_) => {
+      setLocalStorage("selectedItems", JSON.stringify(updated));
+      return {
+        selectedItems: updated,
+      };
+    });
+  },
+  removeAllSelectedItems: () => {
+    set((_) => {
+      setLocalStorage("selectedItems", JSON.stringify([]));
+      return {
+        selectedItems: [],
+      };
+    });
+  },
   /* Global settings for the app 
    ======================================= */
   settings: getLocalStorage("settings") || defaultSettings,

@@ -3,7 +3,7 @@ import { useStatePersist as useStickyState } from "use-state-persist";
 import useStore from "../store/store";
 
 import "./Editor.scss";
-import Item from "./Item";
+
 import ItemCopy from "./ItemCopy";
 import { EditMajor, HideMinor } from "@shopify/polaris-icons";
 
