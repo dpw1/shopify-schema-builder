@@ -7,8 +7,10 @@ import Item from "./Item";
 import ItemCopy from "./ItemCopy";
 import { EditMajor, HideMinor } from "@shopify/polaris-icons";
 
-export default function Editor(props) {
-  const data = props.data;
+export default function Editor({ props: _props }) {
+  const props = JSON.parse(_props);
+  const data = JSON.parse(_props).props;
+
   const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, false);
   const items = useStore((state) => state.items);
 
@@ -46,41 +48,19 @@ export default function Editor(props) {
 
   return (
     <div className="Editor">
-      <button
-        data-is-editing={isEditing}
-        data-is-editing-id={data.__id}
-        title="Edit"
-        className="Editor-edit Preview-edit Preview-icon-button"
-        onClick={() => {
-          setTimeout(() => {
-            setIsEditing(!isEditing);
-
-            if (!isEditing === true) {
-              //alert(`enable sortable for ${data.__id}`);
-            }
-          }, 10);
-        }}>
-        {isEditing ? <HideMinor /> : <EditMajor />}
-      </button>
-      {isEditing && (
-        <div className={`Editor-panel  Editor-panel--${data.__id}`}>
-          {/* {JSON.stringify(
-            Array.from(items).filter((e) => e.__id === data.__id),
-          )} */}
-
-          <ItemCopy
-            isEditing={isEditing}
-            handleDeleteItem={handleDeleteItem}
-            defaultValue={data.type}
-            id={data.__id}
-            type={data.type}
-            defaultOptions={{ ...data }}
-            itemCount={data.itemCount}
-            duplicatedSubOptions={data.options}
-            handleOnChange={handleOnChange}></ItemCopy>
-          <h1>{props.itemCount}</h1>
-        </div>
-      )}
+      <div className={`Editor-panel  Editor-panel--${data.__id}`}>
+        <ItemCopy
+          isEditing={isEditing}
+          handleDeleteItem={handleDeleteItem}
+          defaultValue={data.type}
+          id={data.__id}
+          type={data.type}
+          defaultOptions={{ ...data }}
+          itemCount={data.itemCount}
+          duplicatedSubOptions={data.options}
+          handleOnChange={handleOnChange}></ItemCopy>
+        <h1>{props.itemCount}</h1>
+      </div>
     </div>
   );
 }

@@ -148,6 +148,12 @@
     background-color: lightblue;
   }
 
+  [data-item-id] {
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.129);
+    }
+  }
+
   /* Icons [end] 
   ==================================== */
 

@@ -7,11 +7,17 @@ import Sidebar from "./components/Sidebar";
 import Section from "./components/Section";
 import Header from "./components/Header";
 
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
+
 import { initialState } from "./utils";
 import Preview from "./components/Preview";
 import "./assets/Polaris.scss";
 import "./components/PopupConfirm.scss";
-import { AppProvider, Text } from "@shopify/polaris";
+import { AppProvider, Text, Tooltip } from "@shopify/polaris";
+import TextExample from "./components/TextExample";
+import RenderTextPreview from "./components/renders/RenderTextPreview";
+import Editor from "./components/Editor";
 
 function App() {
   return (
@@ -59,6 +65,15 @@ function App() {
           </AppProvider>
         </div>
       </div>
+      <ReactTooltip
+        clickable={true}
+        anchorSelect=".Preview-item"
+        place={"right"}
+        positionStrategy="fixed"
+        delayHide={1500}
+        render={({ content, activeAnchor }) => (
+          <Editor props={content}></Editor>
+        )}></ReactTooltip>
     </div>
   );
 }

@@ -9,6 +9,9 @@
 
 ## TODO
 
+- "range" default is not working
+- "range" unit is blank
+- can't add negative number to "select" min field
 - Focus on newly duplicated field
 - Bulk duplicate/delete
 - Detect duplicated ids

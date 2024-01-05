@@ -196,6 +196,17 @@ function FormItem(props) {
             <input
               value={value}
               onChange={(e) => {
+                const $this = e.target;
+                const $parent = $this.closest(`.FormItem-attr`);
+                const $id = $parent.querySelector(`[data-label-name='id']`);
+
+                if ($id) {
+                  if (/\s/.test(e.target.value)) {
+                    e.preventDefault();
+                    return;
+                  }
+                }
+
                 handleInputChange(e);
               }}
               name={`${itemId}_${e}`}

@@ -1,0 +1,6 @@
+.Editor {
+  display: block;
+}
+.Editor .Editor-panel {
+  position: relative;
+}

@@ -26,6 +26,8 @@ import Editor from "./Editor";
 import Header from "./Header";
 import SidebarOptions from "./SidebarOptions";
 
+import { Tooltip as ReactTooltip } from "react-tooltip";
+
 const RenderTextPreview = (data) => {
   return (
     <>
@@ -764,6 +766,27 @@ export default function Preview() {
     });
   }, []);
 
+  function Tooltip(props) {
+    const tooltipId = `${props.content || ""}${props.title || ""}${
+      props.theme || ""
+    }${props.place || ""}`;
+    return (
+      <div>
+        <ReactTooltip
+          id={tooltipId}
+          type={props.theme}
+          effect="solid"
+          place={props.place}>
+          {props.title && <p className="title">{props.title}</p>}
+          <p className="content">{props.content}</p>
+        </ReactTooltip>
+        <span data-tip data-for={tooltipId}>
+          {props.children}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <>
       <SidebarOptions></SidebarOptions>
@@ -792,11 +815,14 @@ export default function Preview() {
                     ...e,
                     itemCount: index,
                   };
+
+                  const content = { index, type: e.type, props };
                   return (
                     <div
                       key={e.__id}
                       data-item-id={e.__id}
                       data-item-count={index}
+                      data-tooltip-content={JSON.stringify(content)}
                       className={`Preview-item Preview-item--${e.type}`}>
                       {(() => {
                         if (e.type === "text") {
@@ -842,25 +868,9 @@ export default function Preview() {
                         }
                       })()}
 
-                      <Editor data={props}></Editor>
+                      {/* <Editor data={props}></Editor> */}
 
                       <div className="Preview-item-buttons">
-                        <button
-                          title="Edit"
-                          className="Preview-edit Preview-edit Preview-icon-button"
-                          onClick={() => {
-                            setTimeout(() => {
-                              const $button = document.querySelector(
-                                ` [data-is-editing-id='${props.__id}']`,
-                              );
-
-                              $button.click();
-
-                              setIsEditing(!isEditing);
-                            }, 10);
-                          }}>
-                          {isEditing ? <HideMinor /> : <EditMajor />}
-                        </button>
                         <button className="Preview-handle Preview-icon-button">
                           <DragHandleMinor></DragHandleMinor>
                         </button>
