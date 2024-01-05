@@ -340,7 +340,9 @@ export default function ItemCopy(props) {
           tabindex="-1"
           onClick={async () => {
             resetJsonResult();
+
             handleDeleteItem(id);
+
             await sleep(100);
             const json = generateJSONSchema();
             setJsonResult(json);

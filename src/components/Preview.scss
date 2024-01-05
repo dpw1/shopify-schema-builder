@@ -44,7 +44,6 @@
   }
 
   .Preview-sortable > *:nth-child(1) {
-    border-top: unset;
   }
 
   .Preview-item {
@@ -128,10 +127,6 @@
   }
 
   .Preview-handle {
-    // position: absolute;
-    // top: 0;
-    // right: 35px;
-
     cursor: move;
     cursor: -webkit-grab;
     cursor: -moz-grab;
@@ -149,8 +144,9 @@
   }
 
   [data-item-id] {
+    border: 2px solid transparent;
     &:hover {
-      background-color: rgba(128, 128, 128, 0.129);
+      border-color: rgba(128, 128, 128, 0.129);
     }
   }
 

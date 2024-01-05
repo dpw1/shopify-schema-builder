@@ -44,9 +44,6 @@
   padding-left: 10px;
   padding-right: 10px;
 }
-.Preview .Preview-sortable > *:nth-child(1) {
-  border-top: unset;
-}
 .Preview .Preview-item {
   position: relative;
   padding: 5px;
@@ -115,8 +112,11 @@
 .Preview .sortable-selected {
   background-color: lightblue;
 }
+.Preview [data-item-id] {
+  border: 2px solid transparent;
+}
 .Preview [data-item-id]:hover {
-  background-color: rgba(128, 128, 128, 0.129);
+  border-color: rgba(128, 128, 128, 0.129);
 }
 .Preview .Preview-wrapper {
   position: relative;

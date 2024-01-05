@@ -248,7 +248,6 @@ export const transformDOMIntoJSON = (each) => {
 /* Convert the ugly JSON from the store.js to "Shopify section ready" schema */
 export const generateJSONSchema = () => {
   const $items = window.document.querySelectorAll(`.item`);
-
   let finalJSON = [];
 
   if (!$items) {
@@ -263,11 +262,6 @@ export const generateJSONSchema = () => {
   const result = JSON.stringify(finalJSON, null, 2);
 
   return result;
-
-  //   const items = JSON.parse(JSON.parse(localStorage.getItem(`items`)));
-  //   var result = JSON.stringify(items, null, 2);
-
-  //   return result;
 };
 
 export function createEmptyCopyOfObject(source, isArray) {

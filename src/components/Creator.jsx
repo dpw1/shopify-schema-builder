@@ -136,6 +136,8 @@ export default function Creator() {
   };
 
   const handleDeleteItem = (id) => {
+    debugger;
+
     const updated = [...items].filter((e) => e.id !== id);
 
     updateItems(updated);

@@ -172,8 +172,14 @@ function FormItem(props) {
   return (
     <fieldset className={`FormItem FormItem--${type}`}>
       {options.map((e, i) => {
-        const _value = items.filter((x) => x.__id === itemId)[0];
-        const value = _value[e];
+        let _value, value;
+
+        _value = items.filter((x) => x.__id === itemId)[0];
+
+        if (!_value) {
+          return;
+        }
+        value = _value[e];
 
         function renderInput(value, itemId, type) {
           if (type === "checkbox" && e === "default") {

@@ -38,13 +38,6 @@
     justify-content: flex-end;
   }
 
-  .item-button + .item-button {
-    margin-left: 15px;
-  }
-
-  select {
-  }
-
   &-button {
     font-size: 10px;
     max-width: 50px;
@@ -56,6 +49,7 @@
     transition-duration: var(--p-duration-150);
     transition-property: color, background-color;
     transition-timing-function: var(--p-ease);
+    margin-bottom: 10px;
 
     &:hover svg {
       fill: var(--p-icon-hovered);
