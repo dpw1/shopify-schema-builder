@@ -319,6 +319,7 @@ export default function ItemCopy(props) {
   const setItems = useStore((state) => state.setItems);
   const updateItems = useStore((state) => state.updateItems);
   const selectedItems = useStore((state) => state.selectedItems);
+  const updateItem = useStore((state) => state.updateItem);
 
   /** Responsible to duplicate items. */
   const handleDuplicate = async (_index) => {
@@ -365,7 +366,7 @@ export default function ItemCopy(props) {
     _json.__id = short.generate();
     _json.id = _json.id + "_copy";
     _json.label = _json.label + " copy";
-    const index = parseInt(itemCount) - 1;
+    const index = parseInt(itemCount);
 
     console.log(items, index, _json);
     const updatedItems = addToIndex(items, index, _json);

@@ -17,9 +17,11 @@ Sortable.mount(new MultiDrag());
 import useStore from "../store/store";
 import short from "short-uuid";
 import {
+  _waitForElement,
   convertStringToBoolean,
   createEmptyCopyOfObject,
   generateJSONSchema,
+  handleInputChange,
   schema,
   sleep,
 } from "../utils";
@@ -347,20 +349,54 @@ const RenderRadioPreview = (data) => {
 };
 
 const RenderRangePreview = (data) => {
-  // debugger;
+  const updateItem = useStore((state) => state.updateItem);
+
   console.log(data);
   return (
     <>
       <div className="Preview-ranger">
         <RangeSlider
+          id={`${data.__id}_rangeslider_`}
+          data-id-test="x1"
           label={data.label || " "}
           min={data.min}
           max={data.max}
           value={data.default}
           step={data.step}
           helpText={data.info}
-          onChange={() => {
-            console.log("heo");
+          onChange={async (value, element) => {
+            // console.log("heo", );
+
+            // let $input = null;
+            // $input = document.querySelector(`[for="${element}"]`);
+
+            // if (!$input) {
+            //   return;
+            // }
+
+            // const $parent = document.querySelector(`[data-item-id]`);
+            const id = data.__id;
+
+            console.log("changing, id: ", id);
+
+            const $item = document.querySelector(`.item[data-item-id="${id}"]`);
+
+            let $input = document.querySelector(`input[name='${id}_default']`);
+
+            if (!$input) {
+              debugger;
+              console.error("No $Input found");
+              return;
+            }
+
+            $input.value = value;
+            $input.dispatchEvent(
+              new Event("change", {
+                bubbles: true,
+              }),
+            );
+
+            handleInputChange($item, updateItem);
           }}
           output
           suffix={

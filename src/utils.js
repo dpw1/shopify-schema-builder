@@ -8,19 +8,56 @@ export const initialState = {
   sectionName: "Test",
   count: 0,
 };
+
+export function _waitForElement(selector, delay = 50, tries = 100) {
+  const element = document.querySelector(selector);
+
+  if (!window[`__${selector}`]) {
+    window[`__${selector}`] = 0;
+    window[`__${selector}__delay`] = delay;
+    window[`__${selector}__tries`] = tries;
+  }
+
+  function _search() {
+    return new Promise((resolve) => {
+      window[`__${selector}`]++;
+      setTimeout(resolve, window[`__${selector}__delay`]);
+    });
+  }
+
+  if (element === null) {
+    if (window[`__${selector}`] >= window[`__${selector}__tries`]) {
+      window[`__${selector}`] = 0;
+      return Promise.resolve(null);
+    }
+
+    return _search().then(() => _waitForElement(selector));
+  } else {
+    return Promise.resolve(element);
+  }
+}
+
 /* Detects input changes (typing) on a <input> and update the JSON store's accordingly.
   
-  Requires an event object 
+  
+$item = document.querySelector(`.item`) OR an event element from the listener
+updateItem = store.js function to update the JSON
   
   */
-export function handleInputChange(e, updateItem) {
-  let $item;
+export function handleInputChange(_$item, updateItem) {
+  let $item = null;
 
-  try {
-    $item = e.target.closest(`.item`);
-  } catch (err) {
-    const $aux = document.querySelector(`#${e}`);
-    $item = $aux.closest(`.item`);
+  if (_$item instanceof Node && _$item.classList.contains("item")) {
+    $item = _$item;
+  }
+
+  if (!$item) {
+    try {
+      $item = _$item.target.closest(`.item`);
+    } catch (err) {
+      const $aux = document.querySelector(`#${_$item}`);
+      $item = $aux.closest(`.item`);
+    }
   }
 
   const json = transformDOMIntoJSON($item);

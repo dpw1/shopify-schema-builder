@@ -74,7 +74,7 @@ function App() {
         positionStrategy="fixed"
         offset={10}
         delayHide={0}
-        openOnClick={true}
+        openOnClick={false}
         render={({ content, activeAnchor }) => (
           <Editor props={content}></Editor>
         )}></ReactTooltip>
