@@ -364,8 +364,8 @@ export default function ItemCopy(props) {
 
     let _json = transformDOMIntoJSON($this, true);
     _json.__id = short.generate();
-    _json.id = _json.id + "_copy";
-    _json.label = _json.label + " copy";
+    // _json.id = _json.id + "_copy";
+    // _json.label = _json.label + " copy";
     const index = parseInt(itemCount);
 
     console.log(items, index, _json);

@@ -30,6 +30,8 @@ function FormItem(props) {
 
   const items = useStore((state) => state.items);
 
+  const [hasFocusedOnId, setHasFocusedOnId] = useState(false);
+
   const [totalSubOptions, setTotalSubOptions] = useState(
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
   );
@@ -104,26 +106,6 @@ function FormItem(props) {
 
     return allErrors;
   };
-
-  /* Detects input changes (typing) and update the JSON store's accordingly */
-  // const handleInputChange = (e) => {
-  //   let $item;
-
-  //   try {
-  //     $item = e.target.closest(`.item`);
-  //   } catch (err) {
-  //     const $aux = document.querySelector(`#${e}`);
-  //     $item = $aux.closest(`.item`);
-  //   }
-
-  //   const json = transformDOMIntoJSON($item);
-
-  //   console.log("updated json (formitem.js): ", json);
-
-  //   updateItem(json);
-
-  //   return;
-  // };
 
   const setDefaultValue = (labelName) => {
     if (defaultOptions[labelName]) {
@@ -205,19 +187,34 @@ function FormItem(props) {
           return (
             <input
               value={value}
-              onChange={(e) => {
-                const $this = e.target;
-                const $parent = $this.closest(`.FormItem-attr`);
-                const $id = $parent.querySelector(`[data-label-name='id']`);
-
-                if ($id) {
-                  if (/\s/.test(e.target.value)) {
-                    e.preventDefault();
+              onFocus={() => {
+                if (e === "id" && !hasFocusedOnId) {
+                  setHasFocusedOnId(true);
+                }
+              }}
+              onChange={(event) => {
+                if (e === "id") {
+                  if (/\s/.test(event.target.value)) {
+                    event.preventDefault();
                     return;
                   }
                 }
 
-                handleInputChange(e, updateItem);
+                if (e === "label" && hasFocusedOnId === false) {
+                  const $id = document.querySelector(
+                    `input[name='${itemId}_id']`,
+                  );
+
+                  $id.value = event.target.value
+                    .replace(/\s/g, "_")
+                    .replace(/[^a-zA-Z0-9-_]/g, "")
+                    .toLowerCase()
+                    .trim();
+
+                  console.log("event: ", event.target.value);
+                }
+
+                handleInputChange(event, updateItem);
               }}
               name={`${itemId}_${e}`}
               label={e}
@@ -294,7 +291,11 @@ function FormItem(props) {
                   return r;
                 }, [])
                 .map(function (rowContent, i) {
-                  return <div className="FormItem-suboption">{rowContent}</div>;
+                  return (
+                    <div key={i} className="FormItem-suboption">
+                      {rowContent}
+                    </div>
+                  );
                 });
             })}
           </div>
