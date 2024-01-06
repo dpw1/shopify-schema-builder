@@ -11,6 +11,7 @@ import {
   generateJSONSchema,
   setJsonResult,
   scrollToItem,
+  addObjectToIndex,
 } from "../utils";
 
 import short from "short-uuid";
@@ -225,7 +226,7 @@ Options = editable elements. (id, label, info, etc)
             "info",
             "default",
           ]}
-          type="richtext"
+          type="range"
           duplicatedOptions={duplicatedOptions}
           defaultOptions={{
             ...defaultOptions,
@@ -317,43 +318,71 @@ export default function ItemCopy(props) {
   const items = useStore((state) => state.items);
   const setItems = useStore((state) => state.setItems);
   const updateItems = useStore((state) => state.updateItems);
+  const selectedItems = useStore((state) => state.selectedItems);
 
   /** Responsible to duplicate items. */
-  const handleDuplicate = async () => {
-    debugger;
+  const handleDuplicate = async (_index) => {
+    if (selectedItems.length >= 2) {
+      let updatedItems = items;
+      let copiedItems = [];
+      let result = [];
 
-    const $selected = document.querySelectorAll(`.sortable-selected`);
+      for (var id of selectedItems) {
+        let _json = JSON.parse(
+          JSON.stringify(items.filter((e) => e.__id === id)[0]),
+        );
 
-    if ($selected) {
-      for (var each of $selected) {
-        const id = each.getAttribute("data-item-id");
-
-        let _json = items.filter((e) => e.__id === id)[0];
         _json.__id = short.generate();
-        const index = parseInt(itemCount) - 1;
-        console.log(items, index, _json);
+        _json.label = _json.label + " copy";
 
-        const updatedItems = addToIndex(items, index, _json);
-        updateItems(updatedItems);
+        // const index = parseInt(itemCount) - 1;
+
+        // updatedItems = JSON.parse(
+        //   JSON.stringify(addToIndex(updatedItems, 1, _json)),
+        // );
+
+        copiedItems.push(_json);
+
+        await sleep(10);
       }
+
+      result = addObjectToIndex(items, _index, copiedItems).map((e, i) => {
+        return {
+          ...e,
+          order: i + 1,
+        };
+      });
+
+      setItems(result);
 
       return;
     }
 
     /* "$this" is modified once "setItems" is updated. */
-    // let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
+    let $this = document.querySelector(`.item[data-item-count="${itemCount}"]`);
 
-    // debugger;
-    // let _json = transformDOMIntoJSON($this, true);
-    // _json.__id = short.generate();
-    // const index = parseInt(itemCount) - 1;
+    let _json = transformDOMIntoJSON($this, true);
+    _json.__id = short.generate();
+    _json.id = _json.id + "_copy";
+    _json.label = _json.label + " copy";
+    const index = parseInt(itemCount) - 1;
 
-    // console.log(items, index, _json);
-    // debugger;
-    // const updatedItems = addToIndex(items, index, _json);
+    console.log(items, index, _json);
+    const updatedItems = addToIndex(items, index, _json);
 
-    // updateItems(updatedItems);
+    updateItems(updatedItems);
+    // focusOnTooltipAfterClone();
   };
+
+  function focusOnTooltipAfterClone() {
+    const $id = document.querySelector(`.FormItem-attr--id input`);
+
+    if (!$id) {
+      alert();
+    }
+
+    $id.focus();
+  }
 
   return (
     <li data-item-id={id} data-item-count={itemCount} className={`item`}>
@@ -377,8 +406,13 @@ export default function ItemCopy(props) {
         </button>
         <button
           title="Duplicate"
-          onClick={() => {
-            handleDuplicate();
+          onClick={(e) => {
+            console.log(e);
+            const $this = e.target;
+            const $parent = $this.closest(`[data-item-count]`);
+            const index = parseInt($parent.getAttribute("data-item-count"));
+
+            handleDuplicate(index);
           }}
           className="item-duplicate item-button">
           <svg

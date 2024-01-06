@@ -7,7 +7,11 @@ import "./FormItem.scss";
 import Sortable from "sortablejs";
 import { Checkbox } from "@shopify/polaris";
 
-import { convertStringToBoolean, transformDOMIntoJSON } from "../utils";
+import {
+  convertStringToBoolean,
+  handleInputChange,
+  transformDOMIntoJSON,
+} from "../utils";
 import useStore from "../store/store";
 import { generateJSONSchema } from "./../utils";
 
@@ -102,24 +106,24 @@ function FormItem(props) {
   };
 
   /* Detects input changes (typing) and update the JSON store's accordingly */
-  const handleInputChange = (e) => {
-    let $item;
+  // const handleInputChange = (e) => {
+  //   let $item;
 
-    try {
-      $item = e.target.closest(`.item`);
-    } catch (err) {
-      const $aux = document.querySelector(`#${e}`);
-      $item = $aux.closest(`.item`);
-    }
+  //   try {
+  //     $item = e.target.closest(`.item`);
+  //   } catch (err) {
+  //     const $aux = document.querySelector(`#${e}`);
+  //     $item = $aux.closest(`.item`);
+  //   }
 
-    const json = transformDOMIntoJSON($item);
+  //   const json = transformDOMIntoJSON($item);
 
-    console.log("updated json (formitem.js): ", json);
+  //   console.log("updated json (formitem.js): ", json);
 
-    updateItem(json);
+  //   updateItem(json);
 
-    return;
-  };
+  //   return;
+  // };
 
   const setDefaultValue = (labelName) => {
     if (defaultOptions[labelName]) {
@@ -170,7 +174,7 @@ function FormItem(props) {
   }
 
   return (
-    <fieldset className={`FormItem FormItem--${type}`}>
+    <fieldset key={itemId} className={`FormItem FormItem--${type}`}>
       {options.map((e, i) => {
         let _value, value;
 
@@ -188,7 +192,7 @@ function FormItem(props) {
                 type="checkbox"
                 defaultChecked={convertStringToBoolean(value)}
                 onChange={(e) => {
-                  handleInputChange(e);
+                  handleInputChange(e, updateItem);
                 }}
                 name={`${itemId}_${e}`}
                 label={e}
@@ -213,7 +217,7 @@ function FormItem(props) {
                   }
                 }
 
-                handleInputChange(e);
+                handleInputChange(e, updateItem);
               }}
               name={`${itemId}_${e}`}
               label={e}
@@ -261,7 +265,9 @@ function FormItem(props) {
 
                         <input
                           value={values[`${itemIdSuboption}_${each}`]}
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            handleInputChange(e, updateItem);
+                          }}
                           name={`${itemIdSuboption}_${each}`}
                           label={each}
                           defaultValue={

@@ -347,16 +347,21 @@ const RenderRadioPreview = (data) => {
 };
 
 const RenderRangePreview = (data) => {
+  // debugger;
+  console.log(data);
   return (
     <>
       <div className="Preview-ranger">
         <RangeSlider
           label={data.label || " "}
-          min={data.min || 0}
-          max={data.max || 0}
-          defaultValue={data.default || 0}
-          step={data.step || 0}
+          min={data.min}
+          max={data.max}
+          value={data.default}
+          step={data.step}
           helpText={data.info}
+          onChange={() => {
+            console.log("heo");
+          }}
           output
           suffix={
             <div className="Preview-info Preview-ranger-unit">
@@ -701,9 +706,6 @@ export default function Preview() {
       }, 100);
     }
   }, [mustUpdate]);
-  useEffect(() => {
-    console.log("selected", selectedItems);
-  }, [selectedItems]);
 
   function addItemToList(_item = null) {
     const __id = short.generate();

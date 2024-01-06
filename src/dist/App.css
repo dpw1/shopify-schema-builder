@@ -312,6 +312,7 @@
   opacity: 1;
   box-shadow: rgba(99, 99, 99, 0.7) 0px 2px 8px 0px;
   background: white;
+  z-index: 99;
 }
 
 /* CSS Reset */

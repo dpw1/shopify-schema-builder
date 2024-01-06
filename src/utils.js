@@ -8,6 +8,29 @@ export const initialState = {
   sectionName: "Test",
   count: 0,
 };
+/* Detects input changes (typing) on a <input> and update the JSON store's accordingly.
+  
+  Requires an event object 
+  
+  */
+export function handleInputChange(e, updateItem) {
+  let $item;
+
+  try {
+    $item = e.target.closest(`.item`);
+  } catch (err) {
+    const $aux = document.querySelector(`#${e}`);
+    $item = $aux.closest(`.item`);
+  }
+
+  const json = transformDOMIntoJSON($item);
+
+  console.log("updated json (formitem.js): ", json);
+
+  updateItem(json);
+
+  return;
+}
 
 export const schema = [
   { id: "header" },
@@ -939,3 +962,7 @@ export function replaceTextBetween(_text, start, end, newText) {
 
   return result;
 }
+
+export const addObjectToIndex = (array, index, elementsToInsert) => {
+  return [...array.slice(0, index), ...elementsToInsert, ...array.slice(index)];
+};

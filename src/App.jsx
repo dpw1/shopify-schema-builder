@@ -1,3 +1,5 @@
+import React, { useState, useEffect, useRef } from "react";
+
 import logo from "./logo.svg";
 import "./App.scss";
 import URL from "./components/URL";
@@ -68,9 +70,11 @@ function App() {
       <ReactTooltip
         clickable={true}
         anchorSelect=".Preview-item"
-        place={"right"}
+        place={"right-start"}
         positionStrategy="fixed"
-        delayHide={1500}
+        offset={10}
+        delayHide={0}
+        openOnClick={true}
         render={({ content, activeAnchor }) => (
           <Editor props={content}></Editor>
         )}></ReactTooltip>

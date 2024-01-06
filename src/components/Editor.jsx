@@ -7,11 +7,16 @@ import "./Editor.scss";
 import ItemCopy from "./ItemCopy";
 import { EditMajor, HideMinor } from "@shopify/polaris-icons";
 
+window.isEventListenerAdded = false;
+
 export default function Editor({ props: _props }) {
   const props = JSON.parse(_props);
   const data = JSON.parse(_props).props;
 
+  const selectedItems = useStore((state) => state.selectedItems);
+
   const [isEditing, setIsEditing] = useStickyState(`@${data.__id}`, false);
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const items = useStore((state) => state.items);
 
   const updateItems = useStore((state) => state.updateItems);
@@ -42,9 +47,44 @@ export default function Editor({ props: _props }) {
     updateItems(updated);
   };
 
+  function duplicate() {
+    const $button = document.querySelector(
+      `.Editor [data-item-count] .item-duplicate`,
+    );
+
+    if (!$button) {
+      return;
+    }
+
+    console.log("duplicate: ", $button);
+
+    $button.click();
+  }
+
+  function addKeyListener() {
+    function handleKeyDown(event) {
+      if (event.ctrlKey && event.key === "d") {
+        event.preventDefault();
+        console.log("dup");
+        duplicate();
+      }
+    }
+
+    // Function to add the event listener
+    function addEventListenerOnce() {
+      if (!isEventListenerAdded) {
+        document.addEventListener("keydown", handleKeyDown);
+        isEventListenerAdded = true;
+      }
+    }
+
+    // Call the function to add the event listener
+    addEventListenerOnce();
+  }
+
   useEffect(() => {
-    // console.log("EDITOR.JSX -- items", items)
-  }, [items]);
+    addKeyListener();
+  }, []);
 
   return (
     <div className="Editor">
