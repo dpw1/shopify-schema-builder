@@ -381,7 +381,6 @@ const RenderRangePreview = (data) => {
             let $input = document.querySelector(`input[name='${id}_default']`);
 
             if (!$input) {
-              debugger;
               console.error("No $Input found");
               return;
             }
@@ -781,7 +780,6 @@ export default function Preview() {
         await sleep(25);
         const $item = document.querySelector(`.sortable-selected`);
 
-        // debugger;
         if ($item) {
           const id = e.item.getAttribute("data-item-id");
           removeSelectedItem(id);

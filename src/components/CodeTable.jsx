@@ -40,6 +40,7 @@ export default function CodeTable() {
   const removeItems = useStore((state) => state.removeItems);
   const settings = useStore((state) => state.settings);
   const addSection = useStore((state) => state.addSection);
+  const section = useStore((state) => state.section);
   const items = useStore((state) => state.items);
   const [removeSectionText, setRemoveSectionText] = useState(false);
 
@@ -131,23 +132,22 @@ export default function CodeTable() {
       component: (
         <>
           <TextField
-            value={importedSection}
-            onChange={React.useCallback(
-              (newValue) => setImportedSection(newValue),
-              [],
-            )}
+            value={section}
+            onChange={React.useCallback((newValue) => addSection(newValue), [])}
             maxHeight={100}
             multiline={4}></TextField>
           <Button
+            id="CodeTable-ImportCode"
             onClick={() => {
-              if (!importedSection) {
+              if (!section) {
                 alert("no imported section;");
               }
 
-              const json =
-                extractSchemaJSONFromCodeString(importedSection).settings;
+              const json = extractSchemaJSONFromCodeString(section).settings;
 
               const extractedJson = convertSchemaJSONToItems(json);
+
+              console.log(extractedJson);
 
               removeItems();
               addItems(extractedJson);
@@ -183,8 +183,7 @@ export default function CodeTable() {
   function generateSectionCodeWithUpdatedSchema() {
     let _items = useStore.getState().items;
 
-    const originalImportSchema =
-      extractSchemaJSONFromCodeString(importedSection);
+    const originalImportSchema = extractSchemaJSONFromCodeString(section);
     const updatedImportSchema = { ...originalImportSchema };
 
     let updatedSettings = JSON.parse(`[${cleanJSONSchema(_items)}]`);
@@ -192,7 +191,7 @@ export default function CodeTable() {
     updatedImportSchema.settings = updatedSettings;
 
     const _updated = replaceTextBetween(
-      importedSection,
+      section,
       `{% schema %}`,
       `{% endschema %}`,
       JSON.stringify(updatedImportSchema, null, 2),
@@ -215,29 +214,31 @@ export default function CodeTable() {
             Copy Schema Settings
           </Button>
           <Button
-            disabled={importedSection.trim().length <= 0}
+            disabled={section.trim().length <= 0}
             onClick={() => {
               let code;
 
               code = generateSectionCodeWithUpdatedSchema();
 
-              code = mergeEzfyVariablesToCode(code);
-
               /* Check if there are variables to inject in the HTML */
               const injectables = filterItemsWithProperty(
                 items,
-                "injectVariableInHTMLSelector",
+                "injectVariableInHTML",
               );
 
               if (injectables) {
                 for (var each of injectables) {
                   code = insertLiquidVariableInHtml(
                     code,
-                    each.injectVariableInHTMLSelector,
+                    each.injectVariableInHTML,
                     `{{ ${each.id} }}`,
                   );
                 }
               }
+
+              code = mergeEzfyVariablesToCode(code);
+
+              code = cleanSectionCode(code);
 
               copyToClipboard(code);
 

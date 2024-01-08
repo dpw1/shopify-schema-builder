@@ -36,10 +36,7 @@ function FormItem(props) {
   const [totalSubOptions, setTotalSubOptions] = useState(
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
   );
-  const [importedSection, setImportedSection] = useStickyState(
-    "@importedSection",
-    "",
-  );
+
   const [errors, setErrors] = useState([]);
 
   const values = useStore((state) => state.values);
@@ -229,8 +226,7 @@ function FormItem(props) {
           );
         }
 
-        const label =
-          e === "injectVariableInHTMLSelector" ? "Inject in HTML" : e;
+        const label = e === "injectVariableInHTML" ? "Inject in HTML" : e;
         return (
           <React.Fragment>
             <div key={e + i} className={`FormItem-attr FormItem-attr--${e}`}>
@@ -333,11 +329,11 @@ function FormItem(props) {
       {extraOptions && extraOptions.length >= 1 && (
         <>
           <div className="FormItem--advanced">
-            <b>Advanced Options</b>
+            <b>Advanced</b>
             {extraOptions.map((e, i) => {
               let _value, value;
               const placeholder =
-                e === "injectVariableInHTMLSelector" ? ".my-element" : e;
+                e === "injectVariableInHTML" ? ".my-element" : e;
 
               _value = items.filter((x) => x.__id === itemId)[0];
 
@@ -351,7 +347,7 @@ function FormItem(props) {
                   <input
                     value={value}
                     onChange={(event) => {
-                      if (e === "injectVariableInHTMLSelector") {
+                      if (e === "injectVariableInHTML") {
                         // insertLiquidVariableInHtml();
                       }
 
@@ -366,8 +362,7 @@ function FormItem(props) {
                 );
               }
 
-              const label =
-                e === "injectVariableInHTMLSelector" ? "Inject in HTML" : e;
+              const label = e === "injectVariableInHTML" ? "Inject in HTML" : e;
               return (
                 <React.Fragment>
                   <div

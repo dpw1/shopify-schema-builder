@@ -32,19 +32,7 @@ import useStore from "./store/store";
 function App() {
   const [openOnClick, setOpenOnClick] = useState(false);
 
-  const [importedSection, setImportedSection] = useStickyState(
-    "@importedSection",
-    "",
-  );
   useEffect(() => {
-    // console.log(
-    //   insertLiquidVariableInHtml(
-    //     importedSection,
-    //     `.unlock-container`,
-    //     `{{unlock_1}}`,
-    //   ),
-    // );
-
     function addKeyListener() {
       function handleKeyDown(event) {
         if (event.ctrlKey && (event.key === "d" || event.key === "D")) {

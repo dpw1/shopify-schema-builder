@@ -105,10 +105,11 @@ export function insertLiquidVariableInHtml(html, selector, variable) {
   const container = document.createElement("div");
   container.innerHTML = html;
 
-  const targetElement = container.querySelector(selector);
+  const $el = container.querySelector(selector);
 
-  if (targetElement) {
-    targetElement.textContent = variable;
+  if ($el) {
+    $el.textContent = variable;
+    $el.setAttribute("data-ezfy-injected-variable", selector);
 
     const modifiedHtml = container.innerHTML;
 
@@ -118,6 +119,46 @@ export function insertLiquidVariableInHtml(html, selector, variable) {
     console.log(`Element with selector "${selector}" not found in HTML.`);
     return html;
   }
+}
+
+/**
+ * Gets all variables previously injected and store their selectors.
+ *
+ * It uses the [data-ezfy-injected-variable] attribute
+ * @param {*} section
+ */
+
+export function getInjectedVariablesAndAddToJson() {
+  const html = useStore.getState().section;
+
+  const container = document.createElement("div");
+  container.innerHTML = html;
+
+  const $variables = container.querySelectorAll(
+    `[data-ezfy-injected-variable]`,
+  );
+
+  if (!$variables) {
+    return [];
+  }
+
+  let results = [];
+
+  for (var each of $variables) {
+    let id = each.textContent.trim();
+
+    if (!id.includes("{{") || !id.includes("}}")) {
+      continue;
+    }
+
+    id = id.replaceAll(`{`, ``).replaceAll(`}`, ``).trim();
+
+    const selector = each.getAttribute(`data-ezfy-injected-variable`);
+
+    results.push({ id, selector });
+  }
+
+  return results;
 }
 
 /**
@@ -415,14 +456,26 @@ export function createEmptyCopyOfObject(source, isArray) {
 
 /* Converts a typical Shopify section schema into a EZFY Section Builder JSON. */
 export const convertSchemaJSONToItems = (json) => {
+  const variables = getInjectedVariablesAndAddToJson();
+
   return json.map((e, i) => {
     const order = i + 1;
 
-    return {
+    let object = {
       __id: short.generate(),
       order,
       ...e,
     };
+
+    let variable = variables.filter((v) => v.id === e.id);
+
+    if (variable && variable.length >= 1) {
+      object.injectVariableInHTML = variable[0].selector;
+
+      debugger;
+    }
+
+    return object;
   });
 };
 
@@ -801,6 +854,10 @@ export const cleanSectionCode = (section) => {
   const _result = schema.settings.map((e) => {
     if (e.hasOwnProperty("__id")) {
       delete e.__id;
+    }
+
+    if (e.hasOwnProperty("injectVariableInHTML")) {
+      delete e.injectVariableInHTML;
     }
     return e;
   });

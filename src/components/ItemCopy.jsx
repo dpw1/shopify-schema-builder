@@ -72,6 +72,7 @@ Options = editable elements. (id, label, info, etc)
           <FormItem
             itemCount={itemCount}
             options={["id", "label", "info", "placeholder", "default"]}
+            extraOptions={["injectVariableInHTML"]}
             type="text"
             duplicatedOptions={duplicatedOptions}
             defaultOptions={{
@@ -251,7 +252,7 @@ Options = editable elements. (id, label, info, etc)
         <FormItem
           itemCount={itemCount}
           options={["id", "label", "info", "placeholder", "default"]}
-          extraOptions={["injectVariableInHTMLSelector"]}
+          extraOptions={["injectVariableInHTML"]}
           type="number"
           duplicatedOptions={duplicatedOptions}
           defaultOptions={defaultOptions}

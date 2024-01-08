@@ -9,6 +9,15 @@
 
 ## TODO
 
+-
+
+---
+
+- detect duplicated ids
+- boxes should be red when they have an error
+
+---
+
 - can't add negative number to "select" min field
 - bulk delete
 - Detect duplicated ids
