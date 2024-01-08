@@ -12,6 +12,16 @@ const setLocalStorage = (key, value) =>
 const useStore = create((set, get) => ({
   /* All the items from the section "ItemCopy.jsx".
   This is the "ugly" JSON with __id.
+
+
+  This object contains:
+
+  __id = random string
+  id = string, type of element (text, number, etc)
+
+  Advanced fields:
+  InjectHTML = string, the CSS selector to inject that variable to
+
   ======================================= */
   items: getLocalStorage("items") ? JSON.parse(getLocalStorage("items")) : [],
   addItem: (item) => {

@@ -9,6 +9,12 @@
   list-style: none !important;
   //   display: none;
 
+  color: black;
+
+  .item-advanced {
+    margin-top: 10px;
+  }
+
   &--visible {
     display: block;
   }

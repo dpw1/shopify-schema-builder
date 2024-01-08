@@ -351,7 +351,6 @@ const RenderRadioPreview = (data) => {
 const RenderRangePreview = (data) => {
   const updateItem = useStore((state) => state.updateItem);
 
-  console.log(data);
   return (
     <>
       <div className="Preview-ranger">
@@ -376,8 +375,6 @@ const RenderRangePreview = (data) => {
 
             // const $parent = document.querySelector(`[data-item-id]`);
             const id = data.__id;
-
-            console.log("changing, id: ", id);
 
             const $item = document.querySelector(`.item[data-item-id="${id}"]`);
 
@@ -735,8 +732,6 @@ export default function Preview() {
   useEffect(() => {
     if (mustUpdate) {
       setTimeout(() => {
-        console.log("Updating items after sort", items);
-
         setItems([...items]);
         setMustUpdate(false);
       }, 100);
@@ -780,7 +775,6 @@ export default function Preview() {
       onSelect: (e, i) => {
         const id = e.item.getAttribute("data-item-id");
         addSelectedItem(id);
-        console.log("adding!");
       },
 
       onDeselect: async (e) => {
@@ -791,7 +785,6 @@ export default function Preview() {
         if ($item) {
           const id = e.item.getAttribute("data-item-id");
           removeSelectedItem(id);
-          console.log("removing!");
           return;
         }
         removeAllSelectedItems();

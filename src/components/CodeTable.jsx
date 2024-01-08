@@ -19,6 +19,8 @@ import {
   replaceTextBetween,
   convertToLiquidVariables,
   mergeEzfyVariablesToCode,
+  insertLiquidVariableInHtml,
+  filterItemsWithProperty,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -215,11 +217,29 @@ export default function CodeTable() {
           <Button
             disabled={importedSection.trim().length <= 0}
             onClick={() => {
-              const code = generateSectionCodeWithUpdatedSchema();
+              let code;
 
-              var codeWithLiquidVariables = mergeEzfyVariablesToCode(code);
+              code = generateSectionCodeWithUpdatedSchema();
 
-              copyToClipboard(codeWithLiquidVariables);
+              code = mergeEzfyVariablesToCode(code);
+
+              /* Check if there are variables to inject in the HTML */
+              const injectables = filterItemsWithProperty(
+                items,
+                "injectVariableInHTMLSelector",
+              );
+
+              if (injectables) {
+                for (var each of injectables) {
+                  code = insertLiquidVariableInHtml(
+                    code,
+                    each.injectVariableInHTMLSelector,
+                    `{{ ${each.id} }}`,
+                  );
+                }
+              }
+
+              copyToClipboard(code);
 
               return;
             }}>

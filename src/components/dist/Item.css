@@ -7,6 +7,10 @@
   padding-bottom: 0;
   position: relative;
   list-style: none !important;
+  color: black;
+}
+.item .item-advanced {
+  margin-top: 10px;
 }
 .item--visible {
   display: block;

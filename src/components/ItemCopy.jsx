@@ -251,6 +251,7 @@ Options = editable elements. (id, label, info, etc)
         <FormItem
           itemCount={itemCount}
           options={["id", "label", "info", "placeholder", "default"]}
+          extraOptions={["injectVariableInHTMLSelector"]}
           type="number"
           duplicatedOptions={duplicatedOptions}
           defaultOptions={defaultOptions}
@@ -375,18 +376,12 @@ export default function ItemCopy(props) {
     // focusOnTooltipAfterClone();
   };
 
-  function focusOnTooltipAfterClone() {
-    const $id = document.querySelector(`.FormItem-attr--id input`);
-
-    if (!$id) {
-      alert();
-    }
-
-    $id.focus();
-  }
-
   return (
-    <li data-item-id={id} data-item-count={itemCount} className={`item`}>
+    <li
+      key={id}
+      data-item-id={id}
+      data-item-count={itemCount}
+      className={`item`}>
       <div className="item-buttons">
         <button
           title="Delete"
@@ -471,6 +466,45 @@ export default function ItemCopy(props) {
           duplicatedSubOptions,
           defaultOptions,
         )}
+      </div>
+
+      <div className="item-advanced">
+        {/* <p>
+          <b>Advanced</b>
+        </p>
+        <fieldset>
+          <label htmlFor="">Inject in HTML</label>
+          <input
+            data-id={id}
+            value={inputHtmlVariable}
+            onChange={(e) => handleOnChange(e)}
+            type="text"
+            placeholder="Selector"
+            onChange={(e) => {
+              const value = e.target.value.trim();
+              const currentID = e.target.getAttribute(`data-id`);
+
+              console.log(currentID);
+
+              if (currentID !== id) {
+                return;
+              }
+
+              if (value.length <= 0 && item.hasOwnProperty(`htmlVariable`)) {
+                item.htmlVariable = "";
+                return;
+              }
+
+              setInputHtmlVariable(value);
+
+              const item = items.filter((e) => e.__id === id)[0];
+
+              console.log("my item", item);
+              item.htmlVariable = value;
+              updateItem(item);
+            }}
+          />
+        </fieldset> */}
       </div>
       <br />
     </li>

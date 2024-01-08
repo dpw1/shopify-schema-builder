@@ -8,11 +8,17 @@ import CodeTable from "./components/CodeTable";
 import Sidebar from "./components/Sidebar";
 import Section from "./components/Section";
 import Header from "./components/Header";
+import { useStatePersist as useStickyState } from "use-state-persist";
 
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
-import { initialState } from "./utils";
+import {
+  duplicate,
+  initialState,
+  insertLiquidVariableInHtml,
+  sleep,
+} from "./utils";
 import Preview from "./components/Preview";
 import "./assets/Polaris.scss";
 import "./components/PopupConfirm.scss";
@@ -21,7 +27,75 @@ import TextExample from "./components/TextExample";
 import RenderTextPreview from "./components/renders/RenderTextPreview";
 import Editor from "./components/Editor";
 
+import useStore from "./store/store";
+
 function App() {
+  const [openOnClick, setOpenOnClick] = useState(false);
+
+  const [importedSection, setImportedSection] = useStickyState(
+    "@importedSection",
+    "",
+  );
+  useEffect(() => {
+    // console.log(
+    //   insertLiquidVariableInHtml(
+    //     importedSection,
+    //     `.unlock-container`,
+    //     `{{unlock_1}}`,
+    //   ),
+    // );
+
+    function addKeyListener() {
+      function handleKeyDown(event) {
+        if (event.ctrlKey && (event.key === "d" || event.key === "D")) {
+          event.preventDefault();
+          duplicate();
+          openEditorForNextItem();
+        }
+      }
+
+      // Function to add the event listener
+      function addEventListenerOnce() {
+        if (!isEventListenerAdded) {
+          document.addEventListener("keydown", handleKeyDown);
+          isEventListenerAdded = true;
+        }
+      }
+
+      // Call the function to add the event listener
+      addEventListenerOnce();
+    }
+    addKeyListener();
+  }, []);
+
+  function openEditorForNextItem() {
+    setOpenOnClick(true);
+
+    setTimeout(async () => {
+      const $count = document.querySelector(`.Editor [data-item-count]`);
+
+      if (!$count) {
+        return;
+      }
+      const count = parseInt($count.getAttribute(`data-item-count`)) + 1;
+
+      const $item = document.querySelector(`[data-item-count="${count}"]`);
+
+      if (!$item) {
+        alert();
+      }
+
+      $item.click();
+
+      await sleep(100);
+      const $input = document.querySelector(`input[label='label']`);
+
+      $input.focus();
+
+      setOpenOnClick(false);
+    }, 25);
+  }
+
   return (
     <div className="App">
       <div className="container">
@@ -74,7 +148,7 @@ function App() {
         positionStrategy="fixed"
         offset={10}
         delayHide={0}
-        openOnClick={false}
+        openOnClick={openOnClick}
         render={({ content, activeAnchor }) => (
           <Editor props={content}></Editor>
         )}></ReactTooltip>

@@ -25,6 +25,7 @@ function FormItem(props) {
     defaultOptions,
     subOptions,
     totalSubOptions: _totalSubOptions,
+    extraOptions,
     itemCount,
   } = props;
 
@@ -35,7 +36,10 @@ function FormItem(props) {
   const [totalSubOptions, setTotalSubOptions] = useState(
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
   );
-
+  const [importedSection, setImportedSection] = useStickyState(
+    "@importedSection",
+    "",
+  );
   const [errors, setErrors] = useState([]);
 
   const values = useStore((state) => state.values);
@@ -225,10 +229,12 @@ function FormItem(props) {
           );
         }
 
+        const label =
+          e === "injectVariableInHTMLSelector" ? "Inject in HTML" : e;
         return (
           <React.Fragment>
             <div key={e + i} className={`FormItem-attr FormItem-attr--${e}`}>
-              <label data-label-name={e}>{e}:</label>
+              <label data-label-name={e}>{label}:</label>
 
               {renderInput(value, itemId, type)}
 
@@ -322,6 +328,66 @@ function FormItem(props) {
             </button>
           </div>
         </div>
+      )}
+
+      {extraOptions && extraOptions.length >= 1 && (
+        <>
+          <div className="FormItem--advanced">
+            <b>Advanced Options</b>
+            {extraOptions.map((e, i) => {
+              let _value, value;
+              const placeholder =
+                e === "injectVariableInHTMLSelector" ? ".my-element" : e;
+
+              _value = items.filter((x) => x.__id === itemId)[0];
+
+              if (!_value) {
+                return;
+              }
+              value = _value[e];
+
+              function renderInput(value, itemId, type) {
+                return (
+                  <input
+                    value={value}
+                    onChange={(event) => {
+                      if (e === "injectVariableInHTMLSelector") {
+                        // insertLiquidVariableInHtml();
+                      }
+
+                      handleInputChange(event, updateItem);
+                    }}
+                    name={`${itemId}_${e}`}
+                    label={e}
+                    defaultValue={setDefaultValue(e)}
+                    placeholder={placeholder}
+                    autoComplete={"off"}
+                  />
+                );
+              }
+
+              const label =
+                e === "injectVariableInHTMLSelector" ? "Inject in HTML" : e;
+              return (
+                <React.Fragment>
+                  <div
+                    key={e + i}
+                    className={`FormItem-attr FormItem-attr--${e}`}>
+                    <label data-label-name={e}>{label}:</label>
+
+                    {renderInput(value, itemId, type)}
+
+                    <span className="FormItem-error">
+                      {errors &&
+                        errors.filter((x) => x.id === e).length >= 1 &&
+                        errors.filter((x) => x.id === e)[0].error}
+                    </span>
+                  </div>
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </>
       )}
     </fieldset>
   );

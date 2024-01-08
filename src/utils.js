@@ -69,6 +69,74 @@ export function handleInputChange(_$item, updateItem) {
   return;
 }
 
+export function duplicate() {
+  const $button = document.querySelector(
+    `.Editor [data-item-count] .item-duplicate`,
+  );
+
+  if (!$button) {
+    return;
+  }
+
+  console.log("duplicate: ", $button);
+
+  $button.click();
+}
+
+/**
+ *
+ * Inserts liquid variable into HTML. Say you have the variable section.settings.text and the elemet <p class="my-text"></p>
+ *
+ * The end result will be:
+ *
+ * <p class="my-text">{{ text }}</p>
+ *
+ * @param {string} html = user's section code
+ * @param {CSS selector} selector = selector of the element that should take the variable. Ex: .my-text
+ * @param {string} variable = the variable to be injected. Ex: {{text}}
+ */
+export function insertLiquidVariableInHtml(html, selector, variable) {
+  if (!variable.includes("{{") || !variable.includes("}}")) {
+    throw new Error("Variable must include {{ and }}.");
+  }
+
+  variable = variable.replace(/{{\s*([^}\s]+)\s*}}/g, "{{ $1 }}");
+
+  const container = document.createElement("div");
+  container.innerHTML = html;
+
+  const targetElement = container.querySelector(selector);
+
+  if (targetElement) {
+    targetElement.textContent = variable;
+
+    const modifiedHtml = container.innerHTML;
+
+    const modifiedFullHtml = html.replace(html, modifiedHtml);
+    return modifiedFullHtml;
+  } else {
+    console.log(`Element with selector "${selector}" not found in HTML.`);
+    return html;
+  }
+}
+
+/**
+ * 
+ * returns only items containing a certain property.
+ * 
+ * Ex:
+ * 
+ * const filteredArray = filterByProperty(inputArray, "injectVariableInHTMLSelector");
+  console.log(filteredArray);
+ * 
+ * @param {*} arr 
+ * @param {*} property 
+ * @returns 
+ */
+export function filterItemsWithProperty(arr, property) {
+  return arr.filter((item) => property in item);
+}
+
 export const schema = [
   { id: "header" },
   { id: "paragraph" },

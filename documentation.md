@@ -9,17 +9,15 @@
 
 ## TODO
 
-- "range" default is not working
-- "range" unit is blank
 - can't add negative number to "select" min field
-- Focus on newly duplicated field
-- Bulk duplicate/delete
+- bulk delete
 - Detect duplicated ids
 - Option to add/remove `{% comment %}` from variables
 - Liquid variables with or without ".section" must be a global setting
 - Scroll to bottom when clicking on "add" new section
 - Scroll to section when clicking on "duplicate"
 - Toggle open/close all editors
+- "range" unit is blank
 
 ## Future
 
@@ -34,6 +32,9 @@
 
 ## DONE
 
+- Bulk duplicate [x]
+- Focus on newly duplicated field [x]
+- "range" default is not working [x]
 - Fix page height (should be 100vh)
 - Variables order not working after duplicating [x]
 - Copy updated code [x]
