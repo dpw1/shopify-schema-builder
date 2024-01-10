@@ -45,6 +45,8 @@ updateItem = store.js function to update the JSON
   
   */
 export function handleInputChange(_$item, updateItem) {
+  const removeError = useStore.getState().removeError;
+
   let $item = null;
 
   if (_$item instanceof Node && _$item.classList.contains("item")) {
@@ -65,6 +67,7 @@ export function handleInputChange(_$item, updateItem) {
   console.log("updated json (formitem.js): ", json);
 
   updateItem(json);
+  removeError(json.__id);
 
   return;
 }
@@ -102,22 +105,29 @@ export function insertLiquidVariableInHtml(html, selector, variable) {
 
   variable = variable.replace(/{{\s*([^}\s]+)\s*}}/g, "{{ $1 }}");
 
-  const container = document.createElement("div");
+  let container = document.createElement("div");
   container.innerHTML = html;
 
-  const $el = container.querySelector(selector);
+  try {
+    const $el = container.querySelector(selector);
 
-  if ($el) {
-    $el.textContent = variable;
-    $el.setAttribute("data-ezfy-injected-variable", selector);
+    if ($el) {
+      $el.textContent = variable;
+      $el.setAttribute("data-ezfy-injected-variable", selector);
 
-    const modifiedHtml = container.innerHTML;
+      const modifiedHtml = container.innerHTML;
 
-    const modifiedFullHtml = html.replace(html, modifiedHtml);
-    return modifiedFullHtml;
-  } else {
-    console.log(`Element with selector "${selector}" not found in HTML.`);
-    return html;
+      const modifiedFullHtml = html.replace(html, modifiedHtml);
+      return modifiedFullHtml;
+    } else {
+      console.error(`Element with selector "${selector}" not found in HTML.`);
+      return null;
+    }
+  } catch (err) {
+    console.error(`Element with selector "${selector}" not found in HTML.`);
+    return null;
+  } finally {
+    container.remove();
   }
 }
 
@@ -471,8 +481,6 @@ export const convertSchemaJSONToItems = (json) => {
 
     if (variable && variable.length >= 1) {
       object.injectVariableInHTML = variable[0].selector;
-
-      debugger;
     }
 
     return object;
@@ -1127,4 +1135,8 @@ export function replaceTextBetween(_text, start, end, newText) {
 
 export const addObjectToIndex = (array, index, elementsToInsert) => {
   return [...array.slice(0, index), ...elementsToInsert, ...array.slice(index)];
+};
+
+export const errorMessages = {
+  invalidHtmlIInjectionSelector: `Selector not found.`,
 };

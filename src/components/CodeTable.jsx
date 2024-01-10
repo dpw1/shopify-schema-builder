@@ -21,6 +21,7 @@ import {
   mergeEzfyVariablesToCode,
   insertLiquidVariableInHtml,
   filterItemsWithProperty,
+  errorMessages,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -31,17 +32,14 @@ import Settings from "./Settings";
 import ConfirmDialog from "./ConfirmDialog";
 
 export default function CodeTable() {
-  const [importedSection, setImportedSection] = useStickyState(
-    "@importedSection",
-    "",
-  );
-
   const addItems = useStore((state) => state.addItems);
   const removeItems = useStore((state) => state.removeItems);
   const settings = useStore((state) => state.settings);
   const addSection = useStore((state) => state.addSection);
   const section = useStore((state) => state.section);
   const items = useStore((state) => state.items);
+  const errors = useStore((state) => state.errors);
+  const setErrors = useStore((state) => state.setErrors);
   const [removeSectionText, setRemoveSectionText] = useState(false);
 
   const [variables, setVariables] = useState(JSON.stringify(items));
@@ -55,18 +53,55 @@ export default function CodeTable() {
     [],
   );
 
+  useEffect(() => {
+    console.log("errors", errors);
+  }, [errors]);
+
   const tabs = [
+    // {
+    //   id: "tab-schema-settings-json",
+    //   content: "Sches settings JSON",
+    //   panelID: "schema-settings-json",
+    //   component: (
+    //     <>
+    //       <TextField
+    //         label={"Schema's settings JSON"}
+    //         value={JSON.stringify(items)}
+    //         maxHeight={100}
+    //         multiline={4}></TextField>{" "}
+    //     </>
+    //   ),
+    // },
     {
-      id: "tab-schema-settings-json",
-      content: "Sches settings JSON",
-      panelID: "schema-settings-json",
+      id: "tab-import-section",
+      content: "Import",
+      panelID: "panel-import-section",
       component: (
         <>
           <TextField
-            label={"Schema's settings JSON"}
-            value={JSON.stringify(items)}
+            value={section}
+            onChange={React.useCallback((newValue) => addSection(newValue), [])}
             maxHeight={100}
-            multiline={4}></TextField>{" "}
+            placeholder="Paste section's code"
+            multiline={4}></TextField>
+          <Button
+            id="CodeTable-ImportCode"
+            onClick={() => {
+              if (!section) {
+                alert("no imported section;");
+              }
+
+              const json = extractSchemaJSONFromCodeString(section).settings;
+
+              const extractedJson = convertSchemaJSONToItems(json);
+
+              console.log(extractedJson);
+
+              removeItems();
+              addItems(extractedJson);
+            }}>
+            Import
+          </Button>
         </>
       ),
     },
@@ -104,59 +139,27 @@ export default function CodeTable() {
       ),
     },
 
-    {
-      id: "tab-css-variables",
-      content: "CSS Variables",
-      panelID: "panel-css-variables",
-      component: (
-        <>
-          <TextField
-            value={cssVariables}
-            maxHeight={100}
-            multiline={4}></TextField>
-          <Button
-            onClick={() => {
-              const css = generateCSSVariables();
+    // {
+    //   id: "tab-css-variables",
+    //   content: "CSS Variables",
+    //   panelID: "panel-css-variables",
+    //   component: (
+    //     <>
+    //       <TextField
+    //         value={cssVariables}
+    //         maxHeight={100}
+    //         multiline={4}></TextField>
+    //       <Button
+    //         onClick={() => {
+    //           const css = generateCSSVariables();
 
-              setCssVariables(css);
-            }}>
-            Generate CSS
-          </Button>
-        </>
-      ),
-    },
-    {
-      id: "tab-import-section",
-      content: "Import",
-      panelID: "panel-import-section",
-      component: (
-        <>
-          <TextField
-            value={section}
-            onChange={React.useCallback((newValue) => addSection(newValue), [])}
-            maxHeight={100}
-            multiline={4}></TextField>
-          <Button
-            id="CodeTable-ImportCode"
-            onClick={() => {
-              if (!section) {
-                alert("no imported section;");
-              }
-
-              const json = extractSchemaJSONFromCodeString(section).settings;
-
-              const extractedJson = convertSchemaJSONToItems(json);
-
-              console.log(extractedJson);
-
-              removeItems();
-              addItems(extractedJson);
-            }}>
-            Import
-          </Button>
-        </>
-      ),
-    },
+    //           setCssVariables(css);
+    //         }}>
+    //         Generate CSS
+    //       </Button>
+    //     </>
+    //   ),
+    // },
   ];
 
   const copyJSONToClipboard = () => {
@@ -204,7 +207,7 @@ export default function CodeTable() {
     <div className="CodeTable">
       <Card>
         <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
-          <Card.Section>{tabs[selectedTab].component}</Card.Section>
+          <Card.Section>{tabs[selectedTab]?.component}</Card.Section>
         </Tabs>
       </Card>
 
@@ -217,6 +220,7 @@ export default function CodeTable() {
             disabled={section.trim().length <= 0}
             onClick={() => {
               let code;
+              let result;
 
               code = generateSectionCodeWithUpdatedSchema();
 
@@ -228,12 +232,32 @@ export default function CodeTable() {
 
               if (injectables) {
                 for (var each of injectables) {
-                  code = insertLiquidVariableInHtml(
+                  if (each.injectVariableInHTML.trim().length <= 0) {
+                    continue;
+                  }
+                  const selector = `{{ ${each.id} }}`;
+                  result = insertLiquidVariableInHtml(
                     code,
                     each.injectVariableInHTML,
-                    `{{ ${each.id} }}`,
+                    selector,
                   );
+
+                  if (!result) {
+                    const err = {
+                      id: each.__id,
+                      label: "injectVariableInHTML",
+                      message: errorMessages.invalidHtmlIInjectionSelector,
+                    };
+
+                    setErrors(err);
+                  } else {
+                    code = result;
+                  }
                 }
+              }
+
+              if (errors.length >= 1) {
+                return;
               }
 
               code = mergeEzfyVariablesToCode(code);

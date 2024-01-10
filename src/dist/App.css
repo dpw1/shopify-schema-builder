@@ -710,6 +710,10 @@ th {
   padding: 0;
 }
 
+span {
+  line-height: 1.5;
+}
+
 /* Intro text */
 .App .App-intro {
   margin-top: 20px;

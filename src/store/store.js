@@ -279,6 +279,80 @@ const useStore = create((set, get) => ({
       };
     });
   },
+
+  /* Errors for the items.
+
+  requires an object with:
+
+  error = {
+    id: "", 
+    message: "",
+    field: "" // label, id, default, info, etc
+  }
+
+  ======================================= */
+  errors: getLocalStorage("errors") || [],
+  setErrors: (value) => {
+    if (
+      !value.hasOwnProperty("id") ||
+      !value.hasOwnProperty("message") ||
+      !value.hasOwnProperty("label")
+    ) {
+      throw new Error("Requires ID, message and label");
+    }
+
+    const repeated =
+      get().errors.filter((e) => e.id === value.id && e.label === value.label)
+        .length >= 1
+        ? true
+        : false;
+
+    if (repeated) {
+      return;
+    }
+
+    let updated = [...get().errors, value];
+
+    console.log("all errors: ", updated);
+
+    set((_) => {
+      setLocalStorage("errors", updated);
+      return {
+        errors: updated,
+      };
+    });
+  },
+  resetErrors: () => {
+    set((_) => {
+      setLocalStorage("errors", []);
+      return {
+        errors: [],
+      };
+    });
+  },
+  removeError: (id) => {
+    const errors = get().errors;
+
+    const updated = errors.filter((e) => e.id !== id);
+
+    set((_) => {
+      setLocalStorage("errors", []);
+      return {
+        errors: updated,
+      };
+    });
+  },
+
+  /* Auxiliar variables
+  ======================================= */
+  openOnClick: false,
+  setOpenOnClick: (value) => {
+    set((_) => {
+      return {
+        openOnClick: value,
+      };
+    });
+  },
 }));
 
 export default useStore;

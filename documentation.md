@@ -9,9 +9,7 @@
 
 ## TODO
 
--
-
----
+- ***
 
 - detect duplicated ids
 - boxes should be red when they have an error
@@ -52,3 +50,8 @@
 - Copy CSS [x]
 - Copy Liquid [x]
 - Show popup when clicking on "clear" [x]
+
+## Usage
+
+- The parent div should have the data attribute "data-ezfy-editable" to be editable.
+- HTML elements with the data attribute "data-ezfy-injected-variable='.element'" had a liquid variable injected and will be editable in the future whenever this variable changes.

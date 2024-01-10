@@ -30,14 +30,13 @@ function FormItem(props) {
   } = props;
 
   const items = useStore((state) => state.items);
+  const errors = useStore((state) => state.errors);
 
   const [hasFocusedOnId, setHasFocusedOnId] = useState(false);
 
   const [totalSubOptions, setTotalSubOptions] = useState(
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
   );
-
-  const [errors, setErrors] = useState([]);
 
   const values = useStore((state) => state.values);
 
@@ -87,7 +86,7 @@ function FormItem(props) {
       });
     }
 
-    setErrors(formErrors);
+    // setErrors(formErrors);
 
     return formErrors.length;
   };
@@ -98,10 +97,7 @@ function FormItem(props) {
   const handleInputFilter = (item) => {
     let allErrors = 0;
 
-    console.log("my ttt", item.default.toString());
     if (item.default && item.default.toString().includes("a")) {
-      alert();
-
       allErrors += 1;
     }
 
@@ -112,7 +108,6 @@ function FormItem(props) {
     if (defaultOptions[labelName]) {
       if (type === "checkbox" && labelName === "default") {
         const result = defaultOptions[labelName] === "true" ? true : false;
-        console.log(type, labelName, defaultOptions[labelName]);
         return result;
       }
 
@@ -156,6 +151,19 @@ function FormItem(props) {
     }, 50);
   }
 
+  function errorMessage(id, label) {
+    // debugger;
+    return (
+      <span className="FormItem-error">
+        {errors &&
+          errors.length >= 1 &&
+          errors.filter((e) => e.id === id).length >= 1 &&
+          errors.filter((e) => e.label === label)[0].label &&
+          errors.filter((e) => e.label === label)[0].message}
+      </span>
+    );
+  }
+
   return (
     <fieldset key={itemId} className={`FormItem FormItem--${type}`}>
       {options.map((e, i) => {
@@ -186,43 +194,44 @@ function FormItem(props) {
           }
 
           return (
-            <input
-              value={value}
-              onFocus={() => {
-                if (e === "id" && !hasFocusedOnId) {
-                  setHasFocusedOnId(true);
-                }
-              }}
-              onChange={(event) => {
-                if (e === "id") {
-                  if (/\s/.test(event.target.value)) {
-                    event.preventDefault();
-                    return;
+            <>
+              <input
+                value={value}
+                onFocus={() => {
+                  if (e === "id" && !hasFocusedOnId) {
+                    setHasFocusedOnId(true);
                   }
-                }
+                }}
+                onChange={(event) => {
+                  if (e === "id") {
+                    if (/\s/.test(event.target.value)) {
+                      event.preventDefault();
+                      return;
+                    }
+                  }
 
-                if (e === "label" && hasFocusedOnId === false) {
-                  const $id = document.querySelector(
-                    `input[name='${itemId}_id']`,
-                  );
+                  if (e === "label" && hasFocusedOnId === false) {
+                    const $id = document.querySelector(
+                      `input[name='${itemId}_id']`,
+                    );
 
-                  $id.value = event.target.value
-                    .replace(/\s/g, "_")
-                    .replace(/[^a-zA-Z0-9-_]/g, "")
-                    .toLowerCase()
-                    .trim();
+                    $id.value = event.target.value
+                      .replace(/\s/g, "_")
+                      .replace(/[^a-zA-Z0-9-_]/g, "")
+                      .toLowerCase()
+                      .trim();
+                  }
 
-                  console.log("event: ", event.target.value);
-                }
-
-                handleInputChange(event, updateItem);
-              }}
-              name={`${itemId}_${e}`}
-              label={e}
-              defaultValue={setDefaultValue(e)}
-              placeholder={e}
-              autoComplete={"off"}
-            />
+                  handleInputChange(event, updateItem);
+                }}
+                name={`${itemId}_${e}`}
+                label={e}
+                defaultValue={setDefaultValue(e)}
+                placeholder={e}
+                autoComplete={"off"}
+              />
+              {errorMessage()}
+            </>
           );
         }
 
@@ -233,17 +242,10 @@ function FormItem(props) {
               <label data-label-name={e}>{label}:</label>
 
               {renderInput(value, itemId, type)}
-
-              <span className="FormItem-error">
-                {errors &&
-                  errors.filter((x) => x.id === e).length >= 1 &&
-                  errors.filter((x) => x.id === e)[0].error}
-              </span>
             </div>
           </React.Fragment>
         );
       })}
-
       {subOptions && (
         <div className={`FormItem-suboptions FormItem-suboptions--${itemId}`}>
           <div className="FormItem-sortable-suboptions">
@@ -325,7 +327,6 @@ function FormItem(props) {
           </div>
         </div>
       )}
-
       {extraOptions && extraOptions.length >= 1 && (
         <>
           <div className="FormItem--advanced">
@@ -344,21 +345,24 @@ function FormItem(props) {
 
               function renderInput(value, itemId, type) {
                 return (
-                  <input
-                    value={value}
-                    onChange={(event) => {
-                      if (e === "injectVariableInHTML") {
-                        // insertLiquidVariableInHtml();
-                      }
+                  <>
+                    <input
+                      value={value}
+                      onChange={(event) => {
+                        if (e === "injectVariableInHTML") {
+                          // insertLiquidVariableInHtml();
+                        }
 
-                      handleInputChange(event, updateItem);
-                    }}
-                    name={`${itemId}_${e}`}
-                    label={e}
-                    defaultValue={setDefaultValue(e)}
-                    placeholder={placeholder}
-                    autoComplete={"off"}
-                  />
+                        handleInputChange(event, updateItem);
+                      }}
+                      name={`${itemId}_${e}`}
+                      label={e}
+                      defaultValue={setDefaultValue(e)}
+                      placeholder={placeholder}
+                      autoComplete={"off"}
+                    />
+                    {errorMessage(itemId, e)}
+                  </>
                 );
               }
 
@@ -371,12 +375,6 @@ function FormItem(props) {
                     <label data-label-name={e}>{label}:</label>
 
                     {renderInput(value, itemId, type)}
-
-                    <span className="FormItem-error">
-                      {errors &&
-                        errors.filter((x) => x.id === e).length >= 1 &&
-                        errors.filter((x) => x.id === e)[0].error}
-                    </span>
                   </div>
                 </React.Fragment>
               );

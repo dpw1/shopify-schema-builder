@@ -1,6 +1,35 @@
 .Editor {
   display: block;
+  width: 300px;
 }
 .Editor .Editor-panel {
   position: relative;
+}
+.Editor.Editor--error-injectVariableInHTML [data-label-name=injectVariableInHTML] + input {
+  border-color: red;
+  box-shadow: rgba(0, 0, 0, 0.1490196078) 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
+}
+.Editor input {
+  font-weight: var(--p-font-weight-regular);
+  line-height: var(--p-font-line-height-2);
+  text-transform: initial;
+  letter-spacing: initial;
+  position: relative;
+  z-index: var(--pc-text-field-contents);
+  display: block;
+  flex: 1 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.25rem;
+  margin: 0;
+  padding: calc((2.25rem - var(--p-font-line-height-3) - var(--p-space-05)) / 2) var(--p-space-3);
+  background: none;
+  font-family: var(--p-font-family-sans);
+  -webkit-appearance: none;
+  appearance: none;
+  caret-color: var(--p-text);
+  color: var(--p-text);
+  border: var(--p-border-width-1) solid var(--p-border-subdued);
+  border-radius: var(--p-border-radius-1);
+  border-top-color: var(--p-border-shadow);
 }

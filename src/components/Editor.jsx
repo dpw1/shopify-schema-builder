@@ -19,10 +19,10 @@ export default function Editor({ props: _props }) {
   const [isDuplicating, setIsDuplicating] = useState(false);
 
   const items = useStore((state) => state.items);
-
   const updateItems = useStore((state) => state.updateItems);
-
   const removeItem = useStore((state) => state.removeItem);
+  const errors = useStore((state) => state.errors);
+  const setErrors = useStore((state) => state.setErrors);
 
   const handleDeleteItem = (id) => {
     removeItem(id);
@@ -43,13 +43,22 @@ export default function Editor({ props: _props }) {
       }),
     ];
 
-    console.log("updated: ", updated);
-
     updateItems(updated);
   };
 
+  const errorFound = errors &&
+    errors.length >= 1 &&
+    errors.filter((e) => e.id === data.__id).length >= 1 && [
+      ...new Set(errors.map((err) => err.label.trim())),
+    ];
+
+  console.log("found: ", errors.length);
+
   return (
-    <div className="Editor">
+    <div
+      className={`Editor ${
+        errorFound && errorFound.map((e) => `Editor--error-${e}`)
+      }`}>
       <div className={`Editor-panel  Editor-panel--${data.__id}`}>
         <ItemCopy
           isEditing={isEditing}

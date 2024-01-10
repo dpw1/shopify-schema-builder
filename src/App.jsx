@@ -13,12 +13,7 @@ import { useStatePersist as useStickyState } from "use-state-persist";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
-import {
-  duplicate,
-  initialState,
-  insertLiquidVariableInHtml,
-  sleep,
-} from "./utils";
+import { duplicate, initialState, sleep } from "./utils";
 import Preview from "./components/Preview";
 import "./assets/Polaris.scss";
 import "./components/PopupConfirm.scss";
@@ -30,9 +25,13 @@ import Editor from "./components/Editor";
 import useStore from "./store/store";
 
 function App() {
-  const [openOnClick, setOpenOnClick] = useState(false);
+  const errors = useStore((state) => state.errors);
+  const openOnClick = useStore((state) => state.openOnClick);
+  const setOpenOnClick = useStore((state) => state.setOpenOnClick);
 
   useEffect(() => {
+    console.log("reset");
+    setOpenOnClick(false);
     function addKeyListener() {
       function handleKeyDown(event) {
         if (event.ctrlKey && (event.key === "d" || event.key === "D")) {
@@ -70,7 +69,6 @@ function App() {
       const $item = document.querySelector(`[data-item-count="${count}"]`);
 
       if (!$item) {
-        alert();
       }
 
       $item.click();
@@ -134,7 +132,7 @@ function App() {
         anchorSelect=".Preview-item"
         place={"right-start"}
         positionStrategy="fixed"
-        offset={10}
+        offset={30}
         delayHide={0}
         openOnClick={openOnClick}
         render={({ content, activeAnchor }) => (

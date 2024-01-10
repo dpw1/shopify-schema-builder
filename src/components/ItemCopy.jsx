@@ -386,7 +386,6 @@ export default function ItemCopy(props) {
       <div className="item-buttons">
         <button
           title="Delete"
-          tabindex="-1"
           onClick={async () => {
             resetJsonResult();
 

@@ -715,6 +715,8 @@ const RenderVideoUrlPreview = (data) => {
 export default function Preview() {
   const addItem = useStore((state) => state.addItem);
   const setItems = useStore((state) => state.setItems);
+  const openOnClick = useStore((state) => state.openOnClick);
+  const setOpenOnClick = useStore((state) => state.setOpenOnClick);
 
   const selectedItems = useStore((state) => state.selectedItems);
   const addSelectedItem = useStore((state) => state.addSelectedItem);
@@ -722,6 +724,8 @@ export default function Preview() {
   const removeAllSelectedItems = useStore(
     (state) => state.removeAllSelectedItems,
   );
+
+  const errors = useStore((state) => state.errors);
 
   const items = useStore((state) => state.items);
   const [type, setType] = useStickyState("@type", "text");
@@ -755,6 +759,32 @@ export default function Preview() {
         },
       ],
     );
+
+    focusOnAddedItem();
+  }
+
+  async function focusOnAddedItem() {
+    setOpenOnClick(true);
+    await sleep(100);
+    const $item = document.querySelector(`.Preview-sortable > *:last-of-type`);
+
+    if (!$item) {
+      return;
+    }
+
+    $item.click();
+
+    await sleep(100);
+
+    const $input = document.querySelector(`.Editor input[label='label']`)
+      ? document.querySelector(`.Editor input[label='label']`)
+      : document.querySelector(`.Editor input`);
+
+    $input.focus();
+
+    setTimeout((_) => {
+      setOpenOnClick(false);
+    }, 100);
   }
 
   useEffect(() => {
@@ -877,13 +907,25 @@ export default function Preview() {
                   };
 
                   const content = { index, type: e.type, props };
+
+                  const foundError =
+                    errors &&
+                    errors.length >= 1 &&
+                    errors.filter((err) => err.id === e.__id).length >= 1
+                      ? errors.filter((err) => err.id === e.__id)[0]
+                      : false;
+
                   return (
                     <div
                       key={e.__id}
                       data-item-id={e.__id}
                       data-item-count={index}
                       data-tooltip-content={JSON.stringify(content)}
-                      className={`Preview-item Preview-item--${e.type}`}>
+                      className={`Preview-item Preview-item--${e.type} ${
+                        foundError
+                          ? `Preview-item--error Preview-item--error-${errors.field}`
+                          : ""
+                      }`}>
                       {(() => {
                         if (e.type === "text") {
                           return <RenderTextPreview {...props} />;

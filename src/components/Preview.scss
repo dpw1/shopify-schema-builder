@@ -153,6 +153,13 @@
   /* Icons [end] 
   ==================================== */
 
+  .Preview-item--error {
+    input {
+      border-color: red !important;
+      box-shadow: #00000026 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
+    }
+  }
+
   .Preview-wrapper {
     position: relative;
     display: flex;

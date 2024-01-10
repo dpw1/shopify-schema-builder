@@ -7,6 +7,12 @@
 .FormItem .FormItem--advanced {
   margin-top: 5px;
 }
+.FormItem .FormItem-error {
+  color: red;
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+}
 .FormItem-title {
   position: absolute;
   top: -40px;

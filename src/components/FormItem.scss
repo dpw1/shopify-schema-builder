@@ -6,6 +6,13 @@
     margin-top: 5px;
   }
 
+  .FormItem-error {
+    color: red;
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
   &-title {
     position: absolute;
     top: -40px;
