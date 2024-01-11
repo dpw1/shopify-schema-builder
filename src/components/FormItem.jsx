@@ -71,7 +71,7 @@ function FormItem(props) {
       return;
     }
 
-    const $inputs = $form.querySelectorAll(`input[label]`);
+    const $inputs = $form.querySelectorAll(`.FormItem-attr input[label]`);
 
     if (!$inputs) {
       return;
@@ -88,6 +88,8 @@ function FormItem(props) {
       a[b.label] = b;
       return a;
     }, {});
+
+    console.log("items: ", label, id);
 
     if (id) {
       console.log("look", id, id.value);
@@ -221,7 +223,7 @@ function FormItem(props) {
         : false;
 
     if (!found || (found && found.length <= 0)) {
-      return;
+      return <span className="FormItem-error"> </span>;
     }
 
     for (var each of found) {
@@ -229,22 +231,12 @@ function FormItem(props) {
         return <span className="FormItem-error">{each.message}</span>;
       }
     }
+
+    return <span className="FormItem-error"> </span>;
   }
-
-  const errorsFound =
-    errors &&
-    errors.length >= 1 &&
-    errors.filter((e) => e.id === itemId).length >= 1
-      ? [...new Set(errors.map((err) => err.label.trim()))]
-      : [];
-
-  // const errorsFound = ["id"];
-
-  console.log(errorsFound);
 
   return (
     <fieldset key={itemId} className={`FormItem FormItem--${type}`}>
-      {errors.length}
       {options.map((e, i) => {
         let _value, value;
 
@@ -276,7 +268,10 @@ function FormItem(props) {
             <>
               <input
                 className={
-                  errorsFound.filter((x) => x === e).length >= 1
+                  errors &&
+                  errors.length >= 1 &&
+                  errors.filter((x) => x.id === itemId && x.label === e)
+                    .length >= 1
                     ? "FormItem-input--error"
                     : ""
                 }
@@ -301,6 +296,8 @@ function FormItem(props) {
                       .toLowerCase()
                       .trim();
                   }
+
+                  console.log("items - typing", event.target.value);
 
                   handleErrors({
                     value: event.target.value,
@@ -434,7 +431,10 @@ function FormItem(props) {
                   <>
                     <input
                       className={
-                        errorsFound.filter((x) => x === e).length >= 1
+                        errors &&
+                        errors.length >= 1 &&
+                        errors.filter((x) => x.id === itemId && x.label === e)
+                          .length >= 1
                           ? "FormItem-input--error"
                           : ""
                       }
@@ -444,6 +444,8 @@ function FormItem(props) {
                           // insertLiquidVariableInHtml();
                         }
 
+                        console.log(errors);
+                        debugger;
                         handleInputChange(event, updateItem);
                       }}
                       name={`${_id}_${e}`}
