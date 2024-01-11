@@ -96,6 +96,21 @@ const useStore = create((set, get) => ({
       };
     });
   },
+  removeItems: (ids) => {
+    if (ids.length <= 1) {
+      throw new Error("store.js - not valid parameter for remove items");
+    }
+    const items = get().items;
+
+    const updated = items.filter((e) => !ids.includes(e.__id));
+
+    set((_) => {
+      setLocalStorage("items", JSON.stringify(updated));
+      return {
+        items: updated,
+      };
+    });
+  },
   /* Overwrite all items with new json */
   setItems: (items) => {
     // debugger;
@@ -112,6 +127,8 @@ const useStore = create((set, get) => ({
   },
 
   /* Selected items (for cloning and mass delete)
+
+  It is an array of IDs
    ======================================= */
   selectedItems: getLocalStorage("selectedItems")
     ? JSON.parse(getLocalStorage("selectedItems"))

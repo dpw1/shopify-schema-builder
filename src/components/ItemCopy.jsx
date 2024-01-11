@@ -309,10 +309,8 @@ export default function ItemCopy(props) {
     type,
     id,
     handleOnChange,
-    handleDeleteItem,
     defaultOptions,
     itemCount,
-    handleDelete,
     duplicatedOptions,
     duplicatedSubOptions,
   } = props;
@@ -321,6 +319,8 @@ export default function ItemCopy(props) {
   const setItems = useStore((state) => state.setItems);
   const updateItems = useStore((state) => state.updateItems);
   const selectedItems = useStore((state) => state.selectedItems);
+  const removeItem = useStore((state) => state.removeItem);
+  const removeItems = useStore((state) => state.removeItems);
   const updateItem = useStore((state) => state.updateItem);
 
   /** Responsible to duplicate items. */
@@ -377,6 +377,20 @@ export default function ItemCopy(props) {
     // focusOnTooltipAfterClone();
   };
 
+  function handleDelete(id) {
+    let ids = [];
+
+    /* Multiple */
+    if (selectedItems.length >= 1) {
+      console.log(selectedItems);
+
+      removeItems(selectedItems);
+    } else {
+      /* Only one */
+      removeItem(id);
+    }
+  }
+
   return (
     <li
       key={id}
@@ -389,7 +403,8 @@ export default function ItemCopy(props) {
           onClick={async () => {
             resetJsonResult();
 
-            handleDeleteItem(id);
+            handleDelete(id);
+            // handleDeleteItem(id);
 
             await sleep(100);
             const json = generateJSONSchema();
