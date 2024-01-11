@@ -86,7 +86,7 @@
     border: unset;
     padding: 0;
 
-    input {
+    input:not([type="checkbox"]) {
       max-width: 100%;
       width: 100%;
     }

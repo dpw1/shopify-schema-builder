@@ -43,6 +43,7 @@
   padding-top: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  overflow-x: hidden;
 }
 .Preview .Preview-item {
   position: relative;
@@ -271,6 +272,10 @@
 .Preview .Preview-checkbox-text {
   font-size: var(--p-font-size-100);
   color: var(--p-text);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 80%;
+  display: inline-block;
 }
 .Preview .Preview-checkbox-wrapper {
   border: 0 !important;

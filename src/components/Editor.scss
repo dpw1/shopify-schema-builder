@@ -8,14 +8,12 @@
   .Editor-edit {
   }
 
-  &.Editor--error-injectVariableInHTML
-    [data-label-name="injectVariableInHTML"]
-    + input {
+  &[class*="Editor--error"] [data-label-name] + input {
     border-color: red;
     box-shadow: #00000026 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
   }
 
-  input {
+  input:not([type="checkbox"]) {
     font-weight: var(--p-font-weight-regular);
     line-height: var(--p-font-line-height-2);
     text-transform: initial;

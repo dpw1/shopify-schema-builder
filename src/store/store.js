@@ -76,7 +76,7 @@ const useStore = create((set, get) => ({
       };
     });
   },
-  removeItems: () => {
+  resetItems: () => {
     set((_) => {
       setLocalStorage("items", []);
       return {
@@ -308,12 +308,13 @@ const useStore = create((set, get) => ({
         : false;
 
     if (repeated) {
+      console.warn("Errors not set since it's repeated.");
       return;
     }
 
     let updated = [...get().errors, value];
 
-    console.log("all errors: ", updated);
+    console.log("store.js setErrors: ", ...get().errors, value);
 
     set((_) => {
       setLocalStorage("errors", updated);
@@ -330,15 +331,28 @@ const useStore = create((set, get) => ({
       };
     });
   },
-  removeError: (id) => {
-    const errors = get().errors;
+  removeError: (value) => {
+    if (!value.hasOwnProperty("id") || !value.hasOwnProperty("label")) {
+      throw new Error("Requires ID and label.");
+    }
 
-    const updated = errors.filter((e) => e.id !== id);
+    let allErrors = JSON.parse(JSON.stringify([...get().errors]));
+    const indexToRemove = allErrors.findIndex(
+      (e) => e.id === value.id && e.label === value.label,
+    );
+
+    // If the object is found, remove it from the array
+    if (indexToRemove === -1) {
+      console.warn("Can't remove the following error: ", value);
+      return;
+    }
+
+    allErrors.splice(indexToRemove, 1);
 
     set((_) => {
       setLocalStorage("errors", []);
       return {
-        errors: updated,
+        errors: allErrors,
       };
     });
   },

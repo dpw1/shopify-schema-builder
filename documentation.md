@@ -11,6 +11,8 @@
 
 - ***
 
+- set errors in real time
+
 - detect duplicated ids
 - boxes should be red when they have an error
 

@@ -55,10 +55,7 @@ export default function Editor({ props: _props }) {
   console.log("found: ", errors.length);
 
   return (
-    <div
-      className={`Editor ${
-        errorFound && errorFound.map((e) => `Editor--error-${e}`)
-      }`}>
+    <div className={`Editor`}>
       <div className={`Editor-panel  Editor-panel--${data.__id}`}>
         <ItemCopy
           isEditing={isEditing}

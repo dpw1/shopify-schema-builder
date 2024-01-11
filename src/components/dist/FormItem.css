@@ -13,6 +13,10 @@
   margin-top: 5px;
   font-size: 12px;
 }
+.FormItem .FormItem-input--error {
+  border-color: red;
+  box-shadow: rgba(0, 0, 0, 0.1490196078) 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
+}
 .FormItem-title {
   position: absolute;
   top: -40px;

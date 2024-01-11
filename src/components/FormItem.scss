@@ -13,6 +13,11 @@
     font-size: 12px;
   }
 
+  .FormItem-input--error {
+    border-color: red;
+    box-shadow: #00000026 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
+  }
+
   &-title {
     position: absolute;
     top: -40px;

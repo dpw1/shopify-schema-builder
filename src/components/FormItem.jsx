@@ -31,8 +31,12 @@ function FormItem(props) {
 
   const items = useStore((state) => state.items);
   const errors = useStore((state) => state.errors);
+  const setErrors = useStore((state) => state.setErrors);
+  const removeError = useStore((state) => state.removeError);
+  const resetErrors = useStore((state) => state.resetErrors);
 
   const [hasFocusedOnId, setHasFocusedOnId] = useState(false);
+  const [hasIdChanged, setHasIdChanged] = useState(false);
 
   const [totalSubOptions, setTotalSubOptions] = useState(
     _duplicatedSubOptions ? Object.keys(_duplicatedSubOptions).length : 5,
@@ -55,41 +59,94 @@ function FormItem(props) {
   }
 
   const handleErrors = (item) => {
-    let formErrors = [];
-
     /* Errors for all inputs 
 	========================================= */
-    if (item.id === "") {
-      formErrors.push({
-        id: "id",
-        error: "ID can't be empty.",
-      });
+
+    let hasError = false;
+    let inputs = [];
+
+    const $form = document.querySelector(`.Editor [data-item-id='${item.id}']`);
+
+    if (!$form) {
+      return;
     }
 
-    if (item.label === "") {
-      formErrors.push({
-        id: "label",
-        error: "Label can't be empty.",
-      });
+    const $inputs = $form.querySelectorAll(`input[label]`);
+
+    if (!$inputs) {
+      return;
+    }
+
+    for (var each of $inputs) {
+      const label = each.getAttribute(`label`);
+      const value = each.value;
+
+      inputs.push({ label, value });
+    }
+
+    const { label, id } = inputs.reduce((a, b) => {
+      a[b.label] = b;
+      return a;
+    }, {});
+
+    if (id) {
+      console.log("look", id, id.value);
+      if (id.value === "") {
+        hasError = true;
+        setErrors({
+          label: "id",
+          id: itemId,
+          message: "ID can't be empty",
+        });
+      } else {
+        removeError({ id: itemId, label: "id" });
+      }
+    }
+
+    if (label) {
+      if (label.value === "") {
+        hasError = true;
+        setErrors({
+          label: "label",
+          id: itemId,
+          message: "Label can't be empty",
+        });
+      } else {
+        removeError({ id: itemId, label: "label" });
+      }
+    }
+
+    if (!hasError) {
+      // reset errors
+      // resetErrors();
     }
 
     /* ## Number 
 	========================================= */
-    if (
-      item.type === "number" &&
-      item.hasOwnProperty("default") &&
-      !Number.isInteger(item.default)
-    ) {
-      formErrors.push({
-        id: "default",
-        error: "Default must be a negative or positive number.",
-      });
-    }
-
-    // setErrors(formErrors);
-
-    return formErrors.length;
+    // if (
+    //   item.type === "number" &&
+    //   item.hasOwnProperty("default") &&
+    //   !Number.isInteger(item.default)
+    // ) {
+    //   formErrors.push({
+    //     id: "default",
+    //     error: "Default must be a negative or positive number.",
+    //   });
+    // }
   };
+
+  function validateAndSetError(field, fieldName, errorMessage) {
+    if (field && field.value === "") {
+      hasError = true;
+      setErrors({
+        label: fieldName,
+        id: itemId,
+        message: errorMessage,
+      });
+    } else {
+      removeError({ id: itemId, label: fieldName });
+    }
+  }
 
   /* Ensures that a given input has the correct length, characters, etc. 
   
@@ -139,6 +196,10 @@ function FormItem(props) {
     });
   }, []);
 
+  useEffect(() => {
+    console.log("my errors", errors);
+  }, [errors]);
+
   function updateOnChange($item = null) {
     if (!$item) {
       throw new Error("no $item passed");
@@ -151,21 +212,39 @@ function FormItem(props) {
     }, 50);
   }
 
-  function errorMessage(id, label) {
-    // debugger;
-    return (
-      <span className="FormItem-error">
-        {errors &&
-          errors.length >= 1 &&
-          errors.filter((e) => e.id === id).length >= 1 &&
-          errors.filter((e) => e.label === label)[0].label &&
-          errors.filter((e) => e.label === label)[0].message}
-      </span>
-    );
+  function renderErrorMessage(id, _label) {
+    const found =
+      errors &&
+      errors.length >= 1 &&
+      errors.filter((e) => e.id === id).length >= 1
+        ? errors.filter((e) => e.id === id)
+        : false;
+
+    if (!found || (found && found.length <= 0)) {
+      return;
+    }
+
+    for (var each of found) {
+      if (each.label === _label) {
+        return <span className="FormItem-error">{each.message}</span>;
+      }
+    }
   }
+
+  const errorsFound =
+    errors &&
+    errors.length >= 1 &&
+    errors.filter((e) => e.id === itemId).length >= 1
+      ? [...new Set(errors.map((err) => err.label.trim()))]
+      : [];
+
+  // const errorsFound = ["id"];
+
+  console.log(errorsFound);
 
   return (
     <fieldset key={itemId} className={`FormItem FormItem--${type}`}>
+      {errors.length}
       {options.map((e, i) => {
         let _value, value;
 
@@ -176,7 +255,7 @@ function FormItem(props) {
         }
         value = _value[e];
 
-        function renderInput(value, itemId, type) {
+        function renderInput(value, _id, type) {
           if (type === "checkbox" && e === "default") {
             return (
               <input
@@ -185,7 +264,7 @@ function FormItem(props) {
                 onChange={(e) => {
                   handleInputChange(e, updateItem);
                 }}
-                name={`${itemId}_${e}`}
+                name={`${_id}_${e}`}
                 label={e}
                 placeholder={e}
                 autoComplete={"off"}
@@ -196,23 +275,24 @@ function FormItem(props) {
           return (
             <>
               <input
+                className={
+                  errorsFound.filter((x) => x === e).length >= 1
+                    ? "FormItem-input--error"
+                    : ""
+                }
                 value={value}
-                onFocus={() => {
-                  if (e === "id" && !hasFocusedOnId) {
-                    setHasFocusedOnId(true);
-                  }
-                }}
                 onChange={(event) => {
                   if (e === "id") {
+                    setHasIdChanged(true);
                     if (/\s/.test(event.target.value)) {
                       event.preventDefault();
                       return;
                     }
                   }
 
-                  if (e === "label" && hasFocusedOnId === false) {
+                  if (e === "label" && hasIdChanged === false) {
                     const $id = document.querySelector(
-                      `input[name='${itemId}_id']`,
+                      `input[name='${_id}_id']`,
                     );
 
                     $id.value = event.target.value
@@ -222,15 +302,21 @@ function FormItem(props) {
                       .trim();
                   }
 
+                  handleErrors({
+                    value: event.target.value,
+                    label: e,
+                    id: itemId,
+                  });
+
                   handleInputChange(event, updateItem);
                 }}
-                name={`${itemId}_${e}`}
+                name={`${_id}_${e}`}
                 label={e}
                 defaultValue={setDefaultValue(e)}
                 placeholder={e}
                 autoComplete={"off"}
               />
-              {errorMessage()}
+              {renderErrorMessage(_id, e)}
             </>
           );
         }
@@ -343,10 +429,15 @@ function FormItem(props) {
               }
               value = _value[e];
 
-              function renderInput(value, itemId, type) {
+              function renderInput(value, _id, type) {
                 return (
                   <>
                     <input
+                      className={
+                        errorsFound.filter((x) => x === e).length >= 1
+                          ? "FormItem-input--error"
+                          : ""
+                      }
                       value={value}
                       onChange={(event) => {
                         if (e === "injectVariableInHTML") {
@@ -355,13 +446,13 @@ function FormItem(props) {
 
                         handleInputChange(event, updateItem);
                       }}
-                      name={`${itemId}_${e}`}
+                      name={`${_id}_${e}`}
                       label={e}
                       defaultValue={setDefaultValue(e)}
                       placeholder={placeholder}
                       autoComplete={"off"}
                     />
-                    {errorMessage(itemId, e)}
+                    {renderErrorMessage(_id, e)}
                   </>
                 );
               }

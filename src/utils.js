@@ -67,7 +67,7 @@ export function handleInputChange(_$item, updateItem) {
   console.log("updated json (formitem.js): ", json);
 
   updateItem(json);
-  removeError(json.__id);
+  // removeError(json.__id);
 
   return;
 }
@@ -1139,4 +1139,6 @@ export const addObjectToIndex = (array, index, elementsToInsert) => {
 
 export const errorMessages = {
   invalidHtmlIInjectionSelector: `Selector not found.`,
+  emptyLabel: `Label can not be empty.`,
+  emptyId: `ID can not be empty.`,
 };

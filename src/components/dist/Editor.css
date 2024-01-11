@@ -5,11 +5,11 @@
 .Editor .Editor-panel {
   position: relative;
 }
-.Editor.Editor--error-injectVariableInHTML [data-label-name=injectVariableInHTML] + input {
+.Editor[class*=Editor--error] [data-label-name] + input {
   border-color: red;
   box-shadow: rgba(0, 0, 0, 0.1490196078) 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
 }
-.Editor input {
+.Editor input:not([type=checkbox]) {
   font-weight: var(--p-font-weight-regular);
   line-height: var(--p-font-line-height-2);
   text-transform: initial;

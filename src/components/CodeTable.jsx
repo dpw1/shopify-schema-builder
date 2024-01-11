@@ -33,7 +33,7 @@ import ConfirmDialog from "./ConfirmDialog";
 
 export default function CodeTable() {
   const addItems = useStore((state) => state.addItems);
-  const removeItems = useStore((state) => state.removeItems);
+  const resetItems = useStore((state) => state.resetItems);
   const settings = useStore((state) => state.settings);
   const addSection = useStore((state) => state.addSection);
   const section = useStore((state) => state.section);
@@ -45,7 +45,7 @@ export default function CodeTable() {
   const [variables, setVariables] = useState(JSON.stringify(items));
   const [cssVariables, setCssVariables] = useState("");
 
-  const [selectedTab, setSelectedTab] = useStickyState("@tabs", 3);
+  const [selectedTab, setSelectedTab] = useStickyState("@tabs", 0);
   const [removeAll, setRemoveAll] = useState(false);
 
   const handleTabChange = useCallback(
@@ -97,7 +97,7 @@ export default function CodeTable() {
 
               console.log(extractedJson);
 
-              removeItems();
+              resetItems();
               addItems(extractedJson);
             }}>
             Import

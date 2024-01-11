@@ -41,6 +41,7 @@
     padding-top: 20px;
     padding-left: 10px;
     padding-right: 10px;
+    overflow-x: hidden;
   }
 
   .Preview-sortable > *:nth-child(1) {
@@ -335,6 +336,10 @@
   .Preview-checkbox-text {
     font-size: var(--p-font-size-100);
     color: var(--p-text);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 80%;
+    display: inline-block;
   }
 
   .Preview-checkbox-wrapper {
