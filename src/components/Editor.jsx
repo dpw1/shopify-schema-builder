@@ -6,6 +6,7 @@ import "./Editor.scss";
 
 import ItemCopy from "./ItemCopy";
 import { EditMajor, HideMinor } from "@shopify/polaris-icons";
+import { sleep } from "../utils";
 
 window.isEventListenerAdded = false;
 
@@ -22,7 +23,38 @@ export default function Editor({ props: _props }) {
   const updateItems = useStore((state) => state.updateItems);
   const removeItem = useStore((state) => state.removeItem);
   const errors = useStore((state) => state.errors);
-  const setErrors = useStore((state) => state.setErrors);
+
+  useEffect(() => {
+    setupTabIndex();
+  }, []);
+
+  async function setupTabIndex() {
+    await sleep(100);
+
+    const $form = document.querySelector(`.Editor .item`);
+
+    if (!$form) {
+      return;
+    }
+
+    const $inputs = $form.querySelectorAll(`input[label]`);
+
+    if (!$inputs) {
+      return;
+    }
+
+    let total = 2;
+
+    for (var [index, each] of $inputs.entries()) {
+      each.setAttribute(`tabIndex`, total);
+      total += 1;
+    }
+
+    console.log($form, $inputs.length, total);
+    const $select = document.querySelector(`.Preview-buttons select`);
+
+    $select.setAttribute("tabIndex", total + 1);
+  }
 
   const handleDeleteItem = (id) => {
     removeItem(id);
@@ -45,14 +77,6 @@ export default function Editor({ props: _props }) {
 
     updateItems(updated);
   };
-
-  const errorFound = errors &&
-    errors.length >= 1 &&
-    errors.filter((e) => e.id === data.__id).length >= 1 && [
-      ...new Set(errors.map((err) => err.label.trim())),
-    ];
-
-  console.log("found: ", errors.length);
 
   return (
     <div className={`Editor`}>

@@ -30,7 +30,6 @@ function App() {
   const setOpenOnClick = useStore((state) => state.setOpenOnClick);
 
   useEffect(() => {
-    console.log("reset");
     setOpenOnClick(false);
     function addKeyListener() {
       function handleKeyDown(event) {

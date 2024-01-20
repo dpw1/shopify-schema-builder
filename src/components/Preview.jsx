@@ -310,6 +310,18 @@ const RenderProductPreview = (data) => {
   );
 };
 
+const RenderProductListPreview = (data) => {
+  return (
+    <>
+      <div className="Preview-label">{data.label}</div>
+
+      <div className="Preview-button">Select products</div>
+
+      <div className="Preview-info">{data.info}</div>
+    </>
+  );
+};
+
 const RenderRadioPreview = (data) => {
   return (
     <>
@@ -953,6 +965,8 @@ export default function Preview() {
                           return <RenderParagraphPreview {...props} />;
                         } else if (e.type === "product") {
                           return <RenderProductPreview {...props} />;
+                        } else if (e.type === "product_list") {
+                          return <RenderProductListPreview {...props} />;
                         } else if (e.type === "radio") {
                           return <RenderRadioPreview {...props} />;
                         } else if (e.type === "range") {

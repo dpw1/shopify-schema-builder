@@ -155,6 +155,7 @@
   ==================================== */
 
   .Preview-item--error {
+    select ~ [class*="Backdrop"],
     input {
       border-color: red !important;
       box-shadow: #00000026 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
@@ -338,7 +339,7 @@
     color: var(--p-text);
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 80%;
+    width: 100%;
     display: inline-block;
   }
 

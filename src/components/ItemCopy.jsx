@@ -132,6 +132,26 @@ Options = editable elements. (id, label, info, etc)
           itemId={itemId}
         />
       );
+    case "product_list":
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info"]}
+          type="product"
+          duplicatedOptions={duplicatedOptions}
+          itemId={itemId}
+        />
+      );
+    case "collection_list":
+      return (
+        <FormItem
+          itemCount={itemCount}
+          options={["id", "label", "info"]}
+          type="product"
+          duplicatedOptions={duplicatedOptions}
+          itemId={itemId}
+        />
+      );
     case "blog":
       return (
         <FormItem
@@ -233,6 +253,7 @@ Options = editable elements. (id, label, info, etc)
             ...defaultOptions,
             unit: "px",
           }}
+          extraOptions={["injectVariableInHTML", "injectVaribleInCSS"]}
           itemId={itemId}
         />
       );
@@ -270,6 +291,7 @@ Options = editable elements. (id, label, info, etc)
           defaultOptions={defaultOptions}
           duplicatedOptions={duplicatedOptions}
           duplicatedSubOptions={duplicatedSubOptions}
+          extraOptions={["injectVariableInHTML", "injectVaribleInCSS"]}
           itemId={itemId}
         />
       );
@@ -378,8 +400,6 @@ export default function ItemCopy(props) {
   };
 
   function handleDelete(id) {
-    let ids = [];
-
     /* Multiple */
     if (selectedItems.length >= 1) {
       console.log(selectedItems);
@@ -458,6 +478,7 @@ export default function ItemCopy(props) {
       </div>
       <div className="item-wrapper">
         <select
+          tabIndex={1}
           onChange={(e) => handleOnChange(e)}
           defaultValue={defaultValue}
           id={id}>
@@ -483,44 +504,6 @@ export default function ItemCopy(props) {
         )}
       </div>
 
-      <div className="item-advanced">
-        {/* <p>
-          <b>Advanced</b>
-        </p>
-        <fieldset>
-          <label htmlFor="">Inject in HTML</label>
-          <input
-            data-id={id}
-            value={inputHtmlVariable}
-            onChange={(e) => handleOnChange(e)}
-            type="text"
-            placeholder="Selector"
-            onChange={(e) => {
-              const value = e.target.value.trim();
-              const currentID = e.target.getAttribute(`data-id`);
-
-              console.log(currentID);
-
-              if (currentID !== id) {
-                return;
-              }
-
-              if (value.length <= 0 && item.hasOwnProperty(`htmlVariable`)) {
-                item.htmlVariable = "";
-                return;
-              }
-
-              setInputHtmlVariable(value);
-
-              const item = items.filter((e) => e.__id === id)[0];
-
-              console.log("my item", item);
-              item.htmlVariable = value;
-              updateItem(item);
-            }}
-          />
-        </fieldset> */}
-      </div>
       <br />
     </li>
   );

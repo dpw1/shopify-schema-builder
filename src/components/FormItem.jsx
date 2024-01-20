@@ -89,10 +89,7 @@ function FormItem(props) {
       return a;
     }, {});
 
-    console.log("items: ", label, id);
-
     if (id) {
-      console.log("look", id, id.value);
       if (id.value === "") {
         hasError = true;
         setErrors({
@@ -136,19 +133,6 @@ function FormItem(props) {
     //   });
     // }
   };
-
-  function validateAndSetError(field, fieldName, errorMessage) {
-    if (field && field.value === "") {
-      hasError = true;
-      setErrors({
-        label: fieldName,
-        id: itemId,
-        message: errorMessage,
-      });
-    } else {
-      removeError({ id: itemId, label: fieldName });
-    }
-  }
 
   /* Ensures that a given input has the correct length, characters, etc. 
   
@@ -235,6 +219,33 @@ function FormItem(props) {
     return <span className="FormItem-error"> </span>;
   }
 
+  function handleRealtimeError(event, label, id) {
+    if (label === "id") {
+      setHasIdChanged(true);
+      if (/\s/.test(event.target.value)) {
+        event.preventDefault();
+        return;
+      }
+    }
+
+    if (label === "label" && hasIdChanged === false) {
+      const $id = document.querySelector(`input[name='${id}_id']`);
+
+      $id.value = event.target.value
+        .replace(/\s/g, "_")
+        .replace(/[^a-zA-Z0-9-_]/g, "")
+        .toLowerCase()
+        .trim();
+    }
+
+    if (label === "injectVariableInHTML" && event.target.value.trim() === "") {
+      removeError({
+        id,
+        label,
+      });
+    }
+  }
+
   return (
     <fieldset key={itemId} className={`FormItem FormItem--${type}`}>
       {options.map((e, i) => {
@@ -277,26 +288,6 @@ function FormItem(props) {
                 }
                 value={value}
                 onChange={(event) => {
-                  if (e === "id") {
-                    setHasIdChanged(true);
-                    if (/\s/.test(event.target.value)) {
-                      event.preventDefault();
-                      return;
-                    }
-                  }
-
-                  if (e === "label" && hasIdChanged === false) {
-                    const $id = document.querySelector(
-                      `input[name='${_id}_id']`,
-                    );
-
-                    $id.value = event.target.value
-                      .replace(/\s/g, "_")
-                      .replace(/[^a-zA-Z0-9-_]/g, "")
-                      .toLowerCase()
-                      .trim();
-                  }
-
                   console.log("items - typing", event.target.value);
 
                   handleErrors({
@@ -305,6 +296,7 @@ function FormItem(props) {
                     id: itemId,
                   });
 
+                  handleRealtimeError(event, e, itemId);
                   handleInputChange(event, updateItem);
                 }}
                 name={`${_id}_${e}`}
@@ -440,12 +432,7 @@ function FormItem(props) {
                       }
                       value={value}
                       onChange={(event) => {
-                        if (e === "injectVariableInHTML") {
-                          // insertLiquidVariableInHtml();
-                        }
-
-                        console.log(errors);
-                        debugger;
+                        handleRealtimeError(event, e, itemId);
                         handleInputChange(event, updateItem);
                       }}
                       name={`${_id}_${e}`}

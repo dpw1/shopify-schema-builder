@@ -4,6 +4,12 @@
   position: sticky;
   top: 40px;
 
+  .CodeTable-popover {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+  }
+
   .CodeTable-buttons {
     padding: 20px;
 

@@ -11,6 +11,11 @@
 
 - ***
 
+- Add product list/collection list
+- Copy product before/after currently active (hovered) item
+- Delete currently hovered item just by pressing delete
+- Inject CSS selector in "range" (helpful for font sizes)
+
 - set errors in real time
 
 - detect duplicated ids

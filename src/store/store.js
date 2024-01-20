@@ -348,19 +348,19 @@ const useStore = create((set, get) => ({
       };
     });
   },
-  removeError: (value) => {
-    if (!value.hasOwnProperty("id") || !value.hasOwnProperty("label")) {
+  removeError: (obj) => {
+    if (!obj.hasOwnProperty("id") || !obj.hasOwnProperty("label")) {
       throw new Error("Requires ID and label.");
     }
 
     let allErrors = JSON.parse(JSON.stringify([...get().errors]));
     const indexToRemove = allErrors.findIndex(
-      (e) => e.id === value.id && e.label === value.label,
+      (e) => e.id === obj.id && e.label === obj.label,
     );
 
     // If the object is found, remove it from the array
     if (indexToRemove === -1) {
-      console.warn("Can't remove the following error: ", value);
+      console.warn("Can't remove the following error: ", obj);
       return;
     }
 

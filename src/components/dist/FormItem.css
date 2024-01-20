@@ -44,7 +44,6 @@
 .FormItem-suboptions {
   background-color: rgba(173, 216, 230, 0.0705882353);
   padding: 10px 5px !important;
-  margin-top: 20px;
 }
 .FormItem-suboption {
   display: grid;

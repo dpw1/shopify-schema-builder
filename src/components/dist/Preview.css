@@ -119,6 +119,7 @@
 .Preview [data-item-id]:hover {
   border-color: rgba(128, 128, 128, 0.129);
 }
+.Preview .Preview-item--error select ~ [class*=Backdrop],
 .Preview .Preview-item--error input {
   border-color: red !important;
   box-shadow: rgba(0, 0, 0, 0.1490196078) 0px 1px 4px, #eaa9a9 0px 0px 0px 3px;
@@ -274,7 +275,7 @@
   color: var(--p-text);
   text-overflow: ellipsis;
   overflow: hidden;
-  width: 80%;
+  width: 100%;
   display: inline-block;
 }
 .Preview .Preview-checkbox-wrapper {

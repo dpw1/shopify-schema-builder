@@ -209,6 +209,8 @@ export const schema = [
   { id: "number" },
   { id: "select" },
   { id: "radio" },
+  { id: "product_list" },
+  { id: "collection_list" },
 ];
 
 /* order
@@ -1142,3 +1144,29 @@ export const errorMessages = {
   emptyLabel: `Label can not be empty.`,
   emptyId: `ID can not be empty.`,
 };
+
+export const starterSectionCode = `
+<div data-ezfy-editable="" class="EzfyStarter">
+<p class="EzfyStarter-text" data-ezfy-injected-variable=".EzfyStarter-text">{{ text_1 }}</p>
+  
+</div>
+
+{% schema %}{
+  "name": "EZFY Starter Section",
+  "class": "ezy-starter-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text_1",
+      "label": "text 1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "EZFY Starter Section",
+      "category": "Custom by EZFY"
+    }
+  ]
+}{% endschema %}
+
+`;

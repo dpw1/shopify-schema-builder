@@ -27,7 +27,15 @@ import { useStatePersist as useStickyState } from "use-state-persist";
 
 import "./CodeTable.scss";
 import useStore from "./../store/store";
-import { Button, TextField, Card, Tabs, Checkbox } from "@shopify/polaris";
+import {
+  Button,
+  TextField,
+  Card,
+  Tabs,
+  Checkbox,
+  ActionList,
+  Popover,
+} from "@shopify/polaris";
 import Settings from "./Settings";
 import ConfirmDialog from "./ConfirmDialog";
 
@@ -40,7 +48,11 @@ export default function CodeTable() {
   const items = useStore((state) => state.items);
   const errors = useStore((state) => state.errors);
   const setErrors = useStore((state) => state.setErrors);
+  const removeError = useStore((state) => state.removeError);
   const [removeSectionText, setRemoveSectionText] = useState(false);
+
+  const [active, setActive] = useState(false);
+  const toggleActive = useCallback(() => setActive((active) => !active), []);
 
   const [variables, setVariables] = useState(JSON.stringify(items));
   const [cssVariables, setCssVariables] = useState("");
@@ -51,6 +63,12 @@ export default function CodeTable() {
   const handleTabChange = useCallback(
     (selectedTabIndex) => setSelectedTab(selectedTabIndex),
     [],
+  );
+
+  const activator = (
+    <Button onClick={toggleActive} disclosure>
+      More actions
+    </Button>
   );
 
   useEffect(() => {
@@ -138,28 +156,6 @@ export default function CodeTable() {
         </>
       ),
     },
-
-    // {
-    //   id: "tab-css-variables",
-    //   content: "CSS Variables",
-    //   panelID: "panel-css-variables",
-    //   component: (
-    //     <>
-    //       <TextField
-    //         value={cssVariables}
-    //         maxHeight={100}
-    //         multiline={4}></TextField>
-    //       <Button
-    //         onClick={() => {
-    //           const css = generateCSSVariables();
-
-    //           setCssVariables(css);
-    //         }}>
-    //         Generate CSS
-    //       </Button>
-    //     </>
-    //   ),
-    // },
   ];
 
   const copyJSONToClipboard = () => {
@@ -206,9 +202,31 @@ export default function CodeTable() {
   return (
     <div className="CodeTable">
       <Card>
-        <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
-          <Card.Section>{tabs[selectedTab]?.component}</Card.Section>
-        </Tabs>
+        <div className="CodeTable-top">
+          <Tabs tabs={tabs} selected={selectedTab} onSelect={handleTabChange}>
+            <Card.Section>{tabs[selectedTab]?.component}</Card.Section>
+          </Tabs>
+          <div className="CodeTable-popover">
+            <Popover
+              className="Pop"
+              active={active}
+              activator={activator}
+              autofocusTarget="first-node"
+              onClose={toggleActive}>
+              <ActionList
+                actionRole="menuitem"
+                items={[
+                  {
+                    content: "Add blank section",
+                    onAction: () => {
+                      console.log("ok");
+                    },
+                  },
+                ]}
+              />
+            </Popover>
+          </div>
+        </div>
       </Card>
 
       <Card>
@@ -251,6 +269,10 @@ export default function CodeTable() {
 
                     setErrors(err);
                   } else {
+                    removeError({
+                      id: each.__id,
+                      label: "injectVariableInHTML",
+                    });
                     code = result;
                   }
                 }

@@ -7,6 +7,8 @@
   padding-bottom: 0;
   position: relative;
   list-style: none !important;
+  overflow-y: scroll;
+  max-height: 90vh;
   color: black;
 }
 .item .item-advanced {
