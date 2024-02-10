@@ -11,18 +11,16 @@
 
 - ***
 
-- Add product list/collection list
-- Copy product before/after currently active (hovered) item
-- Delete currently hovered item just by pressing delete
+- Trigger error when range step is not number
+- Trigger error when color "default" is not hex
+- Add collection list
 - Inject CSS selector in "range" (helpful for font sizes)
 
-- set errors in real time
-
 - detect duplicated ids
-- boxes should be red when they have an error
 
 ---
 
+- Copy product before/after currently active (hovered) item
 - can't add negative number to "select" min field
 - bulk delete
 - Detect duplicated ids
@@ -37,7 +35,7 @@
 
 - Create "settings" store variable
   - Add prefix with option to include {type}
-- Create tab to add section's schema settings
+- Create tab to edit section's schema settings
   - class
   - name
   - blocks
@@ -60,5 +58,5 @@
 
 ## Usage
 
-- The parent div should have the data attribute "data-ezfy-editable" to be editable.
-- HTML elements with the data attribute "data-ezfy-injected-variable='.element'" had a liquid variable injected and will be editable in the future whenever this variable changes.
+1. The parent div must have the data attribute "data-ezfy-editable" to be editable.
+2. HTML elements must have the data attribute "data-ezfy-injected-variable='.element'". This happens automatically when a liquid variable is injected and will be editable next time the user makes changes to it.

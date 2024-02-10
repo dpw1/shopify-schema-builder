@@ -13,7 +13,7 @@ import { useStatePersist as useStickyState } from "use-state-persist";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
-import { duplicate, initialState, sleep } from "./utils";
+import { duplicate, deleteItem, initialState, sleep } from "./utils";
 import Preview from "./components/Preview";
 import "./assets/Polaris.scss";
 import "./components/PopupConfirm.scss";
@@ -38,9 +38,12 @@ function App() {
           duplicate();
           openEditorForNextItem();
         }
+
+        if (event.key === "Delete") {
+          deleteItem();
+        }
       }
 
-      // Function to add the event listener
       function addEventListenerOnce() {
         if (!isEventListenerAdded) {
           document.addEventListener("keydown", handleKeyDown);

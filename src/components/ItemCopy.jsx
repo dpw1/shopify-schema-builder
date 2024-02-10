@@ -251,6 +251,9 @@ Options = editable elements. (id, label, info, etc)
           duplicatedOptions={duplicatedOptions}
           defaultOptions={{
             ...defaultOptions,
+            min: 10,
+            max: 40,
+            default: 1,
             unit: "px",
           }}
           extraOptions={["injectVariableInHTML", "injectVaribleInCSS"]}

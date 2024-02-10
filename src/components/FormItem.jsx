@@ -55,7 +55,7 @@ function FormItem(props) {
   }
 
   if (duplicatedOptions) {
-    defaultOptions = duplicatedOptions;
+    defaultOptions = { ...duplicatedOptions, ...defaultOptions };
   }
 
   const handleErrors = (item) => {

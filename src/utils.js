@@ -81,7 +81,17 @@ export function duplicate() {
     return;
   }
 
-  console.log("duplicate: ", $button);
+  $button.click();
+}
+
+export function deleteItem() {
+  const $button = document.querySelector(
+    `.Editor [data-item-count] .item-delete`,
+  );
+
+  if (!$button) {
+    return;
+  }
 
   $button.click();
 }
@@ -869,6 +879,10 @@ export const cleanSectionCode = (section) => {
     if (e.hasOwnProperty("injectVariableInHTML")) {
       delete e.injectVariableInHTML;
     }
+
+    if (e.hasOwnProperty("injectVariableInCSS")) {
+      delete e.injectVariableInCSS;
+    }
     return e;
   });
 
@@ -1145,7 +1159,7 @@ export const errorMessages = {
   emptyId: `ID can not be empty.`,
 };
 
-export const starterSectionCode = `
+export const blankSectionCode = `
 <div data-ezfy-editable="" class="EzfyStarter">
 <p class="EzfyStarter-text" data-ezfy-injected-variable=".EzfyStarter-text">{{ text_1 }}</p>
   

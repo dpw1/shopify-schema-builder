@@ -22,6 +22,7 @@ import {
   insertLiquidVariableInHtml,
   filterItemsWithProperty,
   errorMessages,
+  blankSectionCode,
 } from "../utils";
 import { useStatePersist as useStickyState } from "use-state-persist";
 
@@ -49,6 +50,7 @@ export default function CodeTable() {
   const errors = useStore((state) => state.errors);
   const setErrors = useStore((state) => state.setErrors);
   const removeError = useStore((state) => state.removeError);
+
   const [removeSectionText, setRemoveSectionText] = useState(false);
 
   const [active, setActive] = useState(false);
@@ -219,7 +221,17 @@ export default function CodeTable() {
                   {
                     content: "Add blank section",
                     onAction: () => {
-                      console.log("ok");
+                      addSection(blankSectionCode);
+
+                      const json =
+                        extractSchemaJSONFromCodeString(section).settings;
+
+                      const extractedJson = convertSchemaJSONToItems(json);
+
+                      console.log(extractedJson);
+
+                      resetItems();
+                      addItems(extractedJson);
                     },
                   },
                 ]}
